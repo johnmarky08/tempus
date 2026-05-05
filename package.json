@@ -1,5 +1,5 @@
 {
-    "$schema": "https://www.schemastore.org/package.json",
+    "$schema": "https://json.schemastore.org/package.json",
     "private": true,
     "type": "module",
     "scripts": {
@@ -7,16 +7,18 @@
         "dev": "vite"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
+        "@sveltejs/vite-plugin-svelte": "^2.5.3",
+        "autoprefixer": "^10.5.0",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^2.0.0",
-        "tailwindcss": "^4.0.0",
-        "vite": "^7.0.7"
+        "laravel-vite-plugin": "^0.7.8",
+        "postcss": "^8.5.10",
+        "svelte": "^4.2.20",
+        "tailwindcss": "^3.4.19",
+        "vite": "^4.5.14"
     },
     "dependencies": {
-        "@inertiajs/svelte": "^3.0.3",
-        "@sveltejs/vite-plugin-svelte": "^6.2.4",
-        "svelte": "^5.55.5"
+        "@inertiajs/svelte": "^2.1.2",
+        "bootstrap": "^5.3.0"
     }
 }
