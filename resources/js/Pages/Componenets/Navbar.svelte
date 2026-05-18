@@ -1,6 +1,8 @@
 <script>
     import { dark } from "../../theme.js";
     import * as data from "../../datas.js";
+
+    export let isActive = "";
 </script>
 
 <nav
@@ -15,7 +17,9 @@
         {#each data.nav as { name, link, descritpion }}
             <a
                 href={link}
-                class="relative hover:text-[#6FB8E7] transition-all duration-300"
+                class="relative hover:text-[#6FB8E7] {isActive === name
+                    ? 'text-[#6FB8E7]'
+                    : ''} transition-all duration-300"
             >
                 <span
                     class="
@@ -29,7 +33,10 @@
                      after:bg-[#6FB8E7]
                        after:transition-all
                        after:duration-300
-                       hover:after:w-full">{name}</span
+                       hover:after:w-full
+                       {isActive === name
+                        ? 'after:text-[#6FB8E7] after:w-full'
+                        : ''}">{name}</span
                 >
             </a>
         {/each}

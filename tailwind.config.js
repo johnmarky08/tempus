@@ -9,7 +9,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                comfortaa: ["Comfortaa", "sans-serif"],
+                jetbrainsMono: ["JetBrains Mono", "monospace"],
+                spaceGrotesk: ["Space Grotesk", "sans-serif"],
             },
         },
     },
