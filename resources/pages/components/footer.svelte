@@ -56,48 +56,7 @@
     class="text-xs bg-[#020617]/40 backdrop-blur-md p-14 bottom-0 left-0 z-[9997] text-white items-center"
 >
     <div class="border-t-2 border-white/30"></div>
-    <div class="flex justify-between items-center mt-5">
-        <div class="flex justify-between items-center gap-3">
-            <a
-                href="/terms"
-                class="relative hover:text-[#6FB8E7] transition-all duration-300"
-            >
-                <span
-                    class="
-                       after:content-['']
-                       after:absolute
-                       after:left-1/2
-                       after:-translate-x-1/2
-                       after:-bottom-1
-                       after:h-[2px]
-                       after:w-0
-                     after:bg-[#6FB8E7]
-                       after:transition-all
-                       after:duration-300
-                       hover:after:w-full">Terms & Conditions</span
-                >
-            </a>
-            <p>·</p>
-            <a
-                href="/privacy"
-                class="relative hover:text-[#6FB8E7] transition-all duration-300"
-            >
-                <span
-                    class="
-                       after:content-['']
-                       after:absolute
-                       after:left-1/2
-                       after:-translate-x-1/2
-                       after:-bottom-1
-                       after:h-[2px]
-                       after:w-0
-                     after:bg-[#6FB8E7]
-                       after:transition-all
-                       after:duration-300
-                       hover:after:w-full">Privacy Policy</span
-                >
-            </a>
-        </div>
+    <div class="flex justify-center items-center mt-5">
         <p>
             &copy; {new Date().getFullYear()} T.E.M.P.U.S. All rights reserved.
         </p>
