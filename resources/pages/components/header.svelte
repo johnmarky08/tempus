@@ -11,7 +11,7 @@
 >
     <div class="flex items-center">
         <img src="/favicon.png" alt="Tempus Logo" class="h-20 w-20 p-2" />
-        <h1 class="text-2xl font-bold text-white">Tempus</h1>
+        <h1 class="text-2xl font-bold text-white">T.E.M.P.U.S.</h1>
     </div>
     <div class="text-sm flex gap-14 items-center text-center text-white">
         {#each nav as { name, link }}

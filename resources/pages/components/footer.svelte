@@ -12,7 +12,7 @@
                 alt="Tempus Logo"
                 class="text-white h-20 w-20"
             />
-            <h1 class="text-2xl font-bold text-white">Tempus</h1>
+            <h1 class="text-2xl font-bold text-white">T.E.M.P.U.S.</h1>
         </div>
         <p class="max-w-sm text-gray-300">
             Lorem ipsum dolor, sit amet consectetur adipisicing elit.
@@ -98,6 +98,8 @@
                 >
             </a>
         </div>
-        <p>&copy; {new Date().getFullYear()} Tempus. All rights reserved.</p>
+        <p>
+            &copy; {new Date().getFullYear()} T.E.M.P.U.S. All rights reserved.
+        </p>
     </div>
 </footer>

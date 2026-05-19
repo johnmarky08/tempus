@@ -214,10 +214,10 @@
                                 data-sr-delay="180"
                                 class="max-w-[500px] text-sm leading-6 text-slate-300 sm:text-base font-jetbrainsMono font-light"
                             >
-                                Tempus is your personal software application
-                                that aggregates live market data of fuel and
-                                local heat indices, alerting you to crucial
-                                changes and health risks.
+                                T.E.M.P.U.S. is your personal software
+                                application that aggregates live market data of
+                                fuel and local heat indices, alerting you to
+                                crucial changes and health risks.
                             </p>
 
                             <div
@@ -293,8 +293,8 @@
                             <p
                                 class="max-w-xl text-sm font-light leading-6 text-slate-300 sm:text-base"
                             >
-                                Tempus is a smart daily companion that helps
-                                users manage rising fuel prices alongside
+                                T.E.M.P.U.S. is a smart daily companion that
+                                helps users manage rising fuel prices alongside
                                 dangerous heat conditions. It predicts price
                                 spikes and monitors personal heat danger levels,
                                 offering early warnings before risks become
