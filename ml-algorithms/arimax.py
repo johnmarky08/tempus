@@ -1,26 +1,22 @@
-"""
-ARIMAX 7-day price forecast per fuel type.
+"""ARIMAX forecasting for fuel prices.
 
-Model:
-  - statsmodels SARIMAX used as a pure ARIMAX: seasonal_order=(0,0,0,0),
-    making it equivalent to ARIMA(p,d,q) + exogenous regressors.
-  - Exogenous matrix = [exchange_rate_to_usd, normal_supply_flag, lag1, lag2, lag3].
-  - Small grid search over p in [0..3], d in [0..1], q in [0..3]; best AIC selected.
+Reads the static dataset at ``datasets/fuel_prices.csv`` and produces
+a multi-fuel time-series forecast. CLI usage:
 
-Lag strategy (documented):
-  - 3 price lags (t-1, t-2, t-3) are added as exogenous columns during training.
-  - During forecasting, lags are built iteratively:
-      day 1 : lags come from the last 3 observed prices.
-      day 2 : lag1 = day-1 predicted price; lag2, lag3 from observed history.
-      day k : lag1 = predicted[k-1], lag2 = predicted[k-2] (or observed if k<3),
-               lag3 = predicted[k-3] (or observed if k<4).
-    This rolling substitution propagates uncertainty forward correctly.
+        python arimax.py <horizon> <n_lags>
 
-Gap-filling strategy (documented):
-  - price:                 linear interpolation (smooth for mid-series gaps),
-                           then forward-fill / backward-fill for any remaining edges.
-  - exchange_rate_to_usd:  forward-fill then backward-fill (step-carry suits FX rates).
-  - normal_supply_flag:    forward-fill then backward-fill (carry last known status).
+Outputs JSON to stdout: a list of forecast rows with fields
+``date``, ``fuel_type``, ``predicted_price``, ``lower_95``, ``upper_95``.
+
+Implementation notes:
+- Uses statsmodels SARIMAX (ARIMAX formulation) and selects the best
+    (p,d,q) via AIC over a small grid.
+- Builds lag features and exogenous regressors, then forecasts
+    iteratively while propagating predicted lags forward.
+- Runs one worker process per fuel type to parallelize CPU-bound work.
+
+Warning: grid search can be compute-heavy on large datasets; consider
+offloading to background jobs for production use.
 """
 
 # ── imports ───────────────────────────────────────────────────────────────────

@@ -1,46 +1,15 @@
-"""
-Random Forest outdoor safety classifier (safe / moderate / caution / high / extreme).
+"""Random Forest classifier for outdoor safety assessment.
 
-Model:
-  - sklearn RandomForestClassifier with n_estimators=200, class_weight='balanced',
-    random_state=42, n_jobs=-1.
-  - class_weight='balanced' compensates for unequal label frequencies by
-    weighting each class inversely proportional to its count in the training set.
-  - No time-series structure; each row is treated as an independent observation.
+Reads ``datasets/safety_assessment.csv`` and trains a RandomForestClassifier
+to predict safety labels (safe, moderate, caution, high, extreme). CLI
+usage for the current bridge integration is to provide inference features
+as positional arguments; the script prints a JSON object containing
+model metrics and a single prediction with class probabilities.
 
-Feature set:
-  - Numeric inputs  : temperature (°C), humidity (%), wind_speed (km/h),
-                      exertion_level (integer 0-10).
-  - Encoded inputs  : age_range ordinally encoded 0-6 (0-3 → 0, 4-12 → 1,
-                      13-17 → 2, 18-39 → 3, 40-64 → 4, 65-79 → 5, 80+ → 6).
-                      Ordinal encoding is chosen over one-hot because the
-                      categories carry a natural vulnerability ordering.
-  - Time features   : day_of_year, day_of_week (derived from date column;
-                      the raw date column is not passed to the model).
-
-Gap-filling strategy (documented):
-  - Numeric columns     : median-fill using statistics computed on the training
-                          set; the same medians are applied at inference time to
-                          avoid data leakage.
-  - age_range (encoded) : unknown or missing categories default to -1 during
-                          encoding, then are replaced with the training-set mode
-                          of age_range_enc before fitting or prediction.
-
-Train / test split:
-  - Stratified 80/20 split (sklearn train_test_split, stratify=safety_label)
-    to ensure all five label classes appear in both train and test partitions.
-  - Evaluation metrics: accuracy and macro-averaged F1 printed to stdout.
-
-Prediction input:
-  - Rows to classify are defined as a list of dicts (PREDICT_ROWS) at the top
-    of the script; edit those dicts directly to assess different scenarios.
-  - Inference preprocessing reuses fit_medians and fit_modes from training
-    so that imputation is consistent between train and predict.
-
-Output probability order (fixed):
-  - Probabilities are always printed as:
-    prob_safe, prob_moderate, prob_caution, prob_high, prob_extreme
-    regardless of the internal class order used by sklearn.
+Implementation highlights:
+- Ordinal encoding for `age_range` to preserve vulnerability ordering.
+- Imputation uses training-set medians/modes to avoid leakage.
+- Outputs probabilities in a fixed order for stable downstream parsing.
 """
 
 import random

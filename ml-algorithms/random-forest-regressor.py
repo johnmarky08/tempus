@@ -1,40 +1,18 @@
-"""
-Random Forest 7-day heat index forecast.
+"""Random Forest regressor for heat-index forecasting.
 
-Model:
-  - sklearn RandomForestRegressor with n_estimators=200, max_depth=None,
-    random_state=42, n_jobs=-1.
-  - No seasonal or ARIMA structure; the ensemble captures non-linear
-    relationships between weather predictors and heat index directly.
+Reads ``datasets/heat_index.csv`` and produces an n-day forecast of
+heat index values. CLI usage:
 
-Feature set:
-  - Base weather inputs : temperature, humidity, wind_speed.
-  - Time features       : day_of_year, day_of_week (derived from date column).
-  - Rolling means       : 3-day rolling average of temperature, humidity,
-                          and wind_speed (min_periods=1 to handle series edges).
-  - Lag features        : heat_index at lags 1 through 7 (t-1 .. t-7),
-                          added as exogenous columns during training.
+        python random-forest-regressor.py <forecast_days>
 
-Lag strategy (documented):
-  - 7 heat_index lags are included as features during training.
-  - During forecasting, lags are built iteratively:
-      day 1 : all 7 lags come from the last 7 observed heat_index values.
-      day 2 : lag1 = day-1 predicted value; lags 2-7 from observed history.
-      day k : lag1 = predicted[k-1], lag2 = predicted[k-2] (or observed if k<3),
-               ..., lag7 = predicted[k-7] (or observed if k<8).
-    This rolling substitution propagates uncertainty forward correctly.
+Outputs JSON with evaluation metrics and per-day forecasts. The
+implementation trains a RandomForestRegressor with engineered features
+including time-derived fields, rolling means and lag features, then
+produces iterative forecasts by feeding predicted values back as lags.
 
-Gap-filling strategy (documented):
-  - All numeric columns : forward-fill (ffill) first to carry last known value
-                          forward across mid-series gaps, then median-fill for
-                          any remaining NaNs at the start of the series.
-  - Categorical / date  : date is parsed and sorted ascending before any
-                          imputation; no categorical columns in this module.
-
-Train / test split:
-  - Last 14 rows held out as test set (time-ordered, no shuffle).
-  - Falls back to 20% of rows if the dataset has fewer than 28 rows.
-  - Evaluation metrics: MAE, RMSE, R² printed to stdout.
+Warning: model training is performed at runtime and can be slow for
+large datasets; for production use pre-train models or run training
+as background tasks.
 """
 
 import random
