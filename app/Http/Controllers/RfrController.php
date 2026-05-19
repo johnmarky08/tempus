@@ -33,7 +33,7 @@ class RfrController extends Controller
             'inputs' => $inputs,
             'result' => $result,
             'error' => $error,
-            'note' => 'Uses datasets/heat_index.csv and run=1 to execute Random Forest Regressor.',
+            'note' => 'Uses the heat_index database table and run=1 to execute Random Forest Regressor.',
         ]);
     }
 

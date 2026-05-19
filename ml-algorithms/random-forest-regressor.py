@@ -1,7 +1,7 @@
 """Random Forest regressor for heat-index forecasting.
 
-Reads ``datasets/heat_index.csv`` and produces an n-day forecast of
-heat index values. CLI usage:
+Reads the heat_index table and produces an n-day forecast of heat
+index values. CLI usage:
 
         python random-forest-regressor.py <forecast_days>
 
@@ -27,10 +27,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-# ── config ────────────────────────────────────────────────────────────────────
-INPUT_PATH    = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "datasets", "heat_index.csv")
-)
+from db_utils import load_table_dataframe
+
 FORECAST_DAYS = 7
 SEED          = 42
 
@@ -70,10 +68,16 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ── preprocessing ─────────────────────────────────────────────────────────────
-def load_and_preprocess(path: str) -> pd.DataFrame:
-    df = pd.read_csv(path)
-    df["date"] = pd.to_datetime(df["date"])
-    df = df.sort_values("date").reset_index(drop=True)
+def load_and_preprocess() -> pd.DataFrame:
+    df = load_table_dataframe(
+        "heat_index",
+        ["date", "temperature", "humidity", "wind_speed", "heat_index"],
+        order_by="`date` ASC, `id` ASC",
+        parse_dates=("date",),
+    ).reset_index(drop=True)
+
+    if df.empty:
+        return df
 
     # Impute: forward-fill then median for any remaining NaNs in numeric cols
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
@@ -151,7 +155,17 @@ def iterative_forecast(model, df_clean: pd.DataFrame, forecast_days: int) -> lis
 
 
 def run_rfr(forecast_days: int):
-    df = load_and_preprocess(INPUT_PATH)
+    df = load_and_preprocess()
+    if df.empty:
+        return {
+            "metrics": {
+                "mae": 0.0,
+                "rmse": 0.0,
+                "r2": 0.0,
+            },
+            "forecasts": [],
+        }
+
     model, mae, rmse, r2, df_clean = train_evaluate(df)
     forecast = iterative_forecast(model, df_clean, forecast_days)
 

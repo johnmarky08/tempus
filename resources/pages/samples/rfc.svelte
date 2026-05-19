@@ -12,6 +12,9 @@
 <div class="min-h-screen bg-slate-950 text-slate-100 p-8 space-y-6">
     <h1 class="text-3xl font-bold">RFC Temporary Page</h1>
     <p class="text-slate-300">{note}</p>
+    <p class="text-slate-400 text-sm">
+        Seed the safety_assessment table before running the classifier.
+    </p>
 
     <div
         class="rounded-lg border border-slate-700 p-4 bg-slate-900/70 space-y-2"
@@ -42,7 +45,8 @@
                     )}</pre>
             {:else}
                 <p class="text-slate-400">
-                    No result yet. Add query params and set run=1.
+                    No result yet. Add query params, seed the table, and set
+                    run=1.
                 </p>
             {/if}
         </section>

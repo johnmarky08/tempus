@@ -34,7 +34,7 @@ class ArimaxController extends Controller
             'inputs' => $inputs,
             'result' => $result,
             'error' => $error,
-            'note' => 'Uses datasets/fuel_prices.csv and run=1 to execute ARIMAX.',
+            'note' => 'Uses the fuel_prices database table and run=1 to execute ARIMAX.',
         ]);
     }
 

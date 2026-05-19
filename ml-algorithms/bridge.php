@@ -83,7 +83,6 @@ function run_python_json(string $script, array $args)
 function use_ml(string $ml_type, ...$args)
 {
     $baseDir = __DIR__;
-    $datasetsDir = dirname($baseDir) . DIRECTORY_SEPARATOR . 'datasets';
 
     switch (strtolower($ml_type)) {
         case 'arimax': {
@@ -92,10 +91,6 @@ function use_ml(string $ml_type, ...$args)
                 }
 
                 [$horizon, $nLags] = $args;
-                $csvPath = $datasetsDir . DIRECTORY_SEPARATOR . 'fuel_prices.csv';
-                if (!is_file($csvPath)) {
-                    throw new InvalidArgumentException("Dataset not found: {$csvPath}");
-                }
 
                 return run_python_json(
                     $baseDir . DIRECTORY_SEPARATOR . 'arimax.py',
@@ -109,10 +104,6 @@ function use_ml(string $ml_type, ...$args)
                 }
 
                 [$forecastDays] = $args;
-                $csvPath = $datasetsDir . DIRECTORY_SEPARATOR . 'heat_index.csv';
-                if (!is_file($csvPath)) {
-                    throw new InvalidArgumentException("Dataset not found: {$csvPath}");
-                }
 
                 return run_python_json(
                     $baseDir . DIRECTORY_SEPARATOR . 'random-forest-regressor.py',
@@ -123,11 +114,6 @@ function use_ml(string $ml_type, ...$args)
         case 'rfc': {
                 if (count($args) !== 6) {
                     throw new InvalidArgumentException('rfc requires: date, temperature, humidity, wind_speed, age_range, exertion_level');
-                }
-
-                $csvPath = $datasetsDir . DIRECTORY_SEPARATOR . 'safety_assessment.csv';
-                if (!is_file($csvPath)) {
-                    throw new InvalidArgumentException("Dataset not found: {$csvPath}");
                 }
 
                 [$date, $temperature, $humidity, $windSpeed, $ageRange, $exertionLevel] = $args;

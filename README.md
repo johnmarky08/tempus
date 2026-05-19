@@ -57,7 +57,7 @@ The project uses Laravel for routing and backend orchestration, Svelte for the U
 - Stylish home dashboard with project branding and team showcase
 - Dedicated sample pages for each ML model
 - Python bridge for executing forecasting scripts from Laravel
-- Static datasets stored in the datasets folder for consistent local runs
+- Database-backed training data for each ML model
 - JSON output contract between Python and Laravel
 - Inertia-powered navigation between Laravel and Svelte pages
 
@@ -68,7 +68,8 @@ The project uses Laravel for routing and backend orchestration, Svelte for the U
 - resources/pages - Svelte pages rendered through Inertia
 - resources/js - frontend bootstrapping and UI utilities
 - public/images - logos, team images, and visual assets
-- datasets - static CSV files used by the ML scripts
+- database/migrations and database/seeders - tables and seed data for the ML scripts
+- datasets - xlsx source files used by the database seeders
 
 ## Local Setup
 
@@ -108,7 +109,10 @@ If you want to prepare the Laravel database locally, run:
 
 ```bash
 php artisan migrate
+php artisan db:seed
 ```
+
+The seeders read the first sheet of each XLSX file in `datasets/` and populate the matching tables.
 
 ## Run Locally
 
@@ -155,7 +159,7 @@ If you need the Python ML layer to use the bundled virtual environment, the brid
 
 ## Notes
 
-- The datasets folder contains the static CSV files used by the ML scripts.
+- The ML layer reads directly from the `fuel_prices`, `heat_index`, and `safety_assessment` tables.
 - The Python bridge is configured to use the workspace virtual environment first.
 - The homepage and sample views are intentionally presentation-focused while the data logic lives in the Laravel and Python layers.
 
@@ -163,7 +167,7 @@ If you need the Python ML layer to use the bundled virtual environment, the brid
 
 This project separates concerns between the web UI (Laravel + Svelte) and the ML layer (Python). The high-level flow is:
 
-- Data: static CSV datasets live in the `datasets/` folder (`fuel_prices.csv`, `heat_index.csv`, `safety_assessment.csv`).
+- Data: the seeders load the first sheet from the XLSX files in `datasets/` into the `fuel_prices`, `heat_index`, and `safety_assessment` database tables.
 - Python scripts: each ML algorithm is implemented in `ml-algorithms/`:
     - `arimax.py` — ARIMAX forecasting per fuel type (uses `statsmodels`, iterative lags, multi-process workers).
     - `random-forest-regressor.py` — heat index forecasting (feature engineering, rolling lags, RandomForestRegressor).
@@ -173,7 +177,7 @@ This project separates concerns between the web UI (Laravel + Svelte) and the ML
 
 Key contract details:
 
-- Input: the Python scripts read the CSVs from `datasets/` (no dynamic file upload in the current setup). Some scripts accept small CLI args (e.g. `horizon`, `n_lags`, `forecast_days`) and the classifier takes inference features.
+- Input: the Python scripts read from the database tables after seeding. Some scripts accept small CLI args (e.g. `horizon`, `n_lags`, `forecast_days`) and the classifier takes inference features.
 - Output: each Python script prints a JSON object/array to stdout. The bridge decodes this JSON and returns it to Laravel; controllers forward it to the frontend in the `result` prop.
 
 Operational notes and recommendations:

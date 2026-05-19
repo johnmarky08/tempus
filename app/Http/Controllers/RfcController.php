@@ -46,7 +46,7 @@ class RfcController extends Controller
             'inputs' => $inputs,
             'result' => $result,
             'error' => $error,
-            'note' => 'Uses datasets/safety_assessment.csv and run=1 to execute Random Forest Classifier.',
+            'note' => 'Uses the safety_assessment database table and run=1 to execute Random Forest Classifier.',
         ]);
     }
 

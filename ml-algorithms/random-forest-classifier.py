@@ -1,6 +1,6 @@
 """Random Forest classifier for outdoor safety assessment.
 
-Reads ``datasets/safety_assessment.csv`` and trains a RandomForestClassifier
+Reads the safety_assessment table and trains a RandomForestClassifier
 to predict safety labels (safe, moderate, caution, high, extreme). CLI
 usage for the current bridge integration is to provide inference features
 as positional arguments; the script prints a JSON object containing
@@ -25,10 +25,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
 
-# ── config ────────────────────────────────────────────────────────────────────
-INPUT_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "datasets", "safety_assessment.csv")
-)
+from db_utils import load_table_dataframe
+
 SEED       = 42
 
 # ── input row defaults ───────────────────────────────────────────────────────
@@ -154,8 +152,36 @@ def predict_rows(model, df: pd.DataFrame) -> list:
     return results
 
 
-def run_rfc(input_path: str, predict_row: dict):
-    raw_train = pd.read_csv(input_path)
+def run_rfc(predict_row: dict):
+    raw_train = load_table_dataframe(
+        "safety_assessment",
+        [
+            "date",
+            "temperature",
+            "humidity",
+            "wind_speed",
+            "age_range",
+            "exertion_level",
+            "safety_label",
+        ],
+        order_by="`date` ASC, `id` ASC",
+        parse_dates=("date",),
+    ).reset_index(drop=True)
+
+    if raw_train.empty:
+        return {
+            "metrics": {"acc": 0.0, "f1_macro": 0.0},
+            "result": {
+                "date": predict_row["date"],
+                "label": "unknown",
+                "prob_safe": 0.0,
+                "prob_moderate": 0.0,
+                "prob_caution": 0.0,
+                "prob_high": 0.0,
+                "prob_extreme": 0.0,
+            },
+        }
+
     train_df, fit_medians, fit_modes = preprocess(raw_train)
     train_df_clean = train_df.dropna(subset=[TARGET]).reset_index(drop=True)
 
@@ -204,5 +230,5 @@ if __name__ == "__main__":
         }
     )
 
-    output = run_rfc(INPUT_PATH, row)
+    output = run_rfc(row)
     print(json.dumps(output))

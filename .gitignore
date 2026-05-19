@@ -21,6 +21,7 @@
 /node_modules
 /.venv
 /datasets
+/ml-algorithms/__pycache__
 Homestead.json
 Homestead.yaml
 Thumbs.db

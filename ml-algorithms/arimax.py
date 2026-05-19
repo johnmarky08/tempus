@@ -1,7 +1,7 @@
 """ARIMAX forecasting for fuel prices.
 
-Reads the static dataset at ``datasets/fuel_prices.csv`` and produces
-a multi-fuel time-series forecast. CLI usage:
+Reads the fuel_prices table and produces a multi-fuel time-series
+forecast. CLI usage:
 
         python arimax.py <horizon> <n_lags>
 
@@ -23,12 +23,13 @@ offloading to background jobs for production use.
 import warnings
 import argparse
 import json
-import os
 import numpy as np
 import pandas as pd
 from itertools import product as iterproduct
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+from db_utils import load_table_dataframe
 
 warnings.filterwarnings("ignore")
 
@@ -39,9 +40,6 @@ HORIZON   = 7
 N_LAGS    = 3
 EXOG_COLS = ["exchange_rate_to_usd", "normal_supply_flag"]
 ALPHA     = 0.05   # → 95% CI
-INPUT_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "datasets", "fuel_prices.csv")
-)
 
 # ── grid search helper (runs in a thread) ─────────────────────────────────────
 def _fit_one(args):
@@ -154,8 +152,15 @@ def run_arimax(horizon: int, n_lags: int):
     HORIZON = int(horizon)
     N_LAGS = int(n_lags)
 
-    df = pd.read_csv(INPUT_PATH, parse_dates=["date"])
-    df = df.sort_values("date").reset_index(drop=True)
+    df = load_table_dataframe(
+        "fuel_prices",
+        ["date", "price", "fuel_type", "exchange_rate_to_usd", "normal_supply_flag"],
+        order_by="`date` ASC, `fuel_type` ASC, `id` ASC",
+        parse_dates=("date",),
+    ).reset_index(drop=True)
+
+    if df.empty:
+        return []
 
     # pre-split by fuel so each worker gets only its slice
     fuel_slices = [
