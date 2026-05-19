@@ -1,20 +1,20 @@
 <script>
-    import { dark } from "../../theme.js";
-    import * as data from "../../datas.js";
+    import { dark } from "../../js/theme.js";
+    import { nav } from "../../js/nav.js";
 
     export let isActive = "";
 </script>
 
 <nav
-    class="bg-gradient-to-r from-[#091532]/90 to-[#050a15]/90 p-8
+    class="bg-gradient-to-r from-[#091532]/90 to-[#050a15]/90 h-20
     flex justify-between items-center px-20 border-b-2 border-[#888888] sticky top-0 z-50 backdrop-blur-sm"
 >
-    <div class="flex items-center gap-10">
-        <img src="" alt="TempusLogo" class="text-white" />
+    <div class="flex items-center">
+        <img src="/favicon.png" alt="Tempus Logo" class="h-20 w-20 p-2" />
         <h1 class="text-2xl font-bold text-white">Tempus</h1>
     </div>
     <div class="text-sm flex gap-14 items-center text-center text-white">
-        {#each data.nav as { name, link, descritpion }}
+        {#each nav as { name, link }}
             <a
                 href={link}
                 class="relative hover:text-[#6FB8E7] {isActive === name
@@ -43,11 +43,12 @@
     </div>
 
     <button on:click={() => ($dark = !$dark)}>
-        <img
+        <!-- <img
             src=""
             alt={$dark ? "Light_Mode" : "Dark_Mode"}
             class="text-white transition-all duration-300"
             class:rotate-180={$dark}
-        />
+        /> -->
+        <i class="ri-sun-fill text-white text-2xl"></i>
     </button>
 </nav>

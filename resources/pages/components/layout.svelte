@@ -1,15 +1,13 @@
 <script>
-    import { dark } from "../../theme.js";
-    import Navbar from "./Navbar.svelte";
-    import Footer from "./Footer.svelte";
-    import * as img from "../../imagedata.js";
+    import Navbar from "./header.svelte";
+    import Footer from "./footer.svelte";
 
     export let isActive = "";
 </script>
 
 <div
     class="bg-black min-h-screen bg-cover bg-center bg-fixed font-spaceGrotesk font-normal"
-    style={`background-image: url(${img.dark_bg});`}
+    style={`background-image: url("/images/backgrounds/dark_bg.png");`}
 >
     <Navbar {isActive} />
     <main class="px-20 py-14">
