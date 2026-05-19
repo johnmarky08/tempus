@@ -43,12 +43,10 @@
     </div>
 
     <button on:click={() => ($dark = !$dark)}>
-        <!-- <img
-            src=""
-            alt={$dark ? "Light_Mode" : "Dark_Mode"}
-            class="text-white transition-all duration-300"
-            class:rotate-180={$dark}
-        /> -->
-        <i class="ri-sun-fill text-white text-2xl"></i>
+        <div
+            class="{$dark
+                ? 'ri-sun-fill rotate-180'
+                : 'ri-moon-fill '} text-white text-2xl transition-all duration-300"
+        ></div>
     </button>
 </nav>
