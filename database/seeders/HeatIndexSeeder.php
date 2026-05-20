@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class HeatIndexSeeder extends Seeder
 {
@@ -49,7 +50,9 @@ class HeatIndexSeeder extends Seeder
                 continue;
             }
 
-            $timestamp = Carbon::parse((string) $row[0]);
+            $timestamp = is_numeric($row[0])
+                ? Carbon::instance(ExcelDate::excelToDateTimeObject((float) $row[0]))
+                : Carbon::parse((string) $row[0]);
             $temperature = (float) $row[1];
             $humidity = (float) $row[2];
             $windSpeed = (float) $row[3];
