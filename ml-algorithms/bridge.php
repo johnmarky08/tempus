@@ -75,7 +75,7 @@ function run_python_json(string $script, array $args)
  *
  * Supported signatures:
  * - use_ml('arimax', horizon, nLags)
- * - use_ml('rfr', forecastDays)
+ * - use_ml('rfr', forecastHours)
  * - use_ml('rfc', date, temperature, humidity, windSpeed, ageRange, exertionLevel)
  *
  * @return mixed
@@ -100,14 +100,14 @@ function use_ml(string $ml_type, ...$args)
 
         case 'rfr': {
                 if (count($args) !== 1) {
-                    throw new InvalidArgumentException('rfr requires: forecast_days');
+                    throw new InvalidArgumentException('rfr requires: forecast_hours');
                 }
 
-                [$forecastDays] = $args;
+                [$forecastHours] = $args;
 
                 return run_python_json(
                     $baseDir . DIRECTORY_SEPARATOR . 'random-forest-regressor.py',
-                    [(int) $forecastDays]
+                    [(int) $forecastHours]
                 );
             }
 

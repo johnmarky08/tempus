@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Utils\HeatIndex;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -38,16 +40,26 @@ class HeatIndexSeeder extends Seeder
         array_shift($data); // Skip header row
 
         foreach ($data as $row) {
-            if (empty(array_filter($row))) {
+            $values = array_filter($row, static fn($value) => $value !== null && $value !== '');
+            if (empty($values)) {
                 continue; // Skip empty rows
             }
 
+            if (count($row) < 4) {
+                continue;
+            }
+
+            $timestamp = Carbon::parse((string) $row[0]);
+            $temperature = (float) $row[1];
+            $humidity = (float) $row[2];
+            $windSpeed = (float) $row[3];
+
             DB::table('heat_index')->insert([
-                'date' => $row[0],
-                'temperature' => (float) $row[1],
-                'humidity' => (float) $row[2],
-                'wind_speed' => (float) $row[3],
-                'heat_index' => (float) $row[4],
+                'date' => $timestamp,
+                'temperature' => $temperature,
+                'humidity' => $humidity,
+                'wind_speed' => $windSpeed,
+                'heat_index' => HeatIndex::fromCelsius($temperature, $humidity),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
