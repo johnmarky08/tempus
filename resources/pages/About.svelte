@@ -144,7 +144,7 @@
                                 data-sr
                                 class="text-3xl font-semibold tracking-tight text-white"
                             >
-                                Technology/Tools Used
+                                Technologies/Tools Used
                             </h2>
 
                             <div
