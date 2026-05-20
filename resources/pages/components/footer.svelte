@@ -1,11 +1,12 @@
 <script>
+    import { inertia } from "@inertiajs/svelte";
     import { nav } from "../../js/nav.js";
 </script>
 
 <footer
     class="border-t-2 border-white/10 bg-[#020617]/40 backdrop-blur-md text-sm p-14 bottom-0 left-0 z-[9997] text-white flex justify-between"
 >
-    <div class="space-y-3">
+    <div class="space-y-3 ml-40">
         <div class="flex gap-3 items-center">
             <img
                 src="/favicon.png"
@@ -14,21 +15,28 @@
             />
             <h1 class="text-2xl font-bold text-white">T.E.M.P.U.S.</h1>
         </div>
-        <p class="max-w-sm text-gray-300">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-            Necessitatibus in nesciunt adipisci ducimus aperiam ut magnam
-            dignissimos, rem quisquam repudiandae voluptatem sint quaerat amet
-            labore soluta tempora delectus corrupti perferendis.
+        <p class="max-w-sm text-gray-300 text-justify">
+            <b class="text-[#6FB8E7]">T</b>hermal and
+            <b class="text-[#6FB8E7]">E</b>nergy
+            <b class="text-[#6FB8E7]">M</b>etrics:
+            <b class="text-[#6FB8E7]">P</b>redictive
+            <b class="text-[#6FB8E7]">U</b>tility and
+            <b class="text-[#6FB8E7]">S</b>afety (T.E.M.P.U.S.) is a project
+            that provides real-time fuel price tracking and heat index
+            information. Our mission is to help users make informed decisions
+            about their fuel consumption and stay safe in extreme weather
+            conditions.
         </p>
     </div>
-    <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-3 mr-40">
         <h1 class="font-bold text-lg text-center">Quick Links</h1>
         <ul
-            class="flex gap-3 text-gray-300 max-w-[150px] flex-wrap justify-between"
+            class="flex gap-3 text-gray-300 max-w-[100px] flex-wrap justify-left"
         >
             {#each nav as { name, link }}
                 <li class="">
                     <a
+                        use:inertia
                         href={link}
                         class="relative hover:text-[#6FB8E7] transition-all duration-300"
                     >
@@ -58,7 +66,8 @@
     <div class="border-t-2 border-white/30"></div>
     <div class="flex justify-center items-center mt-5">
         <p>
-            &copy; {new Date().getFullYear()} T.E.M.P.U.S. All rights reserved.
+            &copy; {new Date().getFullYear()}
+            <span class="text-[#6FB8E7]">T.E.M.P.U.S.</span> All rights reserved.
         </p>
     </div>
 </footer>

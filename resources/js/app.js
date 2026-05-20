@@ -11,4 +11,10 @@ createInertiaApp({
         initScrollReveal();
         return app;
     },
+    progress: {
+        delay: 250,
+        color: "#6FB8E7",
+        includeCSS: true,
+        showSpinner: false,
+    },
 });

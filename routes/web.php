@@ -8,8 +8,13 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
-
 Route::get('/', function () {
+    return Inertia::render('Home');
+});
+Route::get('/about', function () {
+    return Inertia::render('About');
+});
+Route::get('/fuel-prices', function () {
     $fuelPrices = [];
 
     if (Schema::hasTable('fuel_prices')) {
@@ -37,7 +42,7 @@ Route::get('/', function () {
             ->all();
     }
 
-    return Inertia::render('Home', [
+    return Inertia::render('TrackPrice', [
         'fuelPrices' => $fuelPrices,
     ]);
 });

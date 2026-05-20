@@ -151,7 +151,7 @@
     }
 </script>
 
-<Layout isActive="Track Price">
+<Layout isActive="Fuel Prices">
     <div class="flex flex-col gap-8 text-slate-100 font-jetbrainsMono">
         <div
             class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"

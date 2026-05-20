@@ -5,23 +5,23 @@ export const nav = [
         description: "The home page of the website",
     },
     {
-        name: "Track Price",
-        link: "/",
-        description: "The home page of the website",
+        name: "Fuel Prices",
+        link: "/fuel-prices",
+        description: "View current fuel prices",
     },
     {
         name: "Heat Index",
         link: "/",
-        description: "The home page of the website",
+        description: "View heat index information",
     },
     {
         name: "History",
         link: "/",
-        description: "The home page of the website",
+        description: "View historical data",
     },
     {
         name: "About",
-        link: "/",
-        description: "The home page of the website",
+        link: "/about",
+        description: "Learn more about this project",
     },
 ];
