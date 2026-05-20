@@ -8,8 +8,15 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
-
 Route::get('/', function () {
+    return redirect('/home');
+});
+
+Route::get('/home', function () {
+    return Inertia::render('Home');
+});
+
+Route::get('/trackprice', function () {
     $fuelPrices = [];
 
     if (Schema::hasTable('fuel_prices')) {
@@ -37,10 +44,24 @@ Route::get('/', function () {
             ->all();
     }
 
-    return Inertia::render('Home', [
+    return Inertia::render('TrackPrice', [
         'fuelPrices' => $fuelPrices,
     ]);
 });
+
+Route::get('/heatindex', function () {
+    return Inertia::render('HeatIndex');
+});
+Route::get('/history', function () {
+    return Inertia::render('History');
+});
+Route::get('/about', function () {
+    return Inertia::render('About');
+});
+
+
+
+
 
 Route::get('/sample/arimax', ArimaxController::class);
 Route::get('/sample/rfr', RfrController::class);

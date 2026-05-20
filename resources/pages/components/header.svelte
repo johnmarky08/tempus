@@ -1,6 +1,7 @@
 <script>
     import { dark } from "../../js/theme.js";
     import { nav } from "../../js/nav.js";
+    import { inertia } from "@inertiajs/svelte";
 
     export let isActive = "";
 </script>
@@ -16,6 +17,7 @@
     <div class="text-sm flex gap-14 items-center text-center text-white">
         {#each nav as { name, link }}
             <a
+                use:inertia
                 href={link}
                 class="relative hover:text-[#6FB8E7] {isActive === name
                     ? 'text-[#6FB8E7]'

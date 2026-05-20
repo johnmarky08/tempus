@@ -1,27 +1,27 @@
 export const nav = [
     {
         name: "Home",
-        link: "/",
+        link: "/home",
         description: "The home page of the website",
     },
     {
         name: "Track Price",
-        link: "/",
+        link: "/trackprice",
         description: "The home page of the website",
     },
     {
         name: "Heat Index",
-        link: "/",
+        link: "/heatindex",
         description: "The home page of the website",
     },
     {
         name: "History",
-        link: "/",
+        link: "/history",
         description: "The home page of the website",
     },
     {
         name: "About",
-        link: "/",
+        link: "/about",
         description: "The home page of the website",
     },
 ];
