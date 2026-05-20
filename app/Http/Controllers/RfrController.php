@@ -12,7 +12,7 @@ class RfrController extends Controller
     public function __invoke(Request $request): Response
     {
         $inputs = [
-            'forecast_days' => (int) $request->query('forecast_days', 7),
+            'forecast_hours' => (int) $request->query('forecast_hours', $request->query('forecast_days', 24)),
             'run' => $request->boolean('run'),
         ];
 
@@ -22,7 +22,7 @@ class RfrController extends Controller
         if ($inputs['run']) {
             try {
                 $this->loadBridge();
-                $result = use_ml('rfr', $inputs['forecast_days']);
+                $result = use_ml('rfr', $inputs['forecast_hours']);
             } catch (Throwable $exception) {
                 $error = $exception->getMessage();
             }
@@ -33,7 +33,7 @@ class RfrController extends Controller
             'inputs' => $inputs,
             'result' => $result,
             'error' => $error,
-            'note' => 'Uses the heat_index database table and run=1 to execute Random Forest Regressor.',
+            'note' => 'Uses the hourly heat_index database table and run=1 to execute Random Forest Regressor.',
         ]);
     }
 

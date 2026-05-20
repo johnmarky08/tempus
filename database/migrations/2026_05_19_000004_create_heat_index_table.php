@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('heat_index', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
+            $table->dateTime('date');
             $table->decimal('temperature', 8, 2);
             $table->decimal('humidity', 8, 2);
             $table->decimal('wind_speed', 8, 2);

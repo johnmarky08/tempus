@@ -45,7 +45,7 @@ np.random.seed(SEED)
 
 # ── constants ─────────────────────────────────────────────────────────────────
 # Probabilities printed in this fixed order
-LABEL_ORDER = ["safe", "moderate", "caution", "high", "extreme"]
+LABEL_ORDER = ["safe", "moderate", "high", "extreme"]
 
 # Ordinal encoding for age_range preserves natural vulnerability ordering
 AGE_RANGE_MAP = {
@@ -176,7 +176,6 @@ def run_rfc(predict_row: dict):
                 "label": "unknown",
                 "prob_safe": 0.0,
                 "prob_moderate": 0.0,
-                "prob_caution": 0.0,
                 "prob_high": 0.0,
                 "prob_extreme": 0.0,
             },
@@ -201,9 +200,8 @@ def run_rfc(predict_row: dict):
             "label": str(label),
             "prob_safe": float(probs[0]),
             "prob_moderate": float(probs[1]),
-            "prob_caution": float(probs[2]),
-            "prob_high": float(probs[3]),
-            "prob_extreme": float(probs[4]),
+            "prob_high": float(probs[2]),
+            "prob_extreme": float(probs[3]),
         },
     }
 

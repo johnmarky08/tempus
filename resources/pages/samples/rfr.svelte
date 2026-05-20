@@ -5,14 +5,14 @@
     export let error;
     export let note;
 
-    const runExample = "/sample/rfr?forecast_days=7&run=1";
+    const runExample = "/sample/rfr?forecast_hours=24&run=1";
 </script>
 
 <div class="min-h-screen bg-slate-950 text-slate-100 p-8 space-y-6">
     <h1 class="text-3xl font-bold">RFR Temporary Page</h1>
     <p class="text-slate-300">{note}</p>
     <p class="text-slate-400 text-sm">
-        Seed the heat_index table before running the regressor.
+        Seed the hourly heat_index table before running the regressor.
     </p>
 
     <div

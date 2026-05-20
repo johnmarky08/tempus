@@ -1,9 +1,9 @@
-"""Random Forest regressor for heat-index forecasting.
+"""Random Forest regressor for hourly heat-index forecasting.
 
-Reads the heat_index table and produces an n-day forecast of heat
+Reads the heat_index table and produces an hourly forecast of heat
 index values. CLI usage:
 
-        python random-forest-regressor.py <forecast_days>
+    python random-forest-regressor.py <forecast_hours>
 
 Outputs JSON with evaluation metrics and per-day forecasts. The
 implementation trains a RandomForestRegressor with engineered features
@@ -29,7 +29,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from db_utils import load_table_dataframe
 
-FORECAST_DAYS = 7
+FORECAST_HOURS = 24
 SEED          = 42
 
 # ── reproducibility ──────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ np.random.seed(SEED)
 # ── constants ─────────────────────────────────────────────────────────────────
 FEATURE_COLS = [
     "temperature", "humidity", "wind_speed",
-    "day_of_year", "day_of_week",
+    "day_of_year", "day_of_week", "hour_of_day",
     "temperature_roll3", "humidity_roll3", "wind_speed_roll3",
     "heat_index_lag1", "heat_index_lag2", "heat_index_lag3",
     "heat_index_lag4", "heat_index_lag5", "heat_index_lag6", "heat_index_lag7",
@@ -52,9 +52,10 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     """Add time features, rolling means, and lag features to a sorted dataframe."""
     df = df.copy()
 
-    # Time features derived from date
+    # Time features derived from timestamp
     df["day_of_year"] = df["date"].dt.dayofyear
     df["day_of_week"] = df["date"].dt.dayofweek
+    df["hour_of_day"] = df["date"].dt.hour
 
     # Rolling means (window=3) for weather predictors
     for col in ["temperature", "humidity", "wind_speed"]:
@@ -120,26 +121,31 @@ def train_evaluate(df: pd.DataFrame):
 
 
 # ── iterative 7-day forecast ──────────────────────────────────────────────────
-def iterative_forecast(model, df_clean: pd.DataFrame, forecast_days: int) -> list:
+def iterative_forecast(model, df_clean: pd.DataFrame, forecast_hours: int) -> list:
     """
-    Produce a deterministic n-day forecast by iteratively predicting
-    the next day's heat_index and feeding it back as the lag feature.
+    Produce a deterministic n-hour forecast by iteratively predicting
+    the next hour's heat_index and feeding it back as the lag feature.
     """
     last_row  = df_clean.iloc[-1].copy()
     last_date = last_row["date"]
+
+    # Start forecasts from the next full hour relative to now (exclude current hour)
+    now = pd.Timestamp.now()
+    start_time = now.replace(minute=0, second=0, microsecond=0) + pd.Timedelta(hours=1)
 
     # Grow this list with predicted values to feed back as lags
     hi_history = list(df_clean["heat_index"].values)
 
     results = []
-    for i in range(1, forecast_days + 1):
-        next_date = last_date + pd.Timedelta(days=i)
+    for i in range(0, forecast_hours):
+        next_date = start_time + pd.Timedelta(hours=i)
 
-        # Reuse last known weather values; update only date-derived features
+        # Reuse last known weather values; update only timestamp-derived features
         row = last_row.copy()
         row["date"]        = next_date
         row["day_of_year"] = next_date.dayofyear
         row["day_of_week"] = next_date.dayofweek
+        row["hour_of_day"] = next_date.hour
 
         # Lag features drawn from the growing history
         for lag in range(1, 8):
@@ -149,12 +155,12 @@ def iterative_forecast(model, df_clean: pd.DataFrame, forecast_days: int) -> lis
         pred_hi = model.predict(X_row)[0]
 
         hi_history.append(pred_hi)
-        results.append((next_date.date().isoformat(), round(pred_hi, 2)))
+        results.append((next_date.strftime("%Y-%m-%dT%H:%M"), round(pred_hi, 2)))
 
     return results
 
 
-def run_rfr(forecast_days: int):
+def run_rfr(forecast_hours: int):
     df = load_and_preprocess()
     if df.empty:
         return {
@@ -167,7 +173,7 @@ def run_rfr(forecast_days: int):
         }
 
     model, mae, rmse, r2, df_clean = train_evaluate(df)
-    forecast = iterative_forecast(model, df_clean, forecast_days)
+    forecast = iterative_forecast(model, df_clean, forecast_hours)
 
     return {
         "metrics": {
@@ -187,11 +193,17 @@ def run_rfr(forecast_days: int):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Random Forest heat index forecaster")
-    parser.add_argument("forecast_days", type=int, help="Number of days to forecast")
+    parser.add_argument(
+        "forecast_hours",
+        nargs="?",
+        type=int,
+        default=FORECAST_HOURS,
+        help="Number of hours to forecast",
+    )
     args = parser.parse_args()
 
-    if args.forecast_days < 1:
-        raise ValueError("forecast_days must be >= 1")
+    if args.forecast_hours < 1:
+        raise ValueError("forecast_hours must be >= 1")
 
-    output = run_rfr(args.forecast_days)
+    output = run_rfr(args.forecast_hours)
     print(json.dumps(output))
