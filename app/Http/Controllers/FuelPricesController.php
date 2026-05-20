@@ -14,7 +14,7 @@ class FuelPricesController extends Controller
     {
         $inputs = [
             'horizon' => 1,
-            'n_lags' => 3,
+            'n_lags' => 21,
             'refresh' => $request->boolean('refresh', false),
         ];
 
