@@ -93,141 +93,174 @@
         </div>
     {/if}
     <Layout isActive="About">
-        <div class="scroll-smooth -translate-y-24 -mb-24">
+        <div class="scroll-smooth snap-y snap-mandatory">
             <div
-                class="flex w-full flex-col gap-10 text-white font-jetbrainsMono scale-[0.75]"
+                class="flex w-full flex-col space-y-20 text-white font-jetbrainsMono"
             >
-                <div
-                    class="flex flex-col gap-8 lg:flex-row lg:items-stretch font-bold"
-                >
-                    <div
-                        class="flex w-full flex-col rounded-3xl border border-[#6FB8E7] bg-[#061E29]/50 p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2"
-                    >
-                        <div class="flex flex-col gap-5">
-                            <h2
-                                data-sr
-                                data-sr-delay="40"
-                                class="text-3xl tracking-tight text-white"
+                <div class="space-y-12 snap-start">
+                    <div class="text-center space-y-5">
+                        <h1
+                            data-sr
+                            data-sr-delay="400"
+                            class="text-center text-5xl font-bold"
+                        >
+                            About <span class="text-[#6FB8E7]">T.E.M.P.U.S</span
                             >
-                                Project Description
-                            </h2>
-
-                            <p
-                                data-sr
-                                data-sr-delay="120"
-                                class="max-w-xl text-sm font-light leading-6 text-slate-300 sm:text-base"
-                            >
-                                T.E.M.P.U.S. is a smart daily companion that
-                                helps users manage rising fuel prices alongside
-                                dangerous heat conditions. It predicts price
-                                spikes and monitors personal heat danger levels,
-                                offering early warnings before risks become
-                                costly or harmful. The platform provides clear,
-                                practical recommendations such as when to
-                                refuel, when to avoid outdoor activities, and
-                                how to save money during high-risk days. Its
-                                goal is to make daily life safer, more
-                                affordable, and easier to manage through simple,
-                                actionable insights.
-                            </p>
-
-                            <div class="flex items-center pt-1">
-                                <button
-                                    on:click={() => (showDescription = true)}
-                                    class="hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,2)] inline-flex items-center gap-3 rounded-lg border border-sky-400/40 bg-slate-950/40 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-900/70"
-                                >
-                                    <span>View Full Description</span>
-                                    <i class="ri-fullscreen-fill"></i>
-                                </button>
-                            </div>
-                        </div>
+                        </h1>
+                        <p
+                            data-sr
+                            data-sr-delay="500"
+                            class="text-center text-lg text-slate-300"
+                        >
+                            Learn more about our mission and the team behind
+                            T.E.M.P.U.S.
+                        </p>
                     </div>
 
-                    <div class="hidden w-px bg-white lg:block"></div>
-
                     <div
-                        class="flex w-full flex-col rounded-3xl border border-[#6FB8E7] bg-[#061E29]/50 p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2"
+                        class="flex flex-col gap-8 lg:flex-row lg:items-stretch font-bold"
                     >
-                        <div class="flex flex-col gap-5">
-                            <h2
-                                data-sr
-                                data-sr-delay="40"
-                                class="text-3xl font-semibold tracking-tight text-white"
-                            >
-                                Technologies/Tools Used
-                            </h2>
+                        <div
+                            class="flex w-full flex-col rounded-3xl border border-[#6FB8E7] bg-[#061E29]/50 p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2"
+                        >
+                            <div class="flex flex-col gap-5">
+                                <h2
+                                    data-sr
+                                    data-sr-delay="40"
+                                    class="text-3xl tracking-tight text-white"
+                                >
+                                    Project Description
+                                </h2>
 
-                            <div
-                                class="flex flex-col gap-4 pt-2 max-h-72 overflow-x-hidden px-8 py-4 overflow-y-scroll scroll-smooth"
-                            >
-                                {#each items.techStacks as { img, name, description, alt, color, textColor }, i}
-                                    <div
-                                        data-sr
-                                        data-sr-delay={i * 140}
-                                        class="group cursor-pointer hover:scale-105 {color} flex items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/20 px-4 py-4 transition duration-300 ease-in-out"
+                                <p
+                                    data-sr
+                                    data-sr-delay="120"
+                                    class="max-w-xl text-sm font-light leading-6 text-slate-300 sm:text-base"
+                                >
+                                    T.E.M.P.U.S. is a smart daily companion that
+                                    helps users manage rising fuel prices
+                                    alongside dangerous heat conditions. It
+                                    predicts price spikes and monitors personal
+                                    heat danger levels, offering early warnings
+                                    before risks become costly or harmful. The
+                                    platform provides clear, practical
+                                    recommendations such as when to refuel, when
+                                    to avoid outdoor activities, and how to save
+                                    money during high-risk days. Its goal is to
+                                    make daily life safer, more affordable, and
+                                    easier to manage through simple, actionable
+                                    insights.
+                                </p>
+
+                                <div class="flex items-center pt-1">
+                                    <button
+                                        on:click={() =>
+                                            (showDescription = true)}
+                                        class="hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,2)] inline-flex items-center gap-3 rounded-lg border border-sky-400/40 bg-slate-950/40 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-900/70"
                                     >
+                                        <span>View Full Description</span>
+                                        <i class="ri-fullscreen-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hidden w-px bg-white lg:block"></div>
+
+                        <div
+                            class="flex w-full flex-col rounded-3xl border border-[#6FB8E7] bg-[#061E29]/50 p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2"
+                        >
+                            <div class="flex flex-col gap-5">
+                                <h2
+                                    data-sr
+                                    class="text-3xl font-semibold tracking-tight text-white"
+                                >
+                                    Technologies/Tools Used
+                                </h2>
+
+                                <div
+                                    class="flex flex-col gap-4 pt-2 max-h-72 overflow-x-hidden px-8 py-4 overflow-y-scroll scroll-smooth"
+                                >
+                                    {#each items.techStacks as { img, name, description, alt, color, textColor }, i}
                                         <div
-                                            class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-white/5 p-1 transition-all duration-300 group-hover:scale-125"
+                                            data-sr
+                                            class="group cursor-pointer hover:scale-105 {color} flex items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/20 px-4 py-4 transition duration-300 ease-in-out"
                                         >
-                                            <img
-                                                data-sr
-                                                src={img}
-                                                {alt}
-                                                class="h-full w-full object-contain p-1"
-                                            />
-                                        </div>
-                                        <div class="flex flex-col gap-1">
-                                            <p
-                                                data-sr
-                                                data-sr-delay={i * 140 + 60}
-                                                class="{textColor} group-hover:scale-110 group-hover:translate-x-4 transition-all duration-300 text-base font-semibold text-white"
+                                            <div
+                                                class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-white/5 p-1 transition-all duration-300 group-hover:scale-125"
                                             >
-                                                {name}
-                                            </p>
-                                            <p
-                                                data-sr
-                                                data-sr-delay={i * 140 + 120}
-                                                class="font-jetbrainsMono text-sm text-slate-300"
-                                            >
-                                                {description}
-                                            </p>
+                                                <img
+                                                    data-sr
+                                                    src={img}
+                                                    {alt}
+                                                    class="h-full w-full object-contain p-1"
+                                                />
+                                            </div>
+                                            <div class="flex flex-col gap-1">
+                                                <p
+                                                    data-sr
+                                                    class="{textColor} group-hover:scale-110 group-hover:translate-x-4 transition-all duration-300 text-base font-semibold text-white"
+                                                >
+                                                    {name}
+                                                </p>
+                                                <p
+                                                    data-sr
+                                                    class="font-jetbrainsMono text-sm text-slate-300"
+                                                >
+                                                    {description}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                {/each}
+                                    {/each}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    class="flex items-center justify-center gap-6 py-1 lg:gap-8"
-                >
-                    <div class="hidden flex-1 bg-white/20 lg:block"></div>
-                    <div class="grid w-full gap-16 md:grid-cols-3">
-                        {#each items.devs as { img, name, alt, socials }, i}
-                            <div
-                                data-sr
-                                data-sr-delay={i * 140}
-                                class="group flex flex-col items-center rounded-3xl border border-[#6FB8E7]
+                <div class="space-y-16 snap-start">
+                    <div class="text-center space-y-5">
+                        <h1
+                            data-sr
+                            data-sr-delay="400"
+                            class="text-center text-5xl font-bold"
+                        >
+                            Meet the <span class="text-[#6FB8E7]">Devs!</span>
+                        </h1>
+                        <p data-sr data-sr-delay="400">
+                            The team behind our innovative solutions
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex items-center justify-center gap-6 py-1 lg:gap-8"
+                    >
+                        <div class="hidden flex-1 bg-white/20 lg:block"></div>
+                        <div class="grid w-full gap-16 md:grid-cols-3">
+                            {#each items.devs as { img, name, alt, description, socials }, i}
+                                <div
+                                    data-sr
+                                    data-sr-delay={i * 140}
+                                    class="group flex flex-col items-center rounded-3xl border border-[#6FB8E7]
                              bg-[#061E29]/50 cursor-pointer hover:bg-slate-800/70 px-6 py-8
                               text-center shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm
                              hover:translate-y-6 hover:scale-105
                               transition duration-300"
-                            >
-                                <img
-                                    data-sr
-                                    data-sr-delay={i * 140 + 60}
-                                    src={img}
-                                    alt="{alt} avatar placeholder"
-                                    class="group-hover:scale-125 text-black h-20 w-20 rounded-full bg-white/95 object-cover transition-transform duration-300"
-                                />
-                                <p
-                                    class="relative mt-8 text-lg font-medium text-white"
                                 >
-                                    <span
+                                    <img
                                         data-sr
-                                        data-sr-delay={i * 140 + 120}
-                                        class="
+                                        data-sr-delay={i * 140 + 60}
+                                        src={img}
+                                        alt="{alt} avatar placeholder"
+                                        class="group-hover:scale-125 text-black h-20 w-20 rounded-full bg-white/95 object-cover transition-transform duration-300"
+                                    />
+                                    <p
+                                        class="relative mt-8 text-lg font-medium text-white"
+                                    >
+                                        <span
+                                            data-sr
+                                            data-sr-delay={i * 140 + 120}
+                                            class="
                        after:content-['']
                        after:absolute
                        after:left-1/2
@@ -239,35 +272,46 @@
                        after:transition-all
                        after:duration-300
                        group-hover:after:w-full"
-                                    >
-                                        {name}</span
-                                    >
-                                </p>
-
-                                <div
-                                    class="flex mt-8 items-center justify-center gap-4"
-                                >
-                                    {#each socials as { icon, link }, j}
-                                        <div
-                                            data-sr
-                                            data-sr-delay={i * 140 + j * 80}
-                                            class="hover:-translate-y-3 flex h-10 w-10 items-center justify-center rounded-md border border-sky-400/40 bg-slate-950/35 transition hover:bg-slate-900/60"
                                         >
-                                            <a
-                                                href={link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                class=""
+                                            {name}</span
+                                        >
+                                    </p>
+
+                                    <div
+                                        class="flex mt-8 items-center justify-center gap-4"
+                                    >
+                                        {#each socials as { icon, link }, j}
+                                            <div
+                                                data-sr
+                                                data-sr-delay={i * 140 + j * 80}
+                                                class="hover:-translate-y-3 flex h-10 w-10 items-center justify-center rounded-md border border-sky-400/40 bg-slate-950/35 transition hover:bg-slate-900/60"
                                             >
-                                                <i class={icon}></i>
-                                            </a>
+                                                <a
+                                                    href={link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class=""
+                                                >
+                                                    <i class={icon}></i>
+                                                </a>
+                                            </div>
+                                        {/each}
+                                        <div
+                                            class="-z-9999 place-self-center absolute h-10 w-1/2 translate-y-5 opacity-0 -top-5 left-1/2 -translate-x-1/2
+                                            border border-[#6FB8E7] bg-[#061E29] rounded-[15px]
+                                             transition-all duration-300 group-hover:-translate-y-10 group-hover:opacity-100 flex
+                                             items-center justify-center"
+                                        >
+                                            {description}
                                         </div>
-                                    {/each}
+                                    </div>
                                 </div>
-                            </div>
-                        {/each}
+                            {/each}
+                        </div>
+                        <div
+                            class="hidden h-px flex-1 bg-white/20 lg:block"
+                        ></div>
                     </div>
-                    <div class="hidden h-px flex-1 bg-white/20 lg:block"></div>
                 </div>
             </div>
         </div>

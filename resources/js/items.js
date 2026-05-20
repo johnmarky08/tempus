@@ -93,6 +93,7 @@ export const devs = [
         img: "/images/items/marky.jpg",
         name: "John Marky Natividad",
         alt: "John Marky Natividad",
+        description: "Backend Developer",
         socials: [
             {
                 icon: "ri-github-fill",
@@ -112,6 +113,7 @@ export const devs = [
         img: "/images/items/nico.png",
         name: "Nico Gabriel Domingo",
         alt: "Nico Gabriel Domingo",
+        description: "Designer",
         socials: [
             {
                 icon: "ri-github-fill",
@@ -131,6 +133,7 @@ export const devs = [
         img: "/images/items/joshua.jpg",
         name: "Joshua Bartolome",
         alt: "Joshua Bartolome",
+        description: "Frontend Developer",
         socials: [
             {
                 icon: "ri-github-fill",
