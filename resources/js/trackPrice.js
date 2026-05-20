@@ -1,86 +1,3 @@
-function buildFallbackRows() {
-    const monthlySets = [
-        {
-            dates: [
-                "2026-01-01",
-                "2026-01-02",
-                "2026-01-03",
-                "2026-01-04",
-                "2026-01-05",
-                "2026-01-06",
-                "2026-01-07",
-            ],
-            petrol: [71.2, 69.8, 68.6, 67.4, 69.1, 70.0, 71.4],
-            diesel: [120.4, 117.8, 114.9, 113.6, 116.2, 118.8, 120.0],
-        },
-        {
-            dates: [
-                "2026-02-01",
-                "2026-02-02",
-                "2026-02-03",
-                "2026-02-04",
-                "2026-02-05",
-                "2026-02-06",
-                "2026-02-07",
-            ],
-            petrol: [72.8, 71.1, 69.4, 68.2, 69.8, 71.3, 72.1],
-            diesel: [118.5, 115.7, 112.4, 110.8, 112.6, 115.0, 116.8],
-        },
-        {
-            dates: [
-                "2026-03-01",
-                "2026-03-02",
-                "2026-03-03",
-                "2026-03-04",
-                "2026-03-05",
-                "2026-03-06",
-                "2026-03-07",
-            ],
-            petrol: [73.9, 72.6, 70.4, 69.2, 71.0, 73.3, 74.4],
-            diesel: [121.6, 118.2, 112.1, 111.4, 115.7, 123.1, 126.5],
-        },
-        {
-            dates: [
-                "2026-04-01",
-                "2026-04-02",
-                "2026-04-03",
-                "2026-04-04",
-                "2026-04-05",
-                "2026-04-06",
-                "2026-04-07",
-            ],
-            petrol: [70.8, 66.2, 58.4, 64.2, 74.5, 60.8, 54.3],
-            diesel: [120.2, 109.6, 87.9, 89.4, 132.0, 86.2, 94.5],
-        },
-    ];
-
-    const rows = [];
-
-    monthlySets.forEach((monthSet, monthIndex) => {
-        monthSet.dates.forEach((date, index) => {
-            rows.push({
-                date,
-                price: monthSet.petrol[index],
-                fuel_type: "Premium Petrol",
-                exchange_rate_to_usd: 57.0 + monthIndex * 0.2,
-                normal_supply_flag: index % 3 !== 2,
-            });
-
-            rows.push({
-                date,
-                price: monthSet.diesel[index],
-                fuel_type: "Premium Diesel",
-                exchange_rate_to_usd: 57.0 + monthIndex * 0.2,
-                normal_supply_flag: index % 4 !== 3,
-            });
-        });
-    });
-
-    return rows;
-}
-
-const FALLBACK_ROWS = buildFallbackRows();
-
 const PALETTE = {
     petrol: {
         line: "#8b7cff",
@@ -144,7 +61,9 @@ function normalizeFuelSlug(value) {
     const slug = slugify(value);
 
     if (slug.includes("diesel")) return "diesel";
-    if (slug.includes("petrol")) return "petrol";
+    if (/petrol|gasoline|ron\s*91/.test(slug)) {
+        return "petrol";
+    }
 
     return slug.replace(/[^a-z0-9]+/g, "-");
 }
@@ -194,7 +113,7 @@ function formatMonthLabel(date) {
 
 function formatAxisLabel(date) {
     return new Intl.DateTimeFormat("en-US", {
-        month: "long",
+        month: "short",
         day: "numeric",
     }).format(date);
 }
@@ -548,14 +467,14 @@ function buildBriefings(
                 id: "summary",
                 tone: "calm",
                 action: "Awaiting data",
-                label: "Next 7days:",
+                label: "Next 7 days:",
                 body: "No matching fuel-price rows were found for the current filters.",
             },
             {
                 id: "recommended",
                 tone: "calm",
                 action: "Review filters",
-                label: "Recommended action:",
+                label: "Recommended Action:",
                 body: "Switch month or fuel type to inspect another trend window.",
             },
         ];
@@ -574,14 +493,14 @@ function buildBriefings(
             id: "summary",
             tone: delta >= 0 ? "danger" : "calm",
             action: delta >= 0 ? "Price Surge Imminent" : "Continued Stability",
-            label: "Next 7days:",
+            label: "Next 7 days:",
             body: `${singleSeries.fuelLabel} is moving ${direction} by ${formatMoney(Math.abs(delta))} across ${cadence}.`,
         },
         {
             id: "recommended",
             tone: delta >= 0 ? "danger" : "calm",
             action: recommendedAction,
-            label: "Recommended action:",
+            label: "Recommended Action:",
             body:
                 delta >= 0
                     ? `Lock in pricing for ${singleSeries.fuelLabel} before the next jump becomes visible on the chart.`
@@ -595,7 +514,7 @@ export function buildTrackPriceDashboard(
     selectedFuel = "all",
     selectedMonth = "",
 ) {
-    const sourceRows = enrichRows(rows.length ? rows : FALLBACK_ROWS);
+    const sourceRows = enrichRows(rows);
     const monthTabs = buildMonthTabs(sourceRows);
     const fuelOptions = buildFuelOptions(sourceRows);
     const normalizedFuel = fuelOptions.some(

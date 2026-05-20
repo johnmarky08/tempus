@@ -6,12 +6,17 @@
     import { flip } from "svelte/animate";
 
     const OPTION_COOLDOWN_MS = 500;
+    const PREDICTION_ORDER = {
+        petrol: 0,
+        diesel: 1,
+    };
 
     let hoverEl;
     let parentEl;
     let tooltipLayout = { left: 0, top: 0 };
 
     export let fuelPrices = [];
+    export let predictions = [];
 
     let selectedFuel = "all";
     let selectedMonth = "";
@@ -27,6 +32,7 @@
         selectedFuel,
         selectedMonth,
     );
+    $: predictionCards = buildPredictionCards(predictions, fuelPrices);
 
     function selectFuel(value) {
         if (optionCooldownLocked || value === selectedFuel) {
@@ -60,6 +66,105 @@
 
     function toggleFitScreen() {
         fitScreen = !fitScreen;
+    }
+
+    function formatMoney(value) {
+        return `₱${Number(value).toFixed(2)}`;
+    }
+
+    function formatDelta(value, suffix = "vs current") {
+        const prefix = value >= 0 ? "+" : "-";
+        return `${prefix}${formatMoney(Math.abs(value)).slice(1)} ${suffix}`;
+    }
+
+    function normalizeFuelSlug(value) {
+        const slug = String(value ?? "")
+            .trim()
+            .toLowerCase()
+            .replace(/[_-]+/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (slug.includes("diesel")) return "diesel";
+        if (/petrol|gasoline|ron\s*91/.test(slug)) {
+            return "petrol";
+        }
+
+        return slug.replace(/[^a-z0-9]+/g, "-");
+    }
+
+    function titleCase(value) {
+        return String(value ?? "")
+            .trim()
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean)
+            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(" ");
+    }
+
+    function buildPredictionCards(predictionRows = [], sourceRows = []) {
+        const latestPredictions = new Map();
+        const latestHistoricalRows = new Map();
+
+        sourceRows.forEach((row) => {
+            const fuelSlug = normalizeFuelSlug(row.fuel_type);
+            const existing = latestHistoricalRows.get(fuelSlug);
+
+            if (!existing || new Date(row.date) > new Date(existing.date)) {
+                latestHistoricalRows.set(fuelSlug, row);
+            }
+        });
+
+        predictionRows.forEach((row) => {
+            const fuelSlug = normalizeFuelSlug(row.fuel_type);
+            const existing = latestPredictions.get(fuelSlug);
+
+            if (!existing || new Date(row.date) > new Date(existing.date)) {
+                latestPredictions.set(fuelSlug, row);
+            }
+        });
+
+        return [...latestPredictions.values()]
+            .sort((left, right) => {
+                const leftOrder =
+                    PREDICTION_ORDER[normalizeFuelSlug(left.fuel_type)] ?? 9;
+                const rightOrder =
+                    PREDICTION_ORDER[normalizeFuelSlug(right.fuel_type)] ?? 9;
+
+                return (
+                    leftOrder - rightOrder ||
+                    titleCase(left.fuel_type).localeCompare(
+                        titleCase(right.fuel_type),
+                    )
+                );
+            })
+            .map((prediction) => {
+                const fuelSlug = normalizeFuelSlug(prediction.fuel_type);
+                const baseline = latestHistoricalRows.get(fuelSlug);
+                const predictedPrice = Number(prediction.predicted_price ?? 0);
+                const change = baseline
+                    ? predictedPrice - Number(baseline.price ?? 0)
+                    : 0;
+
+                return {
+                    label: `${titleCase(prediction.fuel_type)}`,
+                    price: formatMoney(predictedPrice),
+                    delta: baseline
+                        ? formatDelta(change, "vs current")
+                        : `95% CI: ${formatMoney(prediction.lower_95)} - ${formatMoney(prediction.upper_95)}`,
+                    deltaClass:
+                        change >= 0 ? "text-[#FF928A]" : "text-[#7BE495]",
+                    priceClass:
+                        change >= 0 ? "text-[#FF928A]" : "text-[#7BE495]",
+                    dot:
+                        fuelSlug === "diesel"
+                            ? "#ff8b82"
+                            : fuelSlug === "petrol"
+                              ? "#8b7cff"
+                              : "#7dd3fc",
+                };
+            });
     }
 
     async function setHoveredPoint(point, event = null) {
@@ -221,7 +326,7 @@
         class={`flex flex-col gap-8 text-slate-100 font-jetbrainsMono transition-all duration-300 ${
             fitScreen
                 ? "scale-[1] -translate-y-0 -mb-0"
-                : "scale-[0.80] -translate-y-20 -mb-24"
+                : "scale-[0.80] -translate-y-24 -mb-44"
         }`}
     >
         <div
@@ -264,8 +369,10 @@
                 >
                     <span>Fit Screen</span>
                     <i
-                        class={`ri-fullscreen-line transition-all duration-300 ${
-                            fitScreen ? "rotate-180" : "rotate-0"
+                        class={`transition-all duration-300 ${
+                            fitScreen
+                                ? "ri-fullscreen-exit-line rotate-180"
+                                : "ri-fullscreen-line rotate-0"
                         }`}
                     ></i>
                 </button>
@@ -300,7 +407,7 @@
                 <div
                     data-sr
                     data-sr-duration="1400"
-                    class="flex flex-wrap gap-2 place-self-end transition-all duration-300"
+                    class="flex w-full flex-wrap justify-center gap-2 self-center transition-all duration-300"
                 >
                     {#each dashboard.monthTabs as month, monthIndex}
                         <button
@@ -576,10 +683,20 @@
                                               (dashboard.chart.dateAxisRows
                                                   .length -
                                                   1)}
-                                    y="402"
+                                    y="405"
                                     fill="rgba(226,232,240,0.82)"
-                                    font-size="12"
+                                    font-size="10"
                                     text-anchor="middle"
+                                    transform={`rotate(-45 ${
+                                        dashboard.chart.dateAxisRows.length ===
+                                        1
+                                            ? 500
+                                            : 74 +
+                                              (index * 852) /
+                                                  (dashboard.chart.dateAxisRows
+                                                      .length -
+                                                      1)
+                                    } 405)`}
                                 >
                                     {axisRow.dateLabel}
                                 </text>
@@ -591,6 +708,7 @@
                                         class="transition-all duration-300"
                                         d={series.areaPath}
                                         fill={series.fill}
+                                        pointer-events="none"
                                         opacity={dashboard.selectedFuel ===
                                             "all" ||
                                         dashboard.selectedFuel ===
@@ -607,6 +725,7 @@
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
                                         style={`filter: drop-shadow(0 0 6px ${series.stroke})`}
+                                        pointer-events="none"
                                         opacity={dashboard.selectedFuel ===
                                             "all" ||
                                         dashboard.selectedFuel ===
@@ -620,33 +739,46 @@
                                             tabindex="0"
                                             role="button"
                                             aria-label={`${point.fuelLabel} ${point.fullDateLabel} ${point.priceText}`}
-                                            on:mouseenter={(event) => {
-                                                setHoveredPoint(
-                                                    {
-                                                        ...point,
-                                                        color: series.stroke,
-                                                        priceText:
-                                                            point.priceText,
-                                                    },
-                                                    event,
-                                                );
-                                            }}
-                                            on:mousemove={moveHoveredPoint}
-                                            on:mouseleave={clearHoveredPoint}
-                                            on:focus={() =>
-                                                setHoveredPoint({
-                                                    ...point,
-                                                    color: series.stroke,
-                                                    priceText: point.priceText,
-                                                })}
-                                            on:blur={clearHoveredPoint}
                                             class="cursor-pointer transition-all duration-300"
                                         >
                                             <circle
                                                 class="transition-all duration-300"
                                                 cx={point.x}
                                                 cy={point.y}
+                                                r="12"
+                                                fill="transparent"
+                                                stroke="transparent"
+                                                pointer-events="all"
+                                                role="button"
+                                                tabindex="0"
+                                                on:mouseenter={(event) => {
+                                                    setHoveredPoint(
+                                                        {
+                                                            ...point,
+                                                            color: series.stroke,
+                                                            priceText:
+                                                                point.priceText,
+                                                        },
+                                                        event,
+                                                    );
+                                                }}
+                                                on:mousemove={moveHoveredPoint}
+                                                on:mouseleave={clearHoveredPoint}
+                                                on:focus={() =>
+                                                    setHoveredPoint({
+                                                        ...point,
+                                                        color: series.stroke,
+                                                        priceText:
+                                                            point.priceText,
+                                                    })}
+                                                on:blur={clearHoveredPoint}
+                                            ></circle>
+                                            <circle
+                                                class="transition-all duration-300"
+                                                cx={point.x}
+                                                cy={point.y}
                                                 r="4"
+                                                pointer-events="none"
                                                 fill={hoveredPoint &&
                                                 hoveredPoint.dateIso ===
                                                     point.dateIso &&
@@ -744,7 +876,7 @@
                                     data-sr
                                     data-sr-delay={briefingIndex * 100 + 40}
                                     data-sr-duration="1600"
-                                    class={`transition-all duration-300 text-sm font-semibold ${briefing.tone === "danger" ? "text-[#FF928A]" : briefing.label === "Recommended action:" ? "text-[#6FB8E7]" : "text-[#7BE495]"}`}
+                                    class={`transition-all duration-300 text-sm font-semibold ${briefing.tone === "danger" ? "text-[#FF928A]" : briefing.label === "Recommended Action:" ? "text-[#6FB8E7]" : "text-[#7BE495]"}`}
                                 >
                                     {briefing.label}
                                     {briefing.action}
@@ -769,75 +901,84 @@
                     class="flex flex-col rounded-[28px] border-2 border-white/75 bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm transition-all duration-300"
                 >
                     <div
-                        class="flex items-center justify-between gap-3 border-b border-[white]/30 pb-4 transition-all duration-300"
+                        class="flex w-full items-center justify-center gap-3 border-b border-[white]/30 pb-4 transition-all duration-300"
                     >
                         <p
                             data-sr
                             data-sr-duration="1600"
-                            class="text-lg font-semibold text-white transition-all duration-300"
+                            class="text-md w-full text-center font-semibold uppercase text-white transition-all duration-300"
                         >
-                            TODAY'S PRICES
+                            NEXT WEEK'S PRICES (FORECASTS)
                         </p>
                     </div>
 
                     <div
                         class="mt-4 flex flex-col gap-4 transition-all duration-300"
                     >
-                        {#each dashboard.currentPriceCards as card, index}
-                            <div
-                                data-sr
-                                data-sr-delay={index * 100}
-                                data-sr-duration="1600"
-                                class={`flex flex-col gap-3 transition-all duration-300 ${index !== dashboard.currentPriceCards.length - 1 ? "border-b border-[white]/30 pb-4" : ""}`}
-                                transition:fly={{ y: 20, duration: 500 }}
-                            >
+                        {#if predictionCards.length}
+                            {#each predictionCards as card, index}
                                 <div
-                                    class="flex items-center justify-between gap-3 transition-all duration-300"
+                                    data-sr
+                                    data-sr-delay={index * 100}
+                                    data-sr-duration="1600"
+                                    class={`flex flex-col gap-3 transition-all duration-300 ${index !== predictionCards.length - 1 ? "border-b border-[white]/30 pb-4" : ""}`}
+                                    transition:fly={{ y: 20, duration: 500 }}
                                 >
                                     <div
-                                        class="flex items-center gap-3 transition-all duration-300"
+                                        class="flex flex-col items-center justify-between gap-3 transition-all duration-300"
                                     >
-                                        <span
-                                            class="h-2.5 w-2.5 rounded-full transition-all duration-300"
-                                            style={`background-color: ${card.dot}`}
-                                        ></span>
                                         <div
-                                            class="flex flex-col text-nowrap transition-all duration-300"
+                                            class="flex items-center gap-3 transition-all duration-300"
+                                        >
+                                            <span
+                                                class="h-2.5 w-2.5 rounded-full transition-all duration-300"
+                                                style={`background-color: ${card.dot}`}
+                                            ></span>
+                                            <div
+                                                class="flex flex-col text-nowrap transition-all duration-300"
+                                            >
+                                                <p
+                                                    data-sr
+                                                    data-sr-delay={index * 100 +
+                                                        20}
+                                                    data-sr-duration="1600"
+                                                    class="text-sm text-slate-200 transition-all duration-300"
+                                                >
+                                                    {card.label}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="text-center transition-all duration-300"
                                         >
                                             <p
                                                 data-sr
-                                                data-sr-delay={index * 100 + 20}
+                                                data-sr-delay={index * 200 + 40}
                                                 data-sr-duration="1600"
-                                                class="text-sm text-slate-200 transition-all duration-300"
+                                                class={`text-3xl leading-none transition-all duration-300 ${card.priceClass}`}
                                             >
-                                                {card.label}
+                                                {card.price}
+                                            </p>
+                                            <p
+                                                data-sr
+                                                data-sr-delay={index * 200 + 40}
+                                                data-sr-duration="1600"
+                                                class={`mt-1 text-xs transition-all duration-300 ${card.deltaClass}`}
+                                            >
+                                                {card.delta}
                                             </p>
                                         </div>
                                     </div>
-
-                                    <div
-                                        class="text-right transition-all duration-300"
-                                    >
-                                        <p
-                                            data-sr
-                                            data-sr-delay={index * 200 + 40}
-                                            data-sr-duration="1600"
-                                            class={`text-3xl leading-none transition-all duration-300 ${card.priceClass}`}
-                                        >
-                                            {card.price}
-                                        </p>
-                                        <p
-                                            data-sr
-                                            data-sr-delay={index * 200 + 40}
-                                            data-sr-duration="1600"
-                                            class={`mt-1 text-xs transition-all duration-300 ${card.deltaClass}`}
-                                        >
-                                            {card.delta}
-                                        </p>
-                                    </div>
                                 </div>
-                            </div>
-                        {/each}
+                            {/each}
+                        {:else}
+                            <p class="text-sm text-slate-400">
+                                No predictions available yet. Refresh the
+                                forecast to load the exported ARIMAX weekly
+                                results.
+                            </p>
+                        {/if}
                     </div>
                 </div>
             </aside>
