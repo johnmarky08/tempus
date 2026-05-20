@@ -495,6 +495,8 @@
 
                     <div class="flex-1 pt-2 transition-all duration-300">
                         <svg
+                            data-sr
+                            data-sr-delay="280"
                             viewBox="0 0 1000 420"
                             class="h-[28rem] w-full overflow-visible transition-all duration-300"
                             preserveAspectRatio="none"
@@ -522,7 +524,7 @@
                             </defs>
 
                             {#each dashboard.chart.yTicks as tick}
-                                <g>
+                                <g data-sr data-sr-delay="320">
                                     <line
                                         class="transition-all duration-300"
                                         x1="74"
@@ -545,6 +547,8 @@
 
                             {#each dashboard.chart.dateAxisRows as axisRow, index}
                                 <line
+                                    data-sr
+                                    data-sr-delay={340 + index * 40}
                                     class="transition-all duration-300"
                                     x1={dashboard.chart.dateAxisRows.length ===
                                     1
@@ -568,6 +572,8 @@
                                     stroke-dasharray="3 6"
                                 ></line>
                                 <text
+                                    data-sr
+                                    data-sr-delay={360 + index * 40}
                                     class="transition-all duration-300"
                                     x={dashboard.chart.dateAxisRows.length === 1
                                         ? 500
@@ -585,9 +591,15 @@
                                 </text>
                             {/each}
 
-                            {#each dashboard.chart.series as series (series.fuelSlug)}
-                                <g transition:fly={{ y: 20, duration: 300 }}>
+                            {#each dashboard.chart.series as series, seriesIndex (series.fuelSlug)}
+                                <g
+                                    data-sr
+                                    data-sr-delay={420 + seriesIndex * 90}
+                                    transition:fly={{ y: 20, duration: 300 }}
+                                >
                                     <path
+                                        data-sr
+                                        data-sr-delay={440 + seriesIndex * 90}
                                         class="transition-all duration-300"
                                         d={series.areaPath}
                                         fill={series.fill}
@@ -599,6 +611,8 @@
                                             : 0.55}
                                     ></path>
                                     <path
+                                        data-sr
+                                        data-sr-delay={460 + seriesIndex * 90}
                                         class="transition-all duration-300"
                                         d={series.linePath}
                                         fill="none"
@@ -617,6 +631,9 @@
 
                                     {#each series.points as point}
                                         <g
+                                            data-sr
+                                            data-sr-delay={480 +
+                                                seriesIndex * 90}
                                             tabindex="0"
                                             role="button"
                                             aria-label={`${point.fuelLabel} ${point.fullDateLabel} ${point.priceText}`}
