@@ -421,8 +421,8 @@ function buildSeries(rows, selectedFuel, selectedMonth) {
             entries: entries.sort((a, b) => b.price - a.price),
             forecastTitle:
                 peakEntry?.price > lowestEntry?.price + 20
-                    ? "Tempus Forecast: Critical price peak reached"
-                    : "Tempus Forecast: Stable price window ahead",
+                    ? "T.E.M.P.U.S. Forecast: Critical price peak reached"
+                    : "T.E.M.P.U.S. Forecast: Stable price window ahead",
             forecastBody:
                 peakEntry?.price > lowestEntry?.price + 20
                     ? "Avoid non-essential refueling today. Our ARIMA model predicts a significant cool-off starting Monday."

@@ -51,23 +51,23 @@
                         serious health risks, especially for commuters, outdoor
                         workers, and vulnerable individuals. These problems are
                         often treated separately, causing people to react too
-                        late instead of preparing early. The main goal of Tempus
-                        is to provide users with early warnings and practical
-                        daily recommendations by combining fuel price tracking
-                        and heat index monitoring into one unified system.
-                        Rather than overwhelming users with complex charts or
-                        excessive information, the platform focuses on simple,
-                        clear, and actionable insights that can help people make
-                        smarter decisions every day. To predict fuel price
-                        changes, Tempus uses the ARIMAX (AutoRegressive
-                        Integrated Moving Average with Exogenous Variables)
-                        model, which analyzes historical fuel price patterns
-                        together with external market factors such as global
-                        supply changes and economic influences. This allows the
-                        system to forecast possible fuel price spikes before
-                        they happen, giving users time to plan ahead. For
-                        weather-related safety, Tempus uses a Random Forest
-                        Regressor to calculate the heat index based on
+                        late instead of preparing early. The main goal of
+                        T.E.M.P.U.S. is to provide users with early warnings and
+                        practical daily recommendations by combining fuel price
+                        tracking and heat index monitoring into one unified
+                        system. Rather than overwhelming users with complex
+                        charts or excessive information, the platform focuses on
+                        simple, clear, and actionable insights that can help
+                        people make smarter decisions every day. To predict fuel
+                        price changes, T.E.M.P.U.S. uses the ARIMAX
+                        (AutoRegressive Integrated Moving Average with Exogenous
+                        Variables) model, which analyzes historical fuel price
+                        patterns together with external market factors such as
+                        global supply changes and economic influences. This
+                        allows the system to forecast possible fuel price spikes
+                        before they happen, giving users time to plan ahead. For
+                        weather-related safety, T.E.M.P.U.S. uses a Random
+                        Forest Regressor to calculate the heat index based on
                         temperature, humidity, and other environmental
                         conditions. Since heat index reflects how hot it
                         actually feels to the human body, this provides a more
@@ -79,14 +79,14 @@
                         suggestions like refueling before a price increase,
                         avoiding outdoor activities during dangerous heat hours,
                         staying hydrated, or adjusting travel schedules. What
-                        makes Tempus unique is its ability to connect financial
-                        survival and physical safety into one intelligent daily
-                        brief. Instead of using separate apps for price tracking
-                        and weather monitoring, users receive one unified
-                        survival plan that helps protect both their health and
-                        their budget. Tempus is designed to be simple,
-                        practical, and proactive—helping users prepare before
-                        problems happen, not after.
+                        makes T.E.M.P.U.S. unique is its ability to connect
+                        financial survival and physical safety into one
+                        intelligent daily brief. Instead of using separate apps
+                        for price tracking and weather monitoring, users receive
+                        one unified survival plan that helps protect both their
+                        health and their budget. T.E.M.P.U.S. is designed to be
+                        simple, practical, and proactive—helping users prepare
+                        before problems happen, not after.
                     </p>
                 </div>
             </div>

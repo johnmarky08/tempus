@@ -10,7 +10,7 @@
         <div class="flex gap-3 items-center">
             <img
                 src="/favicon.png"
-                alt="Tempus Logo"
+                alt="T.E.M.P.U.S. Logo"
                 class="text-white h-20 w-20"
             />
             <h1 class="text-2xl font-bold text-white">T.E.M.P.U.S.</h1>

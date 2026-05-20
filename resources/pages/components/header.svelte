@@ -11,7 +11,7 @@
     flex justify-between items-center px-20 border-b-2 border-[#888888] sticky top-0 z-50 backdrop-blur-sm"
 >
     <div class="flex items-center">
-        <img src="/favicon.png" alt="Tempus Logo" class="h-20 w-20 p-2" />
+        <img src="/favicon.png" alt="T.E.M.P.U.S. Logo" class="h-20 w-20 p-2" />
         <h1 class="text-2xl font-bold text-white">T.E.M.P.U.S.</h1>
     </div>
     <div class="text-sm flex gap-14 items-center text-center text-white">
