@@ -113,21 +113,14 @@ const SAFETY_LABEL_META = {
     },
 };
 
-const PRESET_FORECASTS = {
-    safe: [34, 34, 33, 32, 32, 31, 31],
-    moderate: [35, 36, 37, 37, 36, 35, 34],
-    high: [40, 42, 43, 43, 42, 41, 40],
-    extreme: [45, 47, 49, 50, 49, 48, 47],
-};
-
 const DEFAULT_INTRADAY_LABELS = [
-    "10 am",
-    "12 pm",
-    "2 pm",
-    "4 pm",
-    "6 pm",
-    "8 pm",
-    "10 pm",
+    "Hour 1",
+    "Hour 2",
+    "Hour 3",
+    "Hour 4",
+    "Hour 5",
+    "Hour 6",
+    "Hour 7",
 ];
 
 const SAFETY_HIGHLIGHTS = {
@@ -159,81 +152,6 @@ const SAFETY_HIGHLIGHTS = {
     },
 };
 
-const HEAT_INDEX_PRESETS = [
-    {
-        id: "safe-manila",
-        stateKey: "safe",
-        location: "Manila, Philippines",
-        condition: "Clear Sky Thursday, April 23",
-        temperature: 29,
-        humidity: 35,
-        windSpeed: 16.34,
-        heatIndexValue: 31,
-        heatIndexStateKey: "safe",
-        recommendation:
-            "Stay regularly hydrated throughout the day. Ideal for normal outdoor activities, but wear sunscreen (SPF/30+) if under direct sunlight.",
-        travel: "Safe to travel at any hour.",
-        healthTip: "Maintain standard hydration levels.",
-        graphLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        graphValues: [28, 31, 30, 29, 28, 28, 28],
-        forecast: PRESET_FORECASTS.safe,
-    },
-    {
-        id: "moderate-manila",
-        stateKey: "moderate",
-        location: "Manila, Philippines",
-        condition: "Warm Breeze Friday, April 24",
-        temperature: 33,
-        humidity: 48,
-        windSpeed: 13.2,
-        heatIndexValue: 36,
-        heatIndexStateKey: "moderate",
-        recommendation:
-            "Proceed with planned outdoor activities normally. Keep water close and reduce direct sun exposure around midday.",
-        travel: "Safe to travel with short shaded breaks.",
-        healthTip: "Drink water before you feel thirsty.",
-        graphLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        graphValues: [33, 36, 37, 37, 36, 35, 34],
-        forecast: PRESET_FORECASTS.moderate,
-    },
-    {
-        id: "high-manila",
-        stateKey: "high",
-        location: "Manila, Philippines",
-        condition: "Hot Humid Saturday, April 25",
-        temperature: 37,
-        humidity: 63,
-        windSpeed: 9.8,
-        heatIndexValue: 43,
-        heatIndexStateKey: "high",
-        recommendation:
-            "Reduce time outdoors and avoid long exposure windows. Schedule outdoor work early in the morning or after sunset.",
-        travel: "Avoid non-essential outdoor travel between 12 PM - 4 PM.",
-        healthTip: "Watch for dizziness and lightheadedness.",
-        graphLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        graphValues: [39, 42, 43, 44, 43, 42, 41],
-        forecast: PRESET_FORECASTS.high,
-    },
-    {
-        id: "extreme-manila",
-        stateKey: "extreme",
-        location: "Manila, Philippines",
-        condition: "Oppressive Heat Sunday, April 26",
-        temperature: 41,
-        humidity: 74,
-        windSpeed: 5.6,
-        heatIndexValue: 49,
-        heatIndexStateKey: "extreme",
-        recommendation:
-            "Limit outdoor exposure as much as possible. Move activities indoors, reschedule errands, and check on vulnerable people.",
-        travel: "Avoid outdoor travel unless it is urgent.",
-        healthTip: "Monitor for nausea, confusion, or rapid heartbeat.",
-        graphLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        graphValues: [44, 47, 49, 50, 49, 48, 47],
-        forecast: PRESET_FORECASTS.extreme,
-    },
-];
-
 function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
@@ -244,10 +162,6 @@ function formatTemperature(value) {
 
 function formatWindSpeed(value) {
     return `${Number(value).toFixed(2)} KpH`;
-}
-
-function getPresetByStateKey(stateKey) {
-    return HEAT_INDEX_PRESETS.find((preset) => preset.stateKey === stateKey);
 }
 
 function resolveSafetyState(heatIndexValue, ageRisk, exertionLevel) {
@@ -337,7 +251,6 @@ function getSafetyMeta(stateKey) {
 export {
     AGE_GROUPS,
     DEFAULT_INTRADAY_LABELS,
-    HEAT_INDEX_PRESETS,
     HEAT_INDEX_STATE_META,
     SAFETY_HIGHLIGHTS,
     SAFETY_LABEL_META,
@@ -346,7 +259,6 @@ export {
     formatTemperature,
     formatWindSpeed,
     getIntensityMeta,
-    getPresetByStateKey,
     getSafetyMeta,
     resolveSafetyState,
 };

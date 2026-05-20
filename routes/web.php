@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FuelPricesController;
 use App\Http\Controllers\ArimaxController;
+use App\Http\Controllers\HeatIndexController;
 use App\Http\Controllers\RfcController;
 use App\Http\Controllers\RfrController;
 use Illuminate\Support\Facades\Route;
@@ -18,9 +19,7 @@ Route::get('/about', function () {
 });
 Route::get('/fuel-prices', FuelPricesController::class);
 
-Route::get('/heat-index', function () {
-    return Inertia::render('HeatIndex');
-});
+Route::match(['get', 'post'], '/heat-index', HeatIndexController::class);
 Route::get('/history', function () {
     return Inertia::render('History');
 });

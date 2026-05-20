@@ -1,13 +1,10 @@
 <script>
-    import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import Layout from "./components/layout.svelte";
     import {
         AGE_GROUPS,
         DEFAULT_INTRADAY_LABELS,
-        HEAT_INDEX_PRESETS,
         HEAT_INDEX_STATE_META,
-        SAFETY_LABEL_META,
         buildChartModel,
         formatTemperature,
         formatWindSpeed,
@@ -18,13 +15,18 @@
         clamp,
     } from "../js/heatIndexData.js";
 
-    export let errors = {};
+    export let heatIndexData = null;
 
-    let selectedPresetId = HEAT_INDEX_PRESETS[0].id;
-    let selectedAgeRange = "18-39";
-    let exertionLevel = 0;
-    let assessmentPhase = "assessing";
-    let assessmentTimer;
+    const csrfToken =
+        typeof document === "undefined"
+            ? ""
+            : (document.querySelector('meta[name="csrf-token"]')?.content ??
+              "");
+
+    let selectedAgeRange = heatIndexData?.ageRange ?? "18-39";
+    let exertionLevel = heatIndexData?.exertionLevel ?? 0;
+    let isAssessing = !(heatIndexData?.assess ?? false);
+    let isSubmitting = false;
     let hoveredPointIndex = null;
 
     const ageRiskMap = AGE_GROUPS.reduce((accumulator, group) => {
@@ -32,36 +34,56 @@
         return accumulator;
     }, {});
 
-   
-    function scheduleAssessment() {
-        assessmentPhase = "assessing";
-
-        if (assessmentTimer) {
-            clearTimeout(assessmentTimer);
-        }
-
-        assessmentTimer = setTimeout(() => {
-            assessmentPhase = "ready";
-        }, 850);
-    }
-
-    function selectPreset(presetId) {
-        selectedPresetId = presetId;
-        hoveredPointIndex = null;
-        scheduleAssessment();
-    }
-
     function selectAgeRange(ageRange) {
         selectedAgeRange = ageRange;
-        scheduleAssessment();
     }
 
     function handleExertionChange(event) {
         exertionLevel = Number(event.currentTarget.value);
-        scheduleAssessment();
     }
 
-   
+    async function handleAssessSubmit(event) {
+        event.preventDefault();
+
+        isSubmitting = true;
+
+        try {
+            const form = event.currentTarget;
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: {
+                    Accept: "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                credentials: "same-origin",
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Assess request failed with ${response.status}`,
+                );
+            }
+
+            const payload = await response.json();
+
+            heatIndexData = {
+                ...heatIndexData,
+                safetyPrediction: payload.safetyPrediction,
+                safetyMeta: payload.safetyMeta,
+                safetyHighlights: payload.safetyHighlights,
+                ageRange: payload.ageRange,
+                exertionLevel: payload.exertionLevel,
+                assess: payload.assess,
+            };
+            selectedAgeRange = payload.ageRange;
+            exertionLevel = payload.exertionLevel;
+            isAssessing = false;
+        } finally {
+            isSubmitting = false;
+        }
+    }
+
     function hexToRgb(hex) {
         const clean = hex.replace("#", "");
         const bigint = parseInt(clean, 16);
@@ -119,46 +141,55 @@
     $: exertionPercent = clamp(exertionLevel * 10, 0, 100);
     $: exertionFillColor = getExertionColor(exertionLevel);
     $: exertionShadowColor = `${exertionFillColor}66`;
+    $: selectedPreset = heatIndexData?.selectedPreset ?? {
+        graphLabels: DEFAULT_INTRADAY_LABELS,
+        graphValues: [],
+        forecast: [],
+    };
+    $: displayPreset = {
+        ...selectedPreset,
+        graphLabels: selectedPreset.graphLabels ?? DEFAULT_INTRADAY_LABELS,
+        graphValues: selectedPreset.graphValues ?? [],
+        forecastLabels:
+            selectedPreset.forecastLabels ??
+            selectedPreset.graphLabels ??
+            DEFAULT_INTRADAY_LABELS,
+        forecastValues:
+            selectedPreset.forecastValues ?? selectedPreset.forecast ?? [],
+        forecast:
+            selectedPreset.forecast ?? selectedPreset.forecastValues ?? [],
+    };
 
-    onMount(() => {
-        scheduleAssessment();
-
-        return () => {
-            if (assessmentTimer) {
-                clearTimeout(assessmentTimer);
-            }
-        };
-    });
-
-    $: selectedPreset =
-        HEAT_INDEX_PRESETS.find((preset) => preset.id === selectedPresetId) ??
-        HEAT_INDEX_PRESETS[0];
     $: intradayLabels =
-        selectedPreset.graphTimes ??
-        (selectedPreset.graphValues.length === DEFAULT_INTRADAY_LABELS.length
+        heatIndexData?.selectedPreset?.graphLabels ??
+        (displayPreset.graphValues.length === DEFAULT_INTRADAY_LABELS.length
             ? DEFAULT_INTRADAY_LABELS
-            : selectedPreset.graphLabels);
+            : displayPreset.graphLabels);
 
-    $: chartModel = buildChartModel(selectedPreset.graphValues, intradayLabels);
-    $: heatTone = getIntensityMeta(selectedPreset.heatIndexStateKey);
+    $: chartModel = buildChartModel(displayPreset.graphValues, intradayLabels);
+    $: heatTone = getIntensityMeta(displayPreset.heatIndexStateKey);
     $: heatCard =
-        HEAT_INDEX_STATE_META[selectedPreset.heatIndexStateKey] ??
+        HEAT_INDEX_STATE_META[displayPreset.heatIndexStateKey] ??
         HEAT_INDEX_STATE_META.safe;
-    $: safetyStateKey = resolveSafetyState(
-        selectedPreset.heatIndexValue,
-        ageRiskMap[selectedAgeRange] ?? 0.15,
-        exertionLevel,
-    );
+    $: safetyStateKey =
+        heatIndexData?.safetyPrediction?.label ??
+        (isAssessing
+            ? "assessing"
+            : resolveSafetyState(
+                  displayPreset.heatIndexValue,
+                  ageRiskMap[selectedAgeRange] ?? 0.15,
+                  exertionLevel,
+              ));
     $: safetyMeta =
-        assessmentPhase === "assessing"
-            ? SAFETY_LABEL_META.assessing
-            : getSafetyMeta(safetyStateKey);
+        isAssessing && !heatIndexData?.assess
+            ? getSafetyMeta("assessing")
+            : (heatIndexData?.safetyMeta ?? getSafetyMeta(safetyStateKey));
     $: selectedHighlights =
-        SAFETY_HIGHLIGHTS[safetyStateKey] ?? SAFETY_HIGHLIGHTS.safe;
-    $: hoveredPoint =
-        hoveredPointIndex === null
-            ? null
-            : chartModel.points[hoveredPointIndex];
+        isAssessing && !heatIndexData?.assess
+            ? SAFETY_HIGHLIGHTS.safe
+            : (heatIndexData?.safetyHighlights ??
+              SAFETY_HIGHLIGHTS[safetyStateKey] ??
+              SAFETY_HIGHLIGHTS.safe);
 </script>
 
 <Layout isActive="Heat Index">
@@ -528,7 +559,7 @@
                     data-sr
                     class=" px-28 text-xl text-start font-semibold text-white sm:text-4xl"
                 >
-                    7-Day Heat Outlook
+                    7-Hour Heat Outlook
                 </h1>
                 <div class="flex flex-col space-y-10">
                     <div
@@ -550,8 +581,9 @@
                                         data-sr
                                         class="group-hover:scale-[1.25] transition-all duration-500 ease-out text-2xl text-slate-200"
                                     >
-                                        {selectedPreset.graphLabels[index] ??
-                                            `Day ${index + 1}`}
+                                        {selectedPreset.forecastLabels[index] ??
+                                            selectedPreset.graphLabels[index] ??
+                                            `Hour ${index + 1}`}
                                     </p>
                                     <svg
                                         class="group-hover:drop-shadow-[0_0_8px_#FFA629] animate-[spin_10s_linear_infinite] group-hover:animate-[spin_3s_linear_infinite] transition-all duration-300"
@@ -569,7 +601,7 @@
                                 </div>
                                 <p
                                     data-sr
-                                    class="text-4xl text-[#FF7B00] group-hover:[text-shadow:0_0_10px_#FF7B00] transition-all duration-300"
+                                    class="text-2xl text-[#FF7B00] group-hover:[text-shadow:0_0_10px_#FF7B00] transition-all duration-300"
                                 >
                                     {forecastTemp}°
                                 </p>
@@ -590,7 +622,13 @@
                     Heat Index Assessment
                 </p>
 
-                <div class="flex flex-col gap-5 xl:flex-row">
+                <form
+                    class="flex flex-col gap-5 xl:flex-row"
+                    method="POST"
+                    action="/heat-index"
+                    on:submit={handleAssessSubmit}
+                >
+                    <input type="hidden" name="_token" value={csrfToken} />
                     <div class="space-y-5">
                         <div
                             data-sr
@@ -629,6 +667,12 @@
                                     </button>
                                 {/each}
                             </div>
+
+                            <input
+                                type="hidden"
+                                name="age_range"
+                                value={selectedAgeRange}
+                            />
                         </div>
                         <div
                             data-sr
@@ -681,6 +725,11 @@
                                         on:input={handleExertionChange}
                                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     />
+                                    <input
+                                        type="hidden"
+                                        name="exertion_level"
+                                        value={exertionLevel}
+                                    />
                                 </div>
 
                                 <div
@@ -691,6 +740,29 @@
                                     {/each}
                                 </div>
                             </div>
+                        </div>
+
+                        <input type="hidden" name="assess" value="1" />
+
+                        <div class="mt-1 flex items-center gap-3">
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                class="rounded-xl border border-sky-300/40 bg-sky-400/15 px-5 py-3 text-sm font-semibold text-sky-100 transition duration-300 hover:scale-[1.02] hover:bg-sky-400/25 disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                                Assess
+                            </button>
+
+                            {#if isSubmitting}
+                                <div
+                                    class="flex items-center gap-2 text-sm text-sky-100"
+                                >
+                                    <span
+                                        class="h-4 w-4 animate-spin rounded-full border-2 border-sky-200/30 border-t-sky-100"
+                                    ></span>
+                                    <span>Processing</span>
+                                </div>
+                            {/if}
                         </div>
                     </div>
 
@@ -802,8 +874,10 @@
                                 <div
                                     class="flex flex-col text-center place-self-center"
                                 >
-                                    <p class={`text-xl text-white `}>
-                                        {safetyMeta.title}
+                                    <p class={`text-lg text-white `}>
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "No Assessment Yet"
+                                            : safetyMeta.title}
                                     </p>
                                 </div>
                             </div>
@@ -817,8 +891,8 @@
                             <div class="flex gap-20 justify-between">
                                 <p class="min-w-[4.75rem] text-slate-400">
                                     Alert: <span class="text-slate-200">
-                                        {assessmentPhase === "assessing"
-                                            ? "Assessing heat exposure and user inputs..."
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Waiting for your inputs."
                                             : selectedHighlights.alert}
                                     </span>
                                 </p>
@@ -828,8 +902,8 @@
                                     Recommendation: <span
                                         class="text-slate-200"
                                     >
-                                        {assessmentPhase === "assessing"
-                                            ? "Estimating the safest outdoor plan."
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Choose an age group and exertion level, then press Assess."
                                             : selectedHighlights.recommendation}
                                     </span>
                                 </p>
@@ -837,8 +911,8 @@
                             <div class="flex gap-2 justify-between">
                                 <span class="min-w-[4.75rem] text-slate-400"
                                     >Travel: <span class="text-slate-200">
-                                        {assessmentPhase === "assessing"
-                                            ? "Waiting for the live evaluation to finish."
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Assessment will appear after you submit the inputs."
                                             : selectedHighlights.travel}
                                     </span></span
                                 >
@@ -846,15 +920,15 @@
                             <div class="flex gap-2 justify-between">
                                 <p class="min-w-[4.75rem] text-slate-400">
                                     Health Tip: <span class="text-slate-200">
-                                        {assessmentPhase === "assessing"
-                                            ? "Keep water close while the system finalizes the result."
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Use the inputs above to calculate the current safety label."
                                             : selectedHighlights.tip}
                                     </span>
                                 </p>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </section>
     </div>

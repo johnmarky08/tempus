@@ -679,8 +679,6 @@
                                     stroke-dasharray="3 6"
                                 ></line>
                                 <text
-                                    data-sr
-                                    data-sr-delay={360 + index * 40}
                                     class="transition-all duration-300"
                                     x={dashboard.chart.dateAxisRows.length === 1
                                         ? 500
