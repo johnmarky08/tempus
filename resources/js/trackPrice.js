@@ -340,17 +340,25 @@ function buildCurrentPriceCards(rows) {
 }
 
 function buildSeries(rows, selectedFuel, selectedMonth) {
-    const scopedRows = rows.filter((row) => {
-        const fuelMatches =
-            selectedFuel === "all" || row.fuelSlug === selectedFuel;
-        const monthMatches = !selectedMonth || row.monthKey === selectedMonth;
-
-        return fuelMatches && monthMatches;
+    const monthRows = rows.filter((row) => {
+        return !selectedMonth || row.monthKey === selectedMonth;
     });
 
-    const fallbackRows = scopedRows.length ? scopedRows : rows;
+    const scopedRows = monthRows.filter((row) => {
+        const fuelMatches =
+            selectedFuel === "all" || row.fuelSlug === selectedFuel;
+
+        return fuelMatches;
+    });
+
+    const seriesRows = scopedRows.length
+        ? scopedRows
+        : monthRows.length
+          ? monthRows
+          : rows;
+    const scaleRows = monthRows.length ? monthRows : seriesRows;
     const dateAxisRows = [
-        ...new Map(fallbackRows.map((row) => [row.dateIso, row])).values(),
+        ...new Map(scaleRows.map((row) => [row.dateIso, row])).values(),
     ].sort((a, b) => a.date - b.date);
 
     const xIndex = new Map(
@@ -358,7 +366,7 @@ function buildSeries(rows, selectedFuel, selectedMonth) {
     );
     const grouped = new Map();
 
-    fallbackRows.forEach((row) => {
+    seriesRows.forEach((row) => {
         if (selectedFuel !== "all" && row.fuelSlug !== selectedFuel) {
             return;
         }
@@ -370,7 +378,7 @@ function buildSeries(rows, selectedFuel, selectedMonth) {
         grouped.get(row.fuelSlug).push(row);
     });
 
-    const prices = fallbackRows.map((row) => row.price);
+    const prices = scaleRows.map((row) => row.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
     const { axisMax, axisStep } = resolveAxisScale(maxPrice);

@@ -24,6 +24,8 @@
                 </button>
                 <div class="flex flex-col gap-5 pr-6">
                     <h2
+                        data-sr
+                        data-sr-delay="40"
                         class="text-2xl font-bold text-center tracking-tight text-white"
                     >
                         <span class="text-[#6FB8E7]">T</span>hermal and
@@ -35,7 +37,11 @@
                         (T.E.M.P.U.S.)
                     </h2>
 
-                    <p class="text-base leading-7 text-slate-300 text-justify">
+                    <p
+                        data-sr
+                        data-sr-delay="120"
+                        class="text-base leading-7 text-slate-300 text-justify"
+                    >
                         T.E.M.P.U.S. is a smart forecasting and decision-support
                         platform designed to help users manage two major
                         everyday challenges: rising fuel prices and dangerous
@@ -87,9 +93,9 @@
         </div>
     {/if}
     <Layout isActive="About">
-        <div class="scroll-smooth snap-y snap-mandatory -mt-20 -mb-20">
+        <div class="scroll-smooth -translate-y-24 -mb-24">
             <div
-                class="flex w-full flex-col gap-10 text-white font-jetbrainsMono snap-start scale-[0.80]"
+                class="flex w-full flex-col gap-10 text-white font-jetbrainsMono scale-[0.75]"
             >
                 <div
                     class="flex flex-col gap-8 lg:flex-row lg:items-stretch font-bold"
@@ -100,12 +106,15 @@
                         <div class="flex flex-col gap-5">
                             <h2
                                 data-sr
+                                data-sr-delay="40"
                                 class="text-3xl tracking-tight text-white"
                             >
                                 Project Description
                             </h2>
 
                             <p
+                                data-sr
+                                data-sr-delay="120"
                                 class="max-w-xl text-sm font-light leading-6 text-slate-300 sm:text-base"
                             >
                                 T.E.M.P.U.S. is a smart daily companion that
@@ -142,6 +151,7 @@
                         <div class="flex flex-col gap-5">
                             <h2
                                 data-sr
+                                data-sr-delay="40"
                                 class="text-3xl font-semibold tracking-tight text-white"
                             >
                                 Technologies/Tools Used
@@ -153,6 +163,7 @@
                                 {#each items.techStacks as { img, name, description, alt, color, textColor }, i}
                                     <div
                                         data-sr
+                                        data-sr-delay={i * 140}
                                         class="group cursor-pointer hover:scale-105 {color} flex items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/20 px-4 py-4 transition duration-300 ease-in-out"
                                     >
                                         <div
@@ -168,12 +179,14 @@
                                         <div class="flex flex-col gap-1">
                                             <p
                                                 data-sr
+                                                data-sr-delay={i * 140 + 60}
                                                 class="{textColor} group-hover:scale-110 group-hover:translate-x-4 transition-all duration-300 text-base font-semibold text-white"
                                             >
                                                 {name}
                                             </p>
                                             <p
                                                 data-sr
+                                                data-sr-delay={i * 140 + 120}
                                                 class="font-jetbrainsMono text-sm text-slate-300"
                                             >
                                                 {description}

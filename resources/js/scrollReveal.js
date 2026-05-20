@@ -1,13 +1,13 @@
 const DEFAULTS = {
     selector: "[data-sr]",
     root: null,
-    rootMargin: "0px 0px -10% 0px",
-    threshold: 0.05,
+    rootMargin: "0px 0px -6% 0px",
+    threshold: 0.08,
     revealClass: "is-revealed",
     hiddenClass: "is-hidden",
     unobserveOnReveal: true,
-    duration: 900,
-    easing: "cubic-bezier(.16,.84,.4,1)",
+    duration: 1200,
+    easing: "cubic-bezier(.22,1,.36,1)",
 };
 
 let observer = null;
@@ -17,7 +17,7 @@ let config = {};
 function injectDefaultStyles() {
     if (document.getElementById("sr-default-styles")) return;
     const css = `
-    .${DEFAULTS.hiddenClass} { opacity: 0; transform: translateY(18px); will-change: transform, opacity; }
+    .${DEFAULTS.hiddenClass} { opacity: 0; transform: translateY(24px); will-change: transform, opacity; }
     .${DEFAULTS.revealClass} { opacity: 1; transform: none; }
     `;
     const style = document.createElement("style");

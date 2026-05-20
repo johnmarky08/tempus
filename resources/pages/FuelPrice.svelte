@@ -1,8 +1,11 @@
 <script>
     import Layout from "./components/layout.svelte";
     import { buildTrackPriceDashboard } from "../js/trackPrice.js";
-    import { tick } from "svelte";
-    import { fade } from "svelte/transition";
+    import { onDestroy, tick } from "svelte";
+    import { fade, fly } from "svelte/transition";
+    import { flip } from "svelte/animate";
+
+    const OPTION_COOLDOWN_MS = 500;
 
     let hoverEl;
     let parentEl;
@@ -12,8 +15,12 @@
 
     let selectedFuel = "all";
     let selectedMonth = "";
+    let fitScreen = false;
     let hoveredPoint = null;
+    let optionCooldownLocked = false;
+    let optionCooldownTimer = null;
     let dashboard;
+    let briefingWrapper;
 
     $: dashboard = buildTrackPriceDashboard(
         fuelPrices,
@@ -22,13 +29,37 @@
     );
 
     function selectFuel(value) {
+        if (optionCooldownLocked || value === selectedFuel) {
+            return;
+        }
+
+        optionCooldownLocked = true;
+        clearTimeout(optionCooldownTimer);
+        optionCooldownTimer = setTimeout(() => {
+            optionCooldownLocked = false;
+        }, OPTION_COOLDOWN_MS);
+
         selectedFuel = value;
         hoveredPoint = null;
     }
 
     function selectMonth(value) {
+        if (optionCooldownLocked || value === selectedMonth) {
+            return;
+        }
+
+        optionCooldownLocked = true;
+        clearTimeout(optionCooldownTimer);
+        optionCooldownTimer = setTimeout(() => {
+            optionCooldownLocked = false;
+        }, OPTION_COOLDOWN_MS);
+
         selectedMonth = value;
         hoveredPoint = null;
+    }
+
+    function toggleFitScreen() {
+        fitScreen = !fitScreen;
     }
 
     async function setHoveredPoint(point, event = null) {
@@ -53,6 +84,21 @@
         return Math.min(max, Math.max(min, value));
     }
 
+    function getParentScale() {
+        if (!parentEl) {
+            return { x: 1, y: 1 };
+        }
+
+        const rect = parentEl.getBoundingClientRect();
+        const width = parentEl.offsetWidth || rect.width || 1;
+        const height = parentEl.offsetHeight || rect.height || 1;
+
+        return {
+            x: rect.width / width || 1,
+            y: rect.height / height || 1,
+        };
+    }
+
     function updateTooltipLayout() {
         if (!hoveredPoint || !hoverEl || !parentEl) {
             return;
@@ -60,33 +106,36 @@
 
         const parentRect = parentEl.getBoundingClientRect();
         const tooltipRect = hoverEl.getBoundingClientRect();
-        const margin = 12;
-        const offset = 14;
+        const scale = getParentScale();
+        const margin = 12 / scale.x;
+        const offset = 14 / scale.x;
+        const tooltipWidth = tooltipRect.width / scale.x;
+        const tooltipHeight = tooltipRect.height / scale.y;
 
         const anchorX =
             hoveredPoint.anchorClientX !== null
-                ? hoveredPoint.anchorClientX - parentRect.left
-                : (hoveredPoint.x / 1000) * parentRect.width;
+                ? (hoveredPoint.anchorClientX - parentRect.left) / scale.x
+                : (hoveredPoint.x / 1000) * (parentRect.width / scale.x);
         const anchorY =
             hoveredPoint.anchorClientY !== null
-                ? hoveredPoint.anchorClientY - parentRect.top
-                : (hoveredPoint.y / 420) * parentRect.height;
+                ? (hoveredPoint.anchorClientY - parentRect.top) / scale.y
+                : (hoveredPoint.y / 420) * (parentRect.height / scale.y);
 
         const placements = [
             {
                 left: anchorX + offset,
-                top: anchorY - tooltipRect.height - offset,
+                top: anchorY - tooltipHeight - offset,
             },
             {
-                left: anchorX - tooltipRect.width - offset,
-                top: anchorY - tooltipRect.height - offset,
+                left: anchorX - tooltipWidth - offset,
+                top: anchorY - tooltipHeight - offset,
             },
             {
                 left: anchorX + offset,
                 top: anchorY + offset,
             },
             {
-                left: anchorX - tooltipRect.width - offset,
+                left: anchorX - tooltipWidth - offset,
                 top: anchorY + offset,
             },
         ];
@@ -95,23 +144,24 @@
             (placement) =>
                 placement.left >= margin &&
                 placement.top >= margin &&
-                placement.left + tooltipRect.width <=
-                    parentRect.width - margin &&
-                placement.top + tooltipRect.height <=
-                    parentRect.height - margin,
+                placement.left + tooltipWidth <=
+                    parentRect.width / scale.x - margin &&
+                placement.top + tooltipHeight <=
+                    parentRect.height / scale.y - margin,
         );
 
         const basePlacement = fit ?? placements[0];
+        const horizontalBias = 24 / scale.x;
 
         const left = clamp(
-            basePlacement.left,
+            basePlacement.left + horizontalBias,
             margin,
-            parentRect.width - tooltipRect.width - margin,
+            parentRect.width / scale.x - tooltipWidth - margin,
         );
         const top = clamp(
             basePlacement.top,
             margin,
-            parentRect.height - tooltipRect.height - margin,
+            parentRect.height / scale.y - tooltipHeight - margin,
         );
 
         tooltipLayout = { left, top };
@@ -149,38 +199,89 @@
             action: title.slice(idx + 1).trim(),
         };
     }
+
+    async function syncBriefingWrapperHeight() {
+        if (!briefingWrapper) return;
+        await tick();
+
+        briefingWrapper.style.overflow = "hidden";
+        briefingWrapper.style.transition = "max-height 300ms ease";
+        briefingWrapper.style.maxHeight = briefingWrapper.scrollHeight + "px";
+    }
+
+    $: if (dashboard) syncBriefingWrapperHeight();
+
+    onDestroy(() => {
+        clearTimeout(optionCooldownTimer);
+    });
 </script>
 
-<Layout isActive="Fuel Prices">
-    <div class="flex flex-col gap-8 text-slate-100 font-jetbrainsMono">
+<Layout isActive="Fuel Prices" class="transition-all duration-300">
+    <div
+        class={`flex flex-col gap-8 text-slate-100 font-jetbrainsMono transition-all duration-300 ${
+            fitScreen
+                ? "scale-[1] -translate-y-0 -mb-0"
+                : "scale-[0.80] -translate-y-20 -mb-24"
+        }`}
+    >
         <div
-            class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
+            class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between transition-all duration-300"
         >
-            <div data-sr class="flex flex-col gap-3">
-                <div class="flex flex-wrap items-center gap-3">
+            <div
+                data-sr
+                class="flex flex-col gap-3 transition-all duration-300"
+            >
+                <div
+                    class="flex flex-wrap items-center gap-3 transition-all duration-300"
+                >
                     <h1
                         data-sr
                         data-sr-delay="80"
-                        class="text-4xl font-semibold font-jetbrainsMono tracking-tight text-white sm:text-5xl"
+                        data-sr-duration="1600"
+                        class="text-4xl font-semibold font-jetbrainsMono tracking-tight text-white sm:text-5xl transition-all duration-300"
                     >
                         Fuel Price
-                        <span class="text-orange-400">Trend</span>
+                        <span
+                            class="text-orange-400 transition-all duration-300"
+                            >Trend</span
+                        >
                     </h1>
                 </div>
             </div>
 
-            <div class="flex flex-wrap gap-3 lg:justify-end">
+            <div
+                class="flex flex-wrap gap-3 lg:justify-end transition-all duration-300"
+            >
+                <button
+                    type="button"
+                    on:click={toggleFitScreen}
+                    aria-pressed={fitScreen}
+                    class={`group inline-flex items-center gap-2 rounded-xl border px-5 py-3 text-sm font-jetbrainsMono transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(111,184,231,0.28)] ${
+                        fitScreen
+                            ? "border-[#6FB8E7] bg-[#6FB8E7]/20 text-white"
+                            : "border-white/70 bg-white/10 text-slate-100 hover:border-white/90 hover:bg-white/15"
+                    }`}
+                >
+                    <span>Fit Screen</span>
+                    <i
+                        class={`ri-fullscreen-line transition-all duration-300 ${
+                            fitScreen ? "rotate-180" : "rotate-0"
+                        }`}
+                    ></i>
+                </button>
+
                 {#each dashboard.fuelOptions as option, optionIndex}
                     <button
                         type="button"
                         data-sr
                         data-sr-delay={optionIndex * 80}
                         on:click={() => selectFuel(option.value)}
-                        class={`rounded-xl border px-5 py-3 text-sm transition duration-300 ease-out font-jetbrainsMono ${
+                        disabled={optionCooldownLocked}
+                        class={`rounded-xl border px-5 py-3 text-sm transition-all duration-300 ease-out font-jetbrainsMono ${
                             dashboard.selectedFuel === option.value
                                 ? "border-white/80 bg-white/35 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.18)]"
                                 : "border-white/70 bg-transparent text-slate-100 hover:border-white/90 hover:bg-white/10"
-                        }`}
+                        }  `}
                     >
                         {option.label}
                     </button>
@@ -188,24 +289,31 @@
             </div>
         </div>
 
-        <div class="flex flex-col gap-6 xl:flex-row">
+        <div
+            class="flex flex-col gap-6 xl:flex-row transition-all duration-300"
+        >
             <section
                 data-sr
                 data-sr-delay="120"
-                class="flex flex-1 flex-col rounded-[30px] border border-[#6FB8E7] bg-slate-950/45 p-5 shadow-[0_25px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm"
+                class="flex flex-1 flex-col rounded-[30px] border border-[#6FB8E7] bg-slate-950/45 p-5 shadow-[0_25px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-all duration-300"
             >
-                <div data-sr class="flex flex-wrap gap-2 place-self-end">
+                <div
+                    data-sr
+                    data-sr-duration="1400"
+                    class="flex flex-wrap gap-2 place-self-end transition-all duration-300"
+                >
                     {#each dashboard.monthTabs as month, monthIndex}
                         <button
                             type="button"
                             data-sr
                             data-sr-delay={monthIndex * 70}
                             on:click={() => selectMonth(month.value)}
-                            class={`rounded-xl px-4 py-2 text-sm transition duration-200 ${
+                            disabled={optionCooldownLocked}
+                            class={`rounded-xl px-4 py-2 text-sm transition-all duration-300 ${
                                 dashboard.selectedMonth === month.value
                                     ? "bg-blue-700 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.12)]"
                                     : "bg-white/10 text-slate-200 hover:bg-white/20"
-                            }`}
+                            }  `}
                         >
                             {month.label}
                         </button>
@@ -215,17 +323,23 @@
                 <div
                     data-sr
                     data-sr-delay="180"
-                    class="mt-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between place-self-center"
+                    class="mt-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between place-self-center transition-all duration-300"
                 >
-                    <div class="flex flex-wrap items-center gap-3">
-                        {#each dashboard.chart.series as series, seriesIndex}
+                    <div
+                        class="flex flex-wrap items-center gap-3 transition-all duration-300"
+                    >
+                        {#each dashboard.chart.series as series, seriesIndex (series.fuelSlug)}
                             <div
                                 data-sr
                                 data-sr-delay={seriesIndex * 90}
-                                class="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200"
+                                data-sr-duration="1400"
+                                class="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 transition-all duration-300"
+                                transition:fade={{ duration: 300 }}
+                                animate:flip={{ duration: 450 }}
                             >
                                 {#if series.fuelSlug === "petrol"}
                                     <svg
+                                        class="transition-all duration-300"
                                         width="16"
                                         height="16"
                                         viewBox="0 0 16 16"
@@ -233,12 +347,14 @@
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
                                         <rect
+                                            class="transition-all duration-300"
                                             y="7"
                                             width="16"
                                             height="2"
                                             fill="#8979FF"
                                         />
                                         <circle
+                                            class="transition-all duration-300"
                                             cx="8"
                                             cy="8"
                                             r="3.5"
@@ -248,6 +364,7 @@
                                     </svg>
                                 {:else if series.fuelSlug === "diesel"}
                                     <svg
+                                        class="transition-all duration-300"
                                         width="16"
                                         height="16"
                                         viewBox="0 0 16 16"
@@ -255,12 +372,14 @@
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
                                         <rect
+                                            class="transition-all duration-300"
                                             y="7"
                                             width="16"
                                             height="2"
                                             fill="#FF928A"
                                         />
                                         <circle
+                                            class="transition-all duration-300"
                                             cx="8"
                                             cy="8"
                                             r="3.5"
@@ -269,7 +388,14 @@
                                         />
                                     </svg>
                                 {/if}
-                                <span>{series.fuelLabel}</span>
+                                <span
+                                    data-sr
+                                    data-sr-delay={seriesIndex * 90 + 40}
+                                    data-sr-duration="1400"
+                                    class="transition-all duration-300"
+                                >
+                                    {series.fuelLabel}</span
+                                >
                             </div>
                         {/each}
                     </div>
@@ -279,7 +405,7 @@
                     bind:this={parentEl}
                     data-sr
                     data-sr-delay="220"
-                    class="relative mt-5 flex min-h-[36rem] flex-col overflow-hidden rounded-[26px] border border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.14),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(99,102,241,0.14),_transparent_28%),linear-gradient(180deg,rgba(15,23,42,0.95),rgba(15,23,42,0.72))] p-4"
+                    class="relative mt-5 flex min-h-[32rem] flex-col overflow-hidden rounded-[26px] border border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.14),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(99,102,241,0.14),_transparent_28%),linear-gradient(180deg,rgba(15,23,42,0.95),rgba(15,23,42,0.72))] p-4 transition-all duration-300"
                     role="region"
                     aria-label="Interactive fuel price chart"
                     on:mouseleave={clearHoveredPoint}
@@ -287,48 +413,58 @@
                     {#if hoveredPoint}
                         <div
                             bind:this={hoverEl}
-                            class={`transition-all duration-300 ease-out pointer-events-none absolute
+                            class={`${fitScreen ? "scale-[1]" : "scale-[1.13]"}  transition-all duration-300 ease-out pointer-events-none absolute
                                 z-30 w-[23rem] max-w-[calc(100%-1rem)] rounded-[18px] border border-white bg-[#2B2B2B]/80
                                  p-3 text-slate-100 shadow-[0_18px_38px_rgba(0,0,0,0.38)] backdrop-blur-sm`}
                             style={tooltipStyle(hoveredPoint)}
                             transition:fade={{ duration: 300 }}
                         >
-                            <div class="flex flex-col gap-1">
+                            <div
+                                class="flex flex-col gap-1 transition-all duration-300"
+                            >
                                 <p
-                                    class="text-[1.15rem] font-semibold leading-none text-white"
+                                    class="text-[1.15rem] font-semibold leading-none text-white transition-all duration-300"
                                 >
                                     {hoveredPoint.title}
                                 </p>
-                                <p class="text-xs tracking-wide text-slate-400">
+                                <p
+                                    class="text-xs tracking-wide text-slate-400 transition-all duration-300"
+                                >
                                     {hoveredPoint.subtitle}
                                 </p>
                             </div>
 
-                            <div class="mt-3 flex flex-col gap-2">
+                            <div
+                                class="mt-3 flex flex-col gap-2 transition-all duration-300"
+                            >
                                 {#each hoveredPoint.entries as entry}
                                     <div
-                                        class="flex items-center justify-between gap-3"
+                                        class="flex items-center justify-between gap-3 transition-all duration-300"
                                     >
-                                        <div class="flex items-center gap-2.5">
+                                        <div
+                                            class="flex items-center gap-2.5 transition-all duration-300"
+                                        >
                                             <span
-                                                class="h-3 w-3 rounded-full"
+                                                class="h-3 w-3 rounded-full transition-all duration-300"
                                                 style={`background-color: ${entry.color}`}
                                             ></span>
                                             <p
-                                                class="text-[0.7rem] text-slate-100"
+                                                class="text-[0.7rem] text-slate-100 transition-all duration-300"
                                             >
                                                 {entry.fuelLabel}:
                                             </p>
                                         </div>
                                         <div
-                                            class="flex items-baseline gap-3 text-right"
+                                            class="flex items-baseline gap-3 text-right transition-all duration-300"
                                         >
                                             <p
-                                                class="text-xs font-semibold text-white"
+                                                class="text-xs font-semibold text-white transition-all duration-300"
                                             >
                                                 {entry.priceText}
                                             </p>
-                                            <p class="text-[0.65rem]">
+                                            <p
+                                                class="text-[0.65rem] transition-all duration-300"
+                                            >
                                                 ({entry.changeLabel})
                                             </p>
                                         </div>
@@ -337,15 +473,19 @@
                             </div>
 
                             <div
-                                class="my-2.5 border-1 border-t border-white/40"
+                                class="my-2.5 border-1 border-t border-white/40 transition-all duration-300"
                             ></div>
 
-                            <div class="flex flex-col gap-2">
-                                <p class="text-xs font-semibold text-white">
+                            <div
+                                class="flex flex-col gap-2 transition-all duration-300"
+                            >
+                                <p
+                                    class="text-xs font-semibold text-white transition-all duration-300"
+                                >
                                     {hoveredPoint.forecastTitle}
                                 </p>
                                 <p
-                                    class="text-[0.72rem] leading-4 text-slate-200"
+                                    class="text-[0.72rem] leading-4 text-slate-200 transition-all duration-300"
                                 >
                                     {hoveredPoint.forecastBody}
                                 </p>
@@ -353,14 +493,15 @@
                         </div>
                     {/if}
 
-                    <div class="flex-1 pt-2">
+                    <div class="flex-1 pt-2 transition-all duration-300">
                         <svg
                             viewBox="0 0 1000 420"
-                            class="h-[28rem] w-full overflow-visible"
+                            class="h-[28rem] w-full overflow-visible transition-all duration-300"
                             preserveAspectRatio="none"
                         >
                             <defs>
                                 <linearGradient
+                                    class="transition-all duration-300"
                                     id="gridFade"
                                     x1="0"
                                     x2="0"
@@ -368,10 +509,12 @@
                                     y2="1"
                                 >
                                     <stop
+                                        class="transition-all duration-300"
                                         offset="0%"
                                         stop-color="rgba(255,255,255,0.08)"
                                     />
                                     <stop
+                                        class="transition-all duration-300"
                                         offset="100%"
                                         stop-color="rgba(255,255,255,0.02)"
                                     />
@@ -381,6 +524,7 @@
                             {#each dashboard.chart.yTicks as tick}
                                 <g>
                                     <line
+                                        class="transition-all duration-300"
                                         x1="74"
                                         x2="926"
                                         y1={tick.y}
@@ -389,6 +533,7 @@
                                         stroke-dasharray="4 4"
                                     ></line>
                                     <text
+                                        class="transition-all duration-300"
                                         x="50"
                                         y={tick.y + 4}
                                         fill="rgba(226,232,240,0.72)"
@@ -400,6 +545,7 @@
 
                             {#each dashboard.chart.dateAxisRows as axisRow, index}
                                 <line
+                                    class="transition-all duration-300"
                                     x1={dashboard.chart.dateAxisRows.length ===
                                     1
                                         ? 500
@@ -422,6 +568,7 @@
                                     stroke-dasharray="3 6"
                                 ></line>
                                 <text
+                                    class="transition-all duration-300"
                                     x={dashboard.chart.dateAxisRows.length === 1
                                         ? 500
                                         : 74 +
@@ -438,96 +585,110 @@
                                 </text>
                             {/each}
 
-                            {#each dashboard.chart.series as series}
-                                <path
-                                    d={series.areaPath}
-                                    fill={series.fill}
-                                    opacity={dashboard.selectedFuel === "all" ||
-                                    dashboard.selectedFuel === series.fuelSlug
-                                        ? 1
-                                        : 0.55}
-                                ></path>
-                                <path
-                                    d={series.linePath}
-                                    fill="none"
-                                    stroke={series.stroke}
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    style={`filter: drop-shadow(0 0 6px ${series.stroke})`}
-                                    opacity={dashboard.selectedFuel === "all" ||
-                                    dashboard.selectedFuel === series.fuelSlug
-                                        ? 1
-                                        : 0.55}
-                                />
+                            {#each dashboard.chart.series as series (series.fuelSlug)}
+                                <g transition:fly={{ y: 20, duration: 300 }}>
+                                    <path
+                                        class="transition-all duration-300"
+                                        d={series.areaPath}
+                                        fill={series.fill}
+                                        opacity={dashboard.selectedFuel ===
+                                            "all" ||
+                                        dashboard.selectedFuel ===
+                                            series.fuelSlug
+                                            ? 1
+                                            : 0.55}
+                                    ></path>
+                                    <path
+                                        class="transition-all duration-300"
+                                        d={series.linePath}
+                                        fill="none"
+                                        stroke={series.stroke}
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        style={`filter: drop-shadow(0 0 6px ${series.stroke})`}
+                                        opacity={dashboard.selectedFuel ===
+                                            "all" ||
+                                        dashboard.selectedFuel ===
+                                            series.fuelSlug
+                                            ? 1
+                                            : 0.55}
+                                    />
 
-                                {#each series.points as point}
-                                    <g
-                                        tabindex="0"
-                                        role="button"
-                                        aria-label={`${point.fuelLabel} ${point.fullDateLabel} ${point.priceText}`}
-                                        on:mouseenter={(event) => {
-                                            setHoveredPoint(
-                                                {
+                                    {#each series.points as point}
+                                        <g
+                                            tabindex="0"
+                                            role="button"
+                                            aria-label={`${point.fuelLabel} ${point.fullDateLabel} ${point.priceText}`}
+                                            on:mouseenter={(event) => {
+                                                setHoveredPoint(
+                                                    {
+                                                        ...point,
+                                                        color: series.stroke,
+                                                        priceText:
+                                                            point.priceText,
+                                                    },
+                                                    event,
+                                                );
+                                            }}
+                                            on:mousemove={moveHoveredPoint}
+                                            on:mouseleave={clearHoveredPoint}
+                                            on:focus={() =>
+                                                setHoveredPoint({
                                                     ...point,
                                                     color: series.stroke,
                                                     priceText: point.priceText,
-                                                },
-                                                event,
-                                            );
-                                        }}
-                                        on:mousemove={moveHoveredPoint}
-                                        on:mouseleave={clearHoveredPoint}
-                                        on:focus={() =>
-                                            setHoveredPoint({
-                                                ...point,
-                                                color: series.stroke,
-                                                priceText: point.priceText,
-                                            })}
-                                        on:blur={clearHoveredPoint}
-                                        class="cursor-pointer"
-                                    >
-                                        <circle
-                                            class="transition-all duration-300"
-                                            cx={point.x}
-                                            cy={point.y}
-                                            r="4"
-                                            fill={hoveredPoint &&
-                                            hoveredPoint.dateIso ===
-                                                point.dateIso &&
-                                            hoveredPoint.fuelSlug ===
-                                                point.fuelSlug
-                                                ? series.stroke
-                                                : ""}
-                                            stroke={series.stroke}
-                                            stroke-width="2"
-                                            opacity={hoveredPoint
-                                                ? hoveredPoint.dateIso ===
-                                                      point.dateIso &&
-                                                  hoveredPoint.fuelSlug ===
-                                                      point.fuelSlug
-                                                    ? 1
-                                                    : 0.3
-                                                : 1}
-                                        ></circle>
-                                    </g>
-                                {/each}
+                                                })}
+                                            on:blur={clearHoveredPoint}
+                                            class="cursor-pointer transition-all duration-300"
+                                        >
+                                            <circle
+                                                class="transition-all duration-300"
+                                                cx={point.x}
+                                                cy={point.y}
+                                                r="4"
+                                                fill={hoveredPoint &&
+                                                hoveredPoint.dateIso ===
+                                                    point.dateIso &&
+                                                hoveredPoint.fuelSlug ===
+                                                    point.fuelSlug
+                                                    ? series.stroke
+                                                    : ""}
+                                                stroke={series.stroke}
+                                                stroke-width="2"
+                                                opacity={hoveredPoint
+                                                    ? hoveredPoint.dateIso ===
+                                                          point.dateIso &&
+                                                      hoveredPoint.fuelSlug ===
+                                                          point.fuelSlug
+                                                        ? 1
+                                                        : 0.3
+                                                    : 1}
+                                            ></circle>
+                                        </g>
+                                    {/each}
+                                </g>
                             {/each}
                         </svg>
                     </div>
                 </div>
             </section>
 
-            <aside class="flex w-full flex-col gap-6 xl:max-w-[22rem]">
+            <aside
+                class="flex w-full flex-col gap-6 xl:max-w-[22rem] transition-all duration-300"
+            >
                 <div
+                    bind:this={briefingWrapper}
                     data-sr
                     data-sr-delay="140"
                     class="transition-all duration-300 flex flex-col rounded-[28px] border-2 border-white/75 bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm"
                 >
                     <div
-                        class="flex items-center gap-2 border-b border-[white/15] pb-4"
+                        class="flex items-center gap-2 border-b border-[white/15] pb-4 transition-all duration-300"
                     >
-                        <div class="flex items-center gap-3">
+                        <div
+                            class="flex items-center gap-3 transition-all duration-300"
+                        >
                             <svg
                                 width="30"
                                 height="30"
@@ -547,11 +708,21 @@
                                 />
                             </svg>
 
-                            <p class="text-lg font-semibold text-white">
+                            <p
+                                data-sr
+                                data-sr-delay="20"
+                                data-sr-duration="1600"
+                                class="text-lg font-semibold text-white transition-all duration-300"
+                            >
                                 Decision Briefing
                             </p>
                         </div>
-                        <p class="text-sm text-slate-400">
+                        <p
+                            data-sr
+                            data-sr-delay="60"
+                            data-sr-duration="1600"
+                            class="text-sm text-slate-400 transition-all duration-300"
+                        >
                             {`(${dashboard.selectedMonthLabel || "Latest"})`}
                         </p>
                     </div>
@@ -559,14 +730,20 @@
                     <div
                         class="mt-4 flex flex-col gap-4 transition-all duration-300"
                     >
-                        {#each dashboard.briefings as briefing, briefingIndex}
+                        {#each dashboard.briefings as briefing, briefingIndex (briefing.id)}
                             <div
                                 data-sr
                                 data-sr-delay={briefingIndex * 100}
-                                class="rounded-2xl border p-4 bg-[#061E29] transition-all duration-300"
+                                data-sr-duration="1600"
+                                class="rounded-2xl border p-4 bg-[#061E29] transition-all duration-300 overflow-hidden"
                                 style={`border-color: ${briefing.tone === "danger" ? "rgba(255,146,138,1)" : "white"}`}
+                                transition:fly={{ y: 20, duration: 500 }}
+                                animate:flip={{ duration: 300 }}
                             >
                                 <p
+                                    data-sr
+                                    data-sr-delay={briefingIndex * 100 + 40}
+                                    data-sr-duration="1600"
                                     class={`transition-all duration-300 text-sm font-semibold ${briefing.tone === "danger" ? "text-[#FF928A]" : briefing.label === "Recommended action:" ? "text-[#6FB8E7]" : "text-[#7BE495]"}`}
                                 >
                                     {briefing.label}
@@ -574,6 +751,9 @@
                                 </p>
 
                                 <p
+                                    data-sr
+                                    data-sr-delay={briefingIndex * 100 + 80}
+                                    data-sr-duration="1600"
                                     class="mt-2 text-sm leading-6 text-slate-200 transition-all duration-300"
                                 >
                                     {briefing.body}
@@ -586,46 +766,71 @@
                 <div
                     data-sr
                     data-sr-delay="220"
-                    class="flex flex-col rounded-[28px] border-2 border-white/75 bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm"
+                    class="flex flex-col rounded-[28px] border-2 border-white/75 bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm transition-all duration-300"
                 >
                     <div
-                        class="flex items-center justify-between gap-3 border-b border-[white]/30 pb-4"
+                        class="flex items-center justify-between gap-3 border-b border-[white]/30 pb-4 transition-all duration-300"
                     >
-                        <p class="text-lg font-semibold text-white">
+                        <p
+                            data-sr
+                            data-sr-duration="1600"
+                            class="text-lg font-semibold text-white transition-all duration-300"
+                        >
                             TODAY'S PRICES
                         </p>
                     </div>
 
-                    <div class="mt-4 flex flex-col gap-4">
+                    <div
+                        class="mt-4 flex flex-col gap-4 transition-all duration-300"
+                    >
                         {#each dashboard.currentPriceCards as card, index}
                             <div
                                 data-sr
                                 data-sr-delay={index * 100}
-                                class={`flex flex-col gap-3 ${index !== dashboard.currentPriceCards.length - 1 ? "border-b border-[white]/30 pb-4" : ""}`}
+                                data-sr-duration="1600"
+                                class={`flex flex-col gap-3 transition-all duration-300 ${index !== dashboard.currentPriceCards.length - 1 ? "border-b border-[white]/30 pb-4" : ""}`}
+                                transition:fly={{ y: 20, duration: 500 }}
                             >
                                 <div
-                                    class="flex items-center justify-between gap-3"
+                                    class="flex items-center justify-between gap-3 transition-all duration-300"
                                 >
-                                    <div class="flex items-center gap-3">
+                                    <div
+                                        class="flex items-center gap-3 transition-all duration-300"
+                                    >
                                         <span
-                                            class="h-2.5 w-2.5 rounded-full"
+                                            class="h-2.5 w-2.5 rounded-full transition-all duration-300"
                                             style={`background-color: ${card.dot}`}
                                         ></span>
-                                        <div class="flex flex-col text-nowrap">
-                                            <p class="text-sm text-slate-200">
+                                        <div
+                                            class="flex flex-col text-nowrap transition-all duration-300"
+                                        >
+                                            <p
+                                                data-sr
+                                                data-sr-delay={index * 100 + 20}
+                                                data-sr-duration="1600"
+                                                class="text-sm text-slate-200 transition-all duration-300"
+                                            >
                                                 {card.label}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div class="text-right">
+                                    <div
+                                        class="text-right transition-all duration-300"
+                                    >
                                         <p
+                                            data-sr
+                                            data-sr-delay={index * 200 + 40}
+                                            data-sr-duration="1600"
                                             class={`text-3xl leading-none transition-all duration-300 ${card.priceClass}`}
                                         >
                                             {card.price}
                                         </p>
                                         <p
-                                            class={`mt-1 text-xs ${card.deltaClass}`}
+                                            data-sr
+                                            data-sr-delay={index * 200 + 40}
+                                            data-sr-duration="1600"
+                                            class={`mt-1 text-xs transition-all duration-300 ${card.deltaClass}`}
                                         >
                                             {card.delta}
                                         </p>
