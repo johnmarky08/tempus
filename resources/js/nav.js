@@ -1,7 +1,7 @@
 export const nav = [
     {
         name: "Home",
-        link: "/",
+        link: "/home",
         description: "The home page of the website",
     },
     {
@@ -11,12 +11,12 @@ export const nav = [
     },
     {
         name: "Heat Index",
-        link: "/",
+        link: "/heat-index",
         description: "View heat index information",
     },
     {
         name: "History",
-        link: "/",
+        link: "/history",
         description: "View historical data",
     },
     {
