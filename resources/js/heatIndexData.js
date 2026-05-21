@@ -12,7 +12,6 @@ const HEAT_INDEX_STATE_META = {
     safe: {
         key: "safe",
         title: "SAFE",
-        label: "Green",
         tone: "safe",
         accent: "#33FF2F",
         bg: "bg-[#33FF2F]/50",
@@ -23,7 +22,6 @@ const HEAT_INDEX_STATE_META = {
     moderate: {
         key: "moderate",
         title: "MODERATE",
-        label: "Blue",
         tone: "moderate",
         accent: "#009BFF",
         bg: "bg-[#009BFF]/50",
@@ -34,7 +32,6 @@ const HEAT_INDEX_STATE_META = {
     high: {
         key: "high",
         title: "HIGH ALERT",
-        label: "Orange",
         tone: "high",
         accent: "#FF8400",
         bg: "bg-[#FF8400]/30",
@@ -45,7 +42,6 @@ const HEAT_INDEX_STATE_META = {
     extreme: {
         key: "extreme",
         title: "EXTREME CAUTION",
-        label: "Red",
         tone: "extreme",
         accent: "##FF0000",
         bg: "bg-[#FF0000]/50",
@@ -164,6 +160,10 @@ function formatWindSpeed(value) {
     return `${Number(value).toFixed(2)} km/h`;
 }
 
+function formatHumidity(value) {
+    return `${Number(value).toFixed(2)} %`;
+}
+
 function resolveSafetyState(heatIndexValue, ageRisk, exertionLevel) {
     const severityScore = clamp(
         heatIndexValue / 50 + ageRisk * 0.28 + exertionLevel / 18,
@@ -171,15 +171,15 @@ function resolveSafetyState(heatIndexValue, ageRisk, exertionLevel) {
         1.2,
     );
 
-    if (severityScore < 0.35) {
+    if (severityScore < 0.25) {
         return "safe";
     }
 
-    if (severityScore < 0.58) {
+    if (severityScore < 0.35) {
         return "moderate";
     }
 
-    if (severityScore < 0.86) {
+    if (severityScore < 0.45) {
         return "high";
     }
 
@@ -189,7 +189,7 @@ function resolveSafetyState(heatIndexValue, ageRisk, exertionLevel) {
 function buildChartModel(values, labels) {
     const width = 300;
     const height = 150;
-    const left = 14;
+    const left = 36;
     const right = 12;
     const top = 14;
     const bottom = 26;
@@ -258,6 +258,7 @@ export {
     buildChartModel,
     formatTemperature,
     formatWindSpeed,
+    formatHumidity,
     getIntensityMeta,
     getSafetyMeta,
     resolveSafetyState,

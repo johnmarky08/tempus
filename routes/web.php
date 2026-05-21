@@ -1,10 +1,7 @@
 <?php
 
 use App\Http\Controllers\FuelPricesController;
-use App\Http\Controllers\ArimaxController;
 use App\Http\Controllers\HeatIndexController;
-use App\Http\Controllers\RfcController;
-use App\Http\Controllers\RfrController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,11 +23,3 @@ Route::get('/history', function () {
 Route::get('/about', function () {
     return Inertia::render('About');
 });
-
-
-
-
-
-Route::get('/sample/arimax', ArimaxController::class);
-Route::get('/sample/rfr', RfrController::class);
-Route::get('/sample/rfc', RfcController::class);

@@ -133,7 +133,7 @@ class HeatIndexController extends Controller
             'stateKey' => $heatStateKey,
             'location' => 'Laguna, Philippines',
             'condition' => sprintf(
-                'Updated %s',
+                'Last Update: %s',
                 Carbon::parse($latestReading['date'])->format('l, F j, g:i A')
             ),
             'temperature' => $latestReading['temperature'],

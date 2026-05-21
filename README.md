@@ -5,7 +5,7 @@
 
 ### Thermal and Energy Metrics: Predictive Utility and Safety
 
-A Laravel 12 + Svelte 4 application that combines live-style dashboard presentation, Python-powered machine learning forecasting, and a clean Inertia-driven frontend for tracking fuel price movement and heat risk indicators with real-time safety assessments.
+A Laravel + Svelte application that combines live-style dashboard presentation, Python-powered machine learning forecasting, and a clean Inertia-driven frontend for tracking fuel price movement and heat risk indicators with real-time safety assessments.
 
 </div>
 
@@ -16,7 +16,7 @@ A Laravel 12 + Svelte 4 application that combines live-style dashboard presentat
 T.E.M.P.U.S. is a comprehensive monitoring and forecasting platform built to help users keep track of:
 
 - **Fuel Price Forecasting** — ARIMAX time-series predictions for fuel prices by type
-- **Heat Index Trends** — Random Forest regression for temperature and heat-related forecasting
+- **Heat Index Forecasting** — Random Forest regression for temperature and heat-related forecasting
 - **Outdoor Safety Assessments** — Random Forest classification for determining outdoor activity safety based on weather and demographic factors
 
 The project separates concerns between the web UI layer (Laravel + Svelte) and the ML layer (Python), with a lightweight PHP bridge orchestrating Python subprocess execution.
@@ -25,28 +25,28 @@ The project separates concerns between the web UI layer (Laravel + Svelte) and t
 
 ### Backend
 
-- **Laravel 12** — web framework for routing, controllers, and API orchestration
-- **PHP 8.2+** — server language
-- **Inertia.js 2.0** — reactive page component framework
+- **Laravel** — web framework for routing, controllers, and API orchestration
+- **PHP** — server language
+- **Inertia.js** — reactive page component framework
 - **MySQL** — database for training data and application state
 
 ### Frontend
 
-- **Svelte 4** — reactive UI component framework
-- **Vite 4.5** — build tooling and dev server
-- **Tailwind CSS 3.4** — utility-first styling
-- **Bootstrap 5.3** — component library
-- **Axios 1.11** — HTTP client
+- **Svelte** — reactive UI component framework
+- **Vite** — build tooling and dev server
+- **Tailwind CSS** — utility-first styling
+- **Bootstrap** — component library
+- **Axios** — HTTP client
 - **JavaScript ES6+** — client-side logic
 
 ### Machine Learning & Data
 
-- **Python 3** — ML script runtime
-- **NumPy 2.4.6** — numerical computing
-- **Pandas 3.0.3** — data manipulation and analysis
-- **scikit-learn 1.8** — machine learning algorithms (RandomForest, preprocessing)
-- **statsmodels 0.14.6** — ARIMAX time-series forecasting
-- **PyMySQL 1.1** — Python-MySQL connector
+- **Python** — ML script runtime
+- **NumPy** — numerical computing
+- **Pandas** — data manipulation and analysis
+- **scikit-learn** — machine learning algorithms (RandomForest, preprocessing)
+- **statsmodels** — ARIMAX time-series forecasting
+- **PyMySQL** — Python-MySQL connector
 
 ### Build & Development Tools
 
@@ -98,7 +98,6 @@ The application uses three primary ML data tables populated by seeders from XLSX
 - **Fuel Price Tracking** — Display historical fuel prices and ARIMAX-powered predictions with caching
 - **Heat Index Forecast** — Real-time heat index data with Random Forest regression forecasts
 - **Safety Assessment Page** — Interactive form for outdoor safety risk classification
-- **Sample/Test Pages** — Dedicated Svelte pages for each ML model with configurable inputs and JSON result display
 - **Database-Backed ML** — Training data stored in MySQL, loaded directly by Python scripts
 - **JSON Contract Interface** — Python scripts output JSON; bridge decodes and controllers forward to frontend
 - **Error Handling** — Bridge-level exception handling with descriptive error messages to users
@@ -112,10 +111,9 @@ The application uses three primary ML data tables populated by seeders from XLSX
 ├── app/
 │   ├── Http/
 │   │   └── Controllers/
-│   │       ├── ArimaxController.php      — ARIMAX endpoint
-│   │       ├── RfrController.php         — Random Forest Regressor endpoint
-│   │       ├── RfcController.php         — Random Forest Classifier endpoint
-│   │       └── FuelPricesController.php  — Fuel prices page with caching
+│   │       ├── Controller.php            — Base controller
+│   │       ├── FuelPricesController.php  — Fuel prices page with caching (calls `use_ml('arimax', ...)`)
+│   │       └── HeatIndexController.php   — Heat index page + safety assessment (calls `use_ml('rfr'|'rfc', ...)`)
 │   ├── Models/
 │   │   └── User.php
 │   ├── Utils/
@@ -145,11 +143,7 @@ The application uses three primary ML data tables populated by seeders from XLSX
 │   │   ├── FuelPrice.svelte          — Fuel prices tracking
 │   │   ├── HeatIndex.svelte          — Heat index display
 │   │   ├── History.svelte            — Historical data
-│   │   ├── About.svelte              — Team information
-│   │   └── samples/
-│   │       ├── arimax.svelte         — ARIMAX sample/test page
-│   │       ├── rfr.svelte            — RFR sample/test page
-│   │       └── rfc.svelte            — RFC sample/test page
+│   │   ├── About.svelte              — System Overview and Team information
 │   ├── js/
 │   │   ├── app.js                    — Main app entry
 │   │   ├── bootstrap.js              — Inertia/Svelte setup
@@ -184,11 +178,11 @@ The application uses three primary ML data tables populated by seeders from XLSX
 
 Ensure you have installed:
 
-- **PHP 8.2+** — Laravel requirement
-- **Composer 2.x+** — PHP package manager
-- **Node.js 18+** and **npm 9+** — JavaScript tooling
-- **Python 3.9+** — ML script runtime
-- **MySQL 8.0+** or compatible — database server
+- **PHP** — Laravel requirement
+- **Composer** — PHP package manager
+- **Node.js** and **npm** — JavaScript tooling
+- **Python** — ML script runtime
+- **MySQL** or compatible — database server
 - **Git** — version control
 
 ### 1. Clone & Install Dependencies
@@ -332,43 +326,7 @@ php artisan config:cache
 - `GET /heat-index` — Heat index display page
 - `GET /history` — Historical data view
 
-### ML Sample/Test Pages
-
-These pages allow interactive testing of each ML model with configurable inputs:
-
-- `GET /sample/arimax?horizon=7&n_lags=3&run=1` — ARIMAX forecasting test
-- `GET /sample/rfr?forecast_hours=24&run=1` — Random Forest Regressor test
-- `GET /sample/rfc?temperature=34&humidity=53&wind_speed=16&age_range=18-39&exertion_level=3&run=1` — Random Forest Classifier test
-
-**Note:** Append `&run=1` to execute the ML model; otherwise, inputs are displayed without results.
-
-### Response Format
-
-All ML endpoints return Inertia-rendered Svelte components with props:
-
-```javascript
-{
-  algorithm: "arimax|rfr|rfc",
-  inputs: { /* ...input parameters... */ },
-  result: { /* ...JSON output from Python script... */ },
-  error: null,  // or error message string if execution failed
-  note: "..."   // contextual information
-}
-```
-
 ## Controllers
-
-### ArimaxController
-
-Handles ARIMAX fuel price forecasting. Accepts `horizon` (forecast days) and `n_lags` (AR lags) query parameters.
-
-### RfrController
-
-Handles Random Forest Regressor for heat index forecasting. Accepts `forecast_hours` query parameter.
-
-### RfcController
-
-Handles Random Forest Classifier for outdoor safety assessment. Accepts temperature, humidity, wind_speed, age_range, and exertion_level query parameters.
 
 ### FuelPricesController
 
@@ -408,29 +366,34 @@ T.E.M.P.U.S. implements a clean separation of concerns between the web tier (Lar
 
 2. **Python ML Scripts**
     - Each ML algorithm is a standalone CLI script in `ml-algorithms/`:
-        - **arimax.py** — ARIMAX time-series forecasting per fuel type
-            - Reads `fuel_prices` table (date, price, fuel_type, exchange_rate_to_usd, normal_supply_flag)
-            - Performs automated hyperparameter grid search (p, d, q, P, D, Q orders)
-            - Supports configurable `horizon` (days to forecast) and `n_lags` (autoregressive lags)
-            - Uses `statsmodels.tsa.arima.ARIMA` for modeling
-            - Outputs JSON: forecast values, confidence intervals, and metadata
-        - **random-forest-regressor.py** — Heat index regression for forecasting
-            - Reads `heat_index` table (datetime, temperature, humidity, wind_speed, heat_index)
-            - Engineers rolling lag features for temporal dependencies
-            - Trains `RandomForestRegressor` on historical patterns
-            - Accepts `forecast_hours` parameter for multi-step ahead prediction
-            - Outputs JSON: predicted heat index values and feature importance
+        - **arimax.py** — ARIMAX/SARIMAX forecasting (per fuel type)
+            - CLI: `python arimax.py <horizon> <n_lags>` (e.g. `7 3`)
+            - Reads `fuel_prices` and uses exogenous regressors (`exchange_rate_to_usd`, `normal_supply_flag`)
+            - Runs a small grid search over (p,d,q) and uses a process per fuel type for parallelism
+            - Outputs JSON: list of forecast rows with `date`, `fuel_type`, `predicted_price`, `lower_95`, `upper_95`
+        - **random-forest-regressor.py** — Heat-index regression (hourly)
+            - CLI: `python random-forest-regressor.py <forecast_hours>` (default 24)
+            - Reads `heat_index`, engineers time and lag features, trains `RandomForestRegressor`, and returns iterative forecasts
+            - Outputs JSON: evaluation `metrics` and `forecasts` array (ISO datetimes and heat_index values)
         - **random-forest-classifier.py** — Safety classification for outdoor activity
-            - Reads `safety_assessment` table (date, temperature, humidity, wind_speed, age_range, exertion_level, safety_label)
-            - Preprocesses categorical features (one-hot encoding for age_range)
-            - Trains `RandomForestClassifier` to predict safety labels
-            - Accepts inference features (temperature, humidity, wind_speed, age_range, exertion_level) via CLI args
-            - Outputs JSON: predicted class and probability scores
+            - CLI: `python random-forest-classifier.py <date> <temperature> <humidity> <wind_speed> <age_range> <exertion_level>`
+            - Reads `safety_assessment`, performs ordinal encoding for `age_range`, trains `RandomForestClassifier`, and returns metrics + single prediction with ordered probabilities
+            - Outputs JSON: `metrics` and `result` (label and probability fields in a fixed order)
 
     - All Python scripts use `ml-algorithms/db_utils.py` for database connectivity:
         - Loads connection settings from `.env` file (DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD)
         - Returns pandas DataFrames with optional date parsing
         - Handles date/datetime columns appropriately per table schema
+
+### Python dependencies (exact)
+
+The repository pins these Python packages in `requirements.txt`:
+
+- `numpy==2.4.6`
+- `pandas==3.0.3`
+- `pymysql==1.1.2`
+- `scikit-learn==1.8.0`
+- `statsmodels==0.14.6`
 
 3. **PHP Bridge Layer**
     - `ml-algorithms/bridge.php` exports the `use_ml()` function
@@ -558,7 +521,7 @@ php artisan route:list
 <p align="center">
   <strong>T.E.M.P.U.S. — Thermal and Energy Metrics: Predictive Utility and Safety</strong>
   <br>
-  Built using Laravel 12, Svelte 4, and Python 3
+  Built using Laravel, Svelte, and Python
   <br>
   <em>Making energy and safety data accessible and actionable</em>
 </p>

@@ -426,17 +426,6 @@
         return `left: ${tooltipLayout.left}px; top: ${tooltipLayout.top}px;`;
     }
 
-    function splitTitle(title) {
-        if (!title || typeof title !== "string")
-            return { label: null, action: title };
-        const idx = title.indexOf(":");
-        if (idx === -1) return { label: null, action: title };
-        return {
-            label: title.slice(0, idx).trim(),
-            action: title.slice(idx + 1).trim(),
-        };
-    }
-
     async function syncBriefingWrapperHeight() {
         if (!briefingWrapper) return;
         await tick();
@@ -480,7 +469,7 @@
                         Fuel Price
                         <span
                             class="text-orange-400 transition-all duration-300"
-                            >Trend</span
+                            >Data</span
                         >
                     </h1>
                 </div>
@@ -918,7 +907,7 @@
                                             class="cursor-pointer transition-all duration-300"
                                         >
                                             <circle
-                                                class="transition-all duration-300"
+                                                class="outline-none transition-all duration-300"
                                                 cx={point.x}
                                                 cy={point.y}
                                                 r="12"
@@ -1009,7 +998,7 @@
                                             class="cursor-pointer transition-all duration-300"
                                         >
                                             <circle
-                                                class="transition-all duration-300"
+                                                class="outline-none transition-all duration-300"
                                                 cx={predictionPoint.x}
                                                 cy={predictionPoint.y}
                                                 r="12"

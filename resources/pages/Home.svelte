@@ -54,7 +54,9 @@
                                 data-sr-delay="100"
                                 class="max-w-xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-5xl"
                             >
-                                Monitor Fuel Price and
+                                Monitor
+                                <span class="text-sky-300">Fuel Price</span>
+                                and
                                 <span class="text-sky-300">Heat Index</span>
                                 Proactively
                             </h1>
@@ -104,7 +106,7 @@
                                     href="/about"
                                     class="hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,2)] inline-flex items-center gap-3 rounded-lg bg-white px-5 py-3 text-sm text-black shadow-white/10 transition hover:bg-slate-100"
                                 >
-                                    <span>About Us</span>
+                                    <span>Learn More</span>
                                     <i class="ri-arrow-right-fill"></i>
                                 </a>
                             </div>

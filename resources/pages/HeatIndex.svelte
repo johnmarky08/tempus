@@ -8,6 +8,7 @@
         buildChartModel,
         formatTemperature,
         formatWindSpeed,
+        formatHumidity,
         getIntensityMeta,
         getSafetyMeta,
         resolveSafetyState,
@@ -522,9 +523,9 @@
                     data-sr
                     class=" px-28 text-xl text-start font-semibold text-white sm:text-4xl"
                 >
-                    7-Hour Heat Index Predictions
+                    7-Hour Advanced Heat Index Forecast
                 </h1>
-                <div class="flex flex-col space-y-10 scale-[0.95]">
+                <div class="flex flex-col space-y-10 scale-[0.93]">
                     <div
                         class="flex gap-3 overflow-visible pb-1 justify-center"
                     >
@@ -566,7 +567,7 @@
                                     data-sr
                                     class="text-xl text-[#FF7B00] group-hover:[text-shadow:0_0_10px_#FF7B00] transition-all duration-300"
                                 >
-                                    {forecastTemp}°C
+                                    {Number(forecastTemp).toFixed(2)}°C
                                 </p>
                             </div>
                         {/each}
@@ -607,9 +608,11 @@
                                 data-sr
                                 class=" 
                                  transition-all duration-300 ease-out
-                                text-[2rem] font-semibold leading-none text-amber-300 sm:text-[3rem]"
+                                text-[2rem] font-semibold leading-none sm:text-[3rem] {heatTone.text}"
                             >
-                                {formatTemperature(selectedPreset.temperature)}
+                                {formatTemperature(
+                                    selectedPreset.heatIndexValue,
+                                )}
                             </p>
 
                             <div
@@ -625,11 +628,7 @@
                                         </p>
                                         <div class="flex items-center gap-5">
                                             <span
-                                                class="text-lg font-semibold {heatCard.text}"
-                                                >{heatTone.label}</span
-                                            >
-                                            <span
-                                                class="rounded-[8px] {heatCard.bg} px-10 py-1 text-xs
+                                                class="rounded-[8px] {heatCard.bg} w-full text-center px-10 py-1 text-xs
                                                  font-semibold text-white border border-white"
                                                 >{heatTone.title}</span
                                             >
@@ -720,16 +719,16 @@
                         >
                             <div
                                 class="flex items-center justify-between border-b border-t
-                                 border-white/50 pb-2 text-sm text-slate-300"
+                                 border-white/50 pb-2 pt-2 text-sm text-slate-300"
                             >
                                 <p class="items-center">Humidity</p>
                                 <p class="items-center">
-                                    {selectedPreset.humidity} %
+                                    {formatHumidity(selectedPreset.humidity)}
                                 </p>
                             </div>
 
                             <div
-                                class="space-x-40 flex items-center border-b border-white/50 justify-between text-sm text-slate-300"
+                                class="space-x-40 flex items-center pb-2 border-b border-white/50 justify-between text-sm text-slate-300"
                             >
                                 <p class="items-center">Wind</p>
                                 <p class="items-center">
@@ -750,6 +749,15 @@
                         data-sr
                         class="hover:scale-105 hover:-translate-y-3 hover:translate-x-3 hover:shadow-[0_0_10px_#fb923c] transition-all duration-300 ease-in-out relative rounded-[24px] border border-white bg-[#152A42]/50 p-3"
                     >
+                        <div
+                            class="mb-3 mt-2 flex justify-center items-center px-1"
+                        >
+                            <p
+                                class="text-md text-center font-semibold tracking-[0.22em] text-white/90 uppercase"
+                            >
+                                Previous Heat Indexes
+                            </p>
+                        </div>
                         <svg
                             data-sr
                             viewBox="0 0 300 150"
@@ -774,6 +782,19 @@
                                     </feMerge>
                                 </filter>
                             </defs>
+                            <g aria-hidden="true">
+                                {#each chartModel.ticks as tick, index (index)}
+                                    <text
+                                        x="2"
+                                        y={tick.y + 3}
+                                        fill="rgba(226,232,240,0.68)"
+                                        font-size="8"
+                                        text-anchor="start"
+                                    >
+                                        {formatTemperature(tick.value)}
+                                    </text>
+                                {/each}
+                            </g>
                             <g
                                 data-sr
                                 transition:fly={{ y: 8, duration: 400 }}
@@ -805,7 +826,7 @@
                                         tabindex="0"
                                         role="button"
                                         aria-label={`${point.label} ${point.value} degrees`}
-                                        class="cursor-pointer transition-all duration-300 ease-in-out"
+                                        class="cursor-pointer outline-none transition-all duration-300 ease-in-out"
                                         opacity={hoveredPointIndex !== null &&
                                         hoveredPointIndex !== index
                                             ? 0.25
@@ -876,20 +897,34 @@
 
                             {#each chartModel.points as point, index (index)}
                                 {#if hoveredPointIndex === index}
-                                    <text
+                                    <g
                                         data-sr
                                         in:fly={{ y: 8, duration: 300 }}
                                         out:fade={{ duration: 400 }}
-                                        x={point.x}
-                                        y={point.y - 16}
-                                        fill="rgba(251,146,60,0.98)"
-                                        font-size="9"
-                                        font-weight="700"
-                                        text-anchor="middle"
+                                        transform={`translate(${point.x}, ${point.y - 45})`}
                                         style="pointer-events: none"
                                         class="transition-all duration-300 ease-in-out"
-                                        >{point.value}°C</text
                                     >
+                                        <path
+                                            d="M -16 0 H 16 A 8 8 0 0 1 24 8 V 11 A 8 8 0 0 1 16 19 H 8 L 0 29 L -8 19 H -16 A 8 8 0 0 1 -24 11 V 8 A 8 8 0 0 1 -16 0 Z"
+                                            fill="rgba(21,42,66,0.96)"
+                                            stroke="rgba(255,255,255,0.18)"
+                                            stroke-width="1"
+                                            stroke-linejoin="round"
+                                        ></path>
+
+                                        <text
+                                            x="0"
+                                            y="13"
+                                            fill="rgba(251,146,60,0.98)"
+                                            font-size="9"
+                                            font-weight="700"
+                                            text-anchor="middle"
+                                            class="transition-all duration-300 ease-in-out"
+                                        >
+                                            {point.value}°C
+                                        </text>
+                                    </g>
                                 {/if}
                             {/each}
 
@@ -901,7 +936,7 @@
                                     x={point.x}
                                     y="142"
                                     fill="rgba(226,232,240,0.72)"
-                                    font-size="10"
+                                    font-size="8"
                                     text-anchor="middle">{point.label}</text
                                 >
                             {/each}

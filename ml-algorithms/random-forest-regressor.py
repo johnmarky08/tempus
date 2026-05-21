@@ -41,9 +41,7 @@ FEATURE_COLS = [
     "temperature", "humidity", "wind_speed",
     "day_of_year", "day_of_week", "hour_of_day",
     "temperature_roll3", "humidity_roll3", "wind_speed_roll3",
-    "heat_index_lag1", "heat_index_lag2", "heat_index_lag3",
-    "heat_index_lag4", "heat_index_lag5", "heat_index_lag6", "heat_index_lag7",
-]
+] + [f"heat_index_lag{lag}" for lag in range(1, 25)]
 TARGET = "heat_index"
 
 
@@ -61,8 +59,8 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     for col in ["temperature", "humidity", "wind_speed"]:
         df[f"{col}_roll3"] = df[col].rolling(window=3, min_periods=1).mean()
 
-    # Lag features for heat_index (lags 1..7)
-    for lag in range(1, 8):
+    # Lag features for heat_index (lags 1..24)
+    for lag in range(1, 25):
         df[f"heat_index_lag{lag}"] = df["heat_index"].shift(lag)
 
     return df
@@ -150,7 +148,7 @@ def iterative_forecast(model, df_clean: pd.DataFrame, forecast_hours: int) -> li
         row["hour_of_day"] = next_date.hour
 
         # Lag features drawn from the growing history
-        for lag in range(1, 8):
+        for lag in range(1, 25):
             row[f"heat_index_lag{lag}"] = hi_history[-lag] if len(hi_history) >= lag else np.nan
 
         X_row   = pd.DataFrame([row[FEATURE_COLS]])
