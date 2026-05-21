@@ -129,9 +129,11 @@ def iterative_forecast(model, df_clean: pd.DataFrame, forecast_hours: int) -> li
     last_row  = df_clean.iloc[-1].copy()
     last_date = last_row["date"]
 
-    # Start forecasts from the next full hour relative to now (exclude current hour)
-    now = pd.Timestamp.now()
-    start_time = now.replace(minute=0, second=0, microsecond=0) + pd.Timedelta(hours=1)
+    # Start forecasts from the next full hour relative to the latest recorded
+    # data point (exclude the recorded hour). This ensures forecasts follow
+    # immediately after the most recent observation rather than the current
+    # wall-clock time.
+    start_time = last_date.replace(minute=0, second=0, microsecond=0) + pd.Timedelta(hours=1)
 
     # Grow this list with predicted values to feed back as lags
     hi_history = list(df_clean["heat_index"].values)

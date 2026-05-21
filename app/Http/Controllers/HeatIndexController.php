@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Utils\HeatIndex;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,8 +21,9 @@ class HeatIndexController extends Controller
             'exertion_level' => (float) $request->input('exertion_level', 0),
             'forecast_hours' => 7,
             'assess' => $request->boolean('assess', false),
-            'refresh' => $request->boolean('refresh', false),
         ];
+
+        $this->syncArchiveDataIfNeeded();
 
         $rows = DB::table('heat_index')
             ->select(['date', 'temperature', 'humidity', 'wind_speed', 'heat_index'])
@@ -85,10 +88,6 @@ class HeatIndexController extends Controller
             $latestReading['date'],
             $inputs['forecast_hours']
         );
-
-        if ($inputs['refresh']) {
-            Cache::forget($forecastCacheKey);
-        }
 
         $forecastResult = Cache::rememberForever($forecastCacheKey, function () use ($inputs) {
             return use_ml('rfr', $inputs['forecast_hours']);
@@ -170,6 +169,98 @@ class HeatIndexController extends Controller
         if (!function_exists('use_ml')) {
             require_once base_path('ml-algorithms/bridge.php');
         }
+    }
+
+    private function syncArchiveDataIfNeeded(): void
+    {
+        $latestRow = DB::table('heat_index')
+            ->select(['date'])
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->first();
+
+        $currentHour = Carbon::now('Asia/Manila')->startOfHour();
+
+        if ($latestRow === null) {
+            $this->refreshArchiveRange(
+                $currentHour->copy()->startOfDay(),
+                $currentHour
+            );
+
+            return;
+        }
+
+        $latestHour = Carbon::parse($latestRow->date, 'Asia/Manila')->startOfHour();
+
+        if ($latestHour->equalTo($currentHour)) {
+            return;
+        }
+
+        $this->refreshArchiveRange($latestHour->copy()->addHour(), $currentHour);
+    }
+
+    private function refreshArchiveRange(Carbon $startHour, Carbon $endHour): void
+    {
+        if ($startHour->greaterThan($endHour)) {
+            return;
+        }
+
+        $response = Http::timeout(30)->get(
+            'https://archive-api.open-meteo.com/v1/archive',
+            [
+                'latitude' => 14.0949,
+                'longitude' => 121.3007,
+                'start_date' => $startHour->toDateString(),
+                'end_date' => $endHour->toDateString(),
+                'hourly' => 'temperature_2m,relative_humidity_2m,wind_speed_100m',
+                'timezone' => 'Asia/Manila',
+            ]
+        );
+
+        if (! $response->successful()) {
+            return;
+        }
+
+        $payload = $response->json();
+        $hourly = is_array($payload) ? ($payload['hourly'] ?? []) : [];
+        $times = is_array($hourly) ? ($hourly['time'] ?? []) : [];
+        $temperatures = is_array($hourly) ? ($hourly['temperature_2m'] ?? []) : [];
+        $humidities = is_array($hourly) ? ($hourly['relative_humidity_2m'] ?? []) : [];
+        $windSpeeds = is_array($hourly) ? ($hourly['wind_speed_100m'] ?? []) : [];
+
+        $rows = [];
+
+        foreach ($times as $index => $time) {
+            $readingTime = Carbon::parse((string) $time, 'Asia/Manila')->startOfHour();
+
+            if ($readingTime->lessThan($startHour) || $readingTime->greaterThan($endHour)) {
+                continue;
+            }
+
+            if (! isset($temperatures[$index], $humidities[$index], $windSpeeds[$index])) {
+                continue;
+            }
+
+            $temperature = (float) $temperatures[$index];
+            $humidity = (float) $humidities[$index];
+            $windSpeed = (float) $windSpeeds[$index];
+
+            $rows[] = [
+                'date' => $readingTime->toDateTimeString(),
+                'temperature' => $temperature,
+                'humidity' => $humidity,
+                'wind_speed' => $windSpeed,
+                'heat_index' => HeatIndex::fromCelsius($temperature, $humidity),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        if (empty($rows)) {
+            return;
+        }
+
+        DB::table('heat_index')->insert($rows);
     }
 
     private function resolveHeatStateKey(float $heatIndex): string

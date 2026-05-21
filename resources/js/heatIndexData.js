@@ -161,7 +161,7 @@ function formatTemperature(value) {
 }
 
 function formatWindSpeed(value) {
-    return `${Number(value).toFixed(2)} KpH`;
+    return `${Number(value).toFixed(2)} km/h`;
 }
 
 function resolveSafetyState(heatIndexValue, ageRisk, exertionLevel) {

@@ -724,7 +724,7 @@
                             >
                                 <p class="items-center">Humidity</p>
                                 <p class="items-center">
-                                    {selectedPreset.humidity}°C
+                                    {selectedPreset.humidity} %
                                 </p>
                             </div>
 
