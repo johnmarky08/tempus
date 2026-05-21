@@ -15,8 +15,8 @@ class HeatIndexController extends Controller
     public function __invoke(Request $request): Response|JsonResponse
     {
         $inputs = [
-            'age_range' => (string) $request->input('age_range', '18-39'),
-            'exertion_level' => (float) $request->input('exertion_level', 3),
+            'age_range' => (string) $request->input('age_range', '0-3'),
+            'exertion_level' => (float) $request->input('exertion_level', 0),
             'forecast_hours' => 7,
             'assess' => $request->boolean('assess', false),
             'refresh' => $request->boolean('refresh', false),

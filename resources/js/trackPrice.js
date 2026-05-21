@@ -210,7 +210,7 @@ function buildMonthTabs(rows) {
         }
     });
 
-    return [...months.values()].sort((a, b) => b.sortValue - a.sortValue);
+    return [...months.values()].sort((a, b) => a.sortValue - b.sortValue);
 }
 
 function buildFuelOptions(rows) {
@@ -560,7 +560,7 @@ export function buildTrackPriceDashboard(
         (option) => option.value === selectedMonth,
     )
         ? selectedMonth
-        : (monthTabs[0]?.value ?? "");
+        : (monthTabs.at(-1)?.value ?? "");
     const chart = buildSeries(sourceRows, normalizedFuel, normalizedMonth);
     const currentPriceCards = buildCurrentPriceCards(sourceRows);
     const briefings = buildBriefings(

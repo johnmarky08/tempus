@@ -31,7 +31,7 @@
     <div class="flex flex-col gap-3 mr-40">
         <h1 class="font-bold text-lg text-center">Quick Links</h1>
         <ul
-            class="flex gap-3 text-gray-300 max-w-[100px] flex-wrap justify-left"
+            class="flex gap-3 text-gray-300 max-w-[90px] flex-wrap justify-left"
         >
             {#each nav as { name, link }}
                 <li class="">
@@ -52,8 +52,10 @@
                        after:bg-[#6FB8E7]
                        after:transition-all
                        after:duration-300
-                       hover:after:w-full">{name}</span
+                       hover:after:w-full"
                         >
+                            {name}
+                        </span>
                     </a>
                 </li>
             {/each}

@@ -157,7 +157,7 @@ function clamp(value, min, max) {
 }
 
 function formatTemperature(value) {
-    return `${Math.round(value)}°`;
+    return `${Math.round(value)}°C`;
 }
 
 function formatWindSpeed(value) {

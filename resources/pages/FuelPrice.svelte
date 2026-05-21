@@ -33,6 +33,136 @@
         selectedMonth,
     );
     $: predictionCards = buildPredictionCards(predictions, fuelPrices);
+    $: predictionPlotPointsByFuel = buildPredictionPlotPoints(
+        dashboard,
+        predictions,
+    );
+    $: predictionAxisX = predictionPlotPointsByFuel.size
+        ? [...predictionPlotPointsByFuel.values()][0].x
+        : null;
+    $: graphYearTitle = getGraphYearTitle(
+        dashboard?.selectedMonth,
+        dashboard?.chart?.dateAxisRows,
+    );
+
+    function toTimestamp(value) {
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
+    }
+
+    function buildPredictionPlotPoints(dashboardData, predictionRows = []) {
+        const chart = dashboardData?.chart;
+        const latestMonthValue = dashboardData?.monthTabs?.at(-1)?.value ?? "";
+
+        if (!chart?.series?.length) {
+            return new Map();
+        }
+
+        if (
+            !latestMonthValue ||
+            dashboardData?.selectedMonth !== latestMonthValue
+        ) {
+            return new Map();
+        }
+
+        const latestPredictions = new Map();
+
+        predictionRows.forEach((row) => {
+            const fuelSlug = normalizeFuelSlug(row.fuel_type);
+            const existing = latestPredictions.get(fuelSlug);
+
+            if (
+                !existing ||
+                toTimestamp(row.date) > toTimestamp(existing.date)
+            ) {
+                latestPredictions.set(fuelSlug, row);
+            }
+        });
+
+        const axisMax = Number(chart.axisMax ?? 0) || 1;
+        const height = 420;
+        const paddingY = 42;
+        const innerHeight = height - paddingY * 2;
+        const axisCount = chart.dateAxisRows?.length ?? 0;
+        const predictedGap =
+            axisCount > 1 ? clamp((852 / (axisCount - 1)) * 0.72, 40, 90) : 72;
+        const predictionRightBoundary = 960;
+        const points = new Map();
+
+        chart.series.forEach((seriesItem) => {
+            const prediction = latestPredictions.get(seriesItem.fuelSlug);
+            const latestSeriesPoint = seriesItem.points?.at(-1);
+
+            if (!prediction || !latestSeriesPoint) {
+                return;
+            }
+
+            const predictedPrice = Number(
+                prediction.predicted_price ?? prediction.price,
+            );
+
+            if (!Number.isFinite(predictedPrice)) {
+                return;
+            }
+
+            const yRaw =
+                paddingY + ((axisMax - predictedPrice) / axisMax) * innerHeight;
+            const y = clamp(yRaw, paddingY, height - paddingY);
+            const priceText = formatMoney(predictedPrice);
+            const predictedChange = predictedPrice - latestSeriesPoint.price;
+            const predictedChangeLabel = formatDelta(
+                predictedChange,
+                "vs latest day",
+            );
+
+            points.set(seriesItem.fuelSlug, {
+                fuelSlug: seriesItem.fuelSlug,
+                fuelLabel: seriesItem.fuelLabel,
+                dateIso: `prediction-${seriesItem.fuelSlug}`,
+                x: clamp(
+                    latestSeriesPoint.x + predictedGap,
+                    latestSeriesPoint.x + 16,
+                    predictionRightBoundary,
+                ),
+                y,
+                price: predictedPrice,
+                priceText,
+                title: "Prediction",
+                subtitle: "Using ARIMAX Model",
+                entries: [
+                    {
+                        fuelSlug: seriesItem.fuelSlug,
+                        fuelLabel: seriesItem.fuelLabel,
+                        priceText,
+                        changeLabel: predictedChangeLabel,
+                        color: "rgba(248,250,252,0.95)",
+                        price: predictedPrice,
+                    },
+                ],
+                forecastTitle: "T.E.M.P.U.S. Forecast: Prediction",
+                forecastBody:
+                    "Estimated using the ARIMAX forecasting model from recent weekly fuel price trends.",
+                dotFill: "rgba(248,250,252,0.95)",
+                dotStroke: "rgba(255,255,255,0.92)",
+                lineColor: "rgba(241,245,249,0.95)",
+            });
+        });
+
+        return points;
+    }
+
+    function getGraphYearTitle(monthKey, axisRows = []) {
+        const monthYear = String(monthKey ?? "").slice(0, 4);
+
+        if (/^\d{4}$/.test(monthYear)) {
+            return monthYear;
+        }
+
+        const fallbackIso = axisRows.at(-1)?.dateIso ?? axisRows[0]?.dateIso;
+        const axisYear = String(fallbackIso ?? "").slice(0, 4);
+
+        return /^\d{4}$/.test(axisYear) ? axisYear : "";
+    }
 
     function selectFuel(value) {
         if (optionCooldownLocked || value === selectedFuel) {
@@ -168,9 +298,11 @@
     }
 
     async function setHoveredPoint(point, event = null) {
+        const hoverGroup = dashboard.chart.hoverGroups.get(point.dateIso) ?? {};
+
         hoveredPoint = {
+            ...hoverGroup,
             ...point,
-            ...dashboard.chart.hoverGroups.get(point.dateIso),
             left: Math.max(18, Math.min(82, (point.x / 1000) * 100)),
             top: Math.max(16, Math.min(84, (point.y / 420) * 100)),
             anchorClientX: event?.clientX ?? null,
@@ -600,6 +732,21 @@
                         </div>
                     {/if}
 
+                    {#if graphYearTitle}
+                        <div
+                            class="pt-1 text-center transition-all duration-300"
+                        >
+                            <p
+                                data-sr
+                                data-sr-delay="250"
+                                data-sr-duration="1400"
+                                class="text-sm font-semibold tracking-[0.28em] text-slate-300/90 transition-all duration-300"
+                            >
+                                YEAR {graphYearTitle}
+                            </p>
+                        </div>
+                    {/if}
+
                     <div class="flex-1 pt-2 transition-all duration-300">
                         <svg
                             data-sr
@@ -705,6 +852,20 @@
                                     {axisRow.dateLabel}
                                 </text>
                             {/each}
+
+                            {#if predictionAxisX !== null}
+                                <line
+                                    data-sr
+                                    data-sr-delay="380"
+                                    class="transition-all duration-300"
+                                    x1={predictionAxisX}
+                                    x2={predictionAxisX}
+                                    y1="42"
+                                    y2="378"
+                                    stroke="rgba(148,163,184,0.12)"
+                                    stroke-dasharray="3 6"
+                                ></line>
+                            {/if}
 
                             {#each dashboard.chart.series as series, seriesIndex (series.fuelSlug)}
                                 <g
@@ -814,6 +975,76 @@
                                             ></circle>
                                         </g>
                                     {/each}
+
+                                    {#if predictionPlotPointsByFuel.has(series.fuelSlug)}
+                                        {@const predictionPoint =
+                                            predictionPlotPointsByFuel.get(
+                                                series.fuelSlug,
+                                            )}
+                                        {@const latestSeriesPoint =
+                                            series.points.at(-1)}
+                                        {@const latestPointRightEdgeX =
+                                            latestSeriesPoint.x + 4}
+                                        <line
+                                            data-sr
+                                            data-sr-delay={480 +
+                                                seriesIndex * 90}
+                                            class="transition-all duration-300"
+                                            x1={latestPointRightEdgeX}
+                                            y1={latestSeriesPoint.y}
+                                            x2={predictionPoint.x}
+                                            y2={predictionPoint.y}
+                                            stroke={predictionPoint.lineColor}
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            style="filter: drop-shadow(0 0 5px rgba(241,245,249,0.5));"
+                                        ></line>
+                                        <g
+                                            data-sr
+                                            data-sr-delay={520 +
+                                                seriesIndex * 90}
+                                            tabindex="0"
+                                            role="button"
+                                            aria-label={`${series.fuelLabel} prediction ${predictionPoint.priceText}`}
+                                            class="cursor-pointer transition-all duration-300"
+                                        >
+                                            <circle
+                                                class="transition-all duration-300"
+                                                cx={predictionPoint.x}
+                                                cy={predictionPoint.y}
+                                                r="12"
+                                                fill="transparent"
+                                                stroke="transparent"
+                                                pointer-events="all"
+                                                role="button"
+                                                tabindex="0"
+                                                on:mouseenter={(event) => {
+                                                    setHoveredPoint(
+                                                        predictionPoint,
+                                                        event,
+                                                    );
+                                                }}
+                                                on:mousemove={moveHoveredPoint}
+                                                on:mouseleave={clearHoveredPoint}
+                                                on:focus={() =>
+                                                    setHoveredPoint(
+                                                        predictionPoint,
+                                                    )}
+                                                on:blur={clearHoveredPoint}
+                                            ></circle>
+                                            <circle
+                                                class="transition-all duration-300"
+                                                cx={predictionPoint.x}
+                                                cy={predictionPoint.y}
+                                                r="4.6"
+                                                pointer-events="none"
+                                                fill={predictionPoint.dotFill}
+                                                stroke={predictionPoint.dotStroke}
+                                                stroke-width="2"
+                                                style="filter: drop-shadow(0 0 8px rgba(248,250,252,0.85));"
+                                            ></circle>
+                                        </g>
+                                    {/if}
                                 </g>
                             {/each}
                         </svg>
@@ -913,7 +1144,7 @@
                 <div
                     data-sr
                     data-sr-delay="220"
-                    class="flex flex-col rounded-[28px] border-2 border-white/75 bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm transition-all duration-300"
+                    class="prediction-highlight flex flex-col rounded-[28px] border-2 border-white/75 bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm transition-all duration-300"
                 >
                     <div
                         class="flex w-full items-center justify-center gap-3 border-b border-[white]/30 pb-4 transition-all duration-300"

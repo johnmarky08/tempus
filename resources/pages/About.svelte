@@ -129,7 +129,7 @@
                                     data-sr-delay="40"
                                     class="text-3xl tracking-tight text-white"
                                 >
-                                    Project Description
+                                    System Overview
                                 </h2>
 
                                 <p
@@ -146,10 +146,10 @@
                                     platform provides clear, practical
                                     recommendations such as when to refuel, when
                                     to avoid outdoor activities, and how to save
-                                    money during high-risk days. Its goal is to
-                                    make daily life safer, more affordable, and
-                                    easier to manage through simple, actionable
-                                    insights.
+                                    money during high-risk days. Its objective
+                                    is to make daily life safer, more
+                                    affordable, and easier to manage through
+                                    simple, actionable insights.
                                 </p>
 
                                 <div class="flex items-center pt-1">
@@ -158,7 +158,7 @@
                                             (showDescription = true)}
                                         class="hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,2)] inline-flex items-center gap-3 rounded-lg border border-sky-400/40 bg-slate-950/40 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-900/70"
                                     >
-                                        <span>View Full Description</span>
+                                        <span>View Full Overview</span>
                                         <i class="ri-fullscreen-fill"></i>
                                     </button>
                                 </div>
@@ -268,13 +268,13 @@
                        after:-bottom-1
                        after:h-[2px]
                        after:w-0
-                     after:bg-[#6FB8E7]
+                       after:bg-[#6FB8E7]
                        after:transition-all
                        after:duration-300
                        group-hover:after:w-full"
                                         >
-                                            {name}</span
-                                        >
+                                            {name}
+                                        </span>
                                     </p>
 
                                     <div
