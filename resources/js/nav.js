@@ -5,6 +5,11 @@ export const nav = [
         description: "The home page of the website",
     },
     {
+        name: "About",
+        link: "/about",
+        description: "Learn more about this project",
+    },
+    {
         name: "Fuel Prices",
         link: "/fuel-prices",
         description: "View current fuel prices",
@@ -18,10 +23,5 @@ export const nav = [
         name: "History",
         link: "/history",
         description: "View historical data",
-    },
-    {
-        name: "About",
-        link: "/about",
-        description: "Learn more about this project",
     },
 ];

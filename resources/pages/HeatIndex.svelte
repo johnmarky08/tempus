@@ -197,12 +197,12 @@
         class="smooth-scroll flex flex-col space-y-36 mt-14 text-slate-100 font-jetbrainsMono"
     >
         <section
-            class="flex flex-col gap-6 xl:flex-row justify-center scale-[1.20]"
+            class="flex flex-col gap-6 xl:flex-row justify-center scale-[1.10]"
         >
             <div class="flex flex-col gap-6">
                 <div
                     data-sr
-                    class={`group hover:scale-105 hover:-translate-y-2 hover:-translate-x-5 cursor-pointer 
+                    class={`group hover:scale-105 hover:-translate-y-2 hover:-translate-x-5
                      transition-all duration-300 hover:shadow-[0_0px_5px_#ffffff] ease-out
                     flex flex-col space-y-8 rounded-[20px] border border-white
                     bg-[#152A42]/50 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:p-7 sm:py-12 `}
@@ -210,7 +210,7 @@
                     <div
                         data-sr
                         class="
-                    group-hover:scale-105 group-hover:-translate-y-2 group-hover:translate-x-3 cursor-pointer
+                    group-hover:scale-105 group-hover:-translate-y-2 group-hover:translate-x-3
                      transition-all duration-300 ease-out
                     flex flex-col gap-1"
                     >
@@ -229,8 +229,7 @@
                             <p
                                 data-sr
                                 class=" 
-                                hover:scale-105 hover:-translate-y-2 hover:translate-x-3 cursor-pointer
-                                 transition-all duration-300 ease-out hover:[text-shadow:0_0_10px_#fcd34d]
+                                 transition-all duration-300 ease-out
                                 text-[4rem] font-semibold leading-none text-amber-300 sm:text-[5rem]"
                             >
                                 {formatTemperature(selectedPreset.temperature)}
@@ -238,7 +237,7 @@
 
                             <div
                                 data-sr
-                                class={`hover:scale-105 hover:-translate-y-2 hover:translate-x-3 cursor-pointer hover:shadow-[0_0_10px_${heatCard.accent}] transition-all duration-300 ease-out 
+                                class={`transition-all duration-300 ease-out 
                                 flex h-full flex-col justify-end gap-3 rounded-[15px] border
                                 ${heatCard.border}  ${heatCard.bg} px-4 py-5 shadow-[0_0_30px_rgba(245,158,11,0.16)]`}
                             >
@@ -340,7 +339,7 @@
                             </div>
                         </div>
                         <div
-                            class="group-hover:scale-105 group-hover:-translate-y-2 group-hover:translate-x-3 cursor-pointer
+                            class="group-hover:scale-105 group-hover:-translate-y-2 group-hover:translate-x-3
                      transition-all duration-300 ease-out flex flex-col gap-3 lg:max-w-[18rem] place-self-center"
                         >
                             <div
@@ -373,7 +372,7 @@
                 <div class="flex flex-col transition-all duration-300">
                     <div
                         data-sr
-                        class="hover:scale-105 hover:-translate-y-3 hover:translate-x-3 cursor-pointer hover:shadow-[0_0_10px_#fb923c] transition-all duration-300 ease-in-out relative rounded-[24px] border border-white bg-[#152A42]/50 p-3"
+                        class="hover:scale-105 hover:-translate-y-3 hover:translate-x-3 hover:shadow-[0_0_10px_#fb923c] transition-all duration-300 ease-in-out relative rounded-[24px] border border-white bg-[#152A42]/50 p-3"
                     >
                         <svg
                             data-sr
@@ -488,9 +487,9 @@
                                         in:fly={{ y: 8, duration: 300 }}
                                         out:fade={{ duration: 400 }}
                                         x={point.x}
-                                        y={point.y - 12}
+                                        y={point.y - 18}
                                         fill="rgba(251,146,60,0.98)"
-                                        font-size="12"
+                                        font-size="10"
                                         font-weight="700"
                                         text-anchor="middle"
                                         style="pointer-events: none"
@@ -517,7 +516,7 @@
                 </div>
                 <div
                     data-sr
-                    class="group hover:scale-105 hover:translate-y-3 hover:translate-x-3 cursor-pointer
+                    class="group hover:scale-105 hover:translate-y-3 hover:translate-x-3
                     hover:shadow-[0_0_10px_#6FB8E7] transition-all duration-300 flex flex-col gap-3 rounded-[20px] border border-white bg-[#152A42]/50 p-4"
                 >
                     <div
@@ -538,7 +537,7 @@
                         </svg>
 
                         <div
-                            class="transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-x-2 cursor-pointer flex flex-col"
+                            class="transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-x-2 flex flex-col"
                         >
                             <p class="text-xl font-semibold text-white">
                                 Recommended Actions
@@ -570,16 +569,16 @@
                                 data-sr
                                 data-sr-delay={index * 120}
                                 class="group
-                                hover:scale-110 hover:translate-y-10 cursor-pointer hover:shadow-[0_0px_10px_#FF7B00]
+                                hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00]
                                  transition-all duration-500 ease-out
                                 flex place-items-center flex-col space-y-5 rounded-[18px] border border-white/80 bg-[#152A42]
-                             px-10 py-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                             px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                                 transition:fade
                             >
                                 <div class=" flex flex-col gap-1">
                                     <p
                                         data-sr
-                                        class="group-hover:scale-[1.25] transition-all duration-500 ease-out text-2xl text-slate-200"
+                                        class="group-hover:scale-[1.18] transition-all duration-500 ease-out text-xl text-slate-200"
                                     >
                                         {selectedPreset.forecastLabels[index] ??
                                             selectedPreset.graphLabels[index] ??
@@ -587,8 +586,8 @@
                                     </p>
                                     <svg
                                         class="group-hover:drop-shadow-[0_0_8px_#FFA629] animate-[spin_10s_linear_infinite] group-hover:animate-[spin_3s_linear_infinite] transition-all duration-300"
-                                        width="70"
-                                        height="70"
+                                        width="60"
+                                        height="60"
                                         viewBox="0 0 70 70"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
@@ -601,7 +600,7 @@
                                 </div>
                                 <p
                                     data-sr
-                                    class="text-2xl text-[#FF7B00] group-hover:[text-shadow:0_0_10px_#FF7B00] transition-all duration-300"
+                                    class="text-xl text-[#FF7B00] group-hover:[text-shadow:0_0_10px_#FF7B00] transition-all duration-300"
                                 >
                                     {forecastTemp}°
                                 </p>
@@ -634,7 +633,6 @@
                             data-sr
                             class="flex flex-wrap flex-col gap-4 rounded-[22px] border
                             border-white bg-[#152A42] p-4 sm:p-5 max-w-lg
-                            hover:scale-105 hover:-translate-y-2 hover:-translate-x-3 cursor-pointer
                      transition-all duration-300 ease-out hover:shadow-[0px_0px_10px_rgba(56,189,248,2)]"
                         >
                             <div
@@ -676,8 +674,7 @@
                         </div>
                         <div
                             data-sr
-                            class="hover:scale-105 hover:translate-y-2 hover:-translate-x-3 cursor-pointer
-                        transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] flex flex-col gap-3 rounded-[20px] border border-white bg-[#152A42] p-5"
+                            class="transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] flex flex-col gap-3 rounded-[20px] border border-white bg-[#152A42] p-5"
                             style={`--exertion-shadow: ${exertionShadowColor};`}
                         >
                             <div
@@ -760,7 +757,7 @@
                                     <span
                                         class="h-4 w-4 animate-spin rounded-full border-2 border-sky-200/30 border-t-sky-100"
                                     ></span>
-                                    <span>Processing</span>
+                                    <span>Processing...</span>
                                 </div>
                             {/if}
                         </div>
@@ -768,8 +765,7 @@
 
                     <div
                         data-sr
-                        class={`group hover:scale-105 hover:translate-y-3 hover:translate-x-5 cursor-pointer 
-                        hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out
+                        class={`hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out
                          flex w-full place-items-center flex-col gap-4 rounded-[22px] border border-white bg-[#152A42]
                         p-4 sm:p-5 max-w-sm`}
                     >
@@ -778,7 +774,7 @@
                                 <p
                                     data-sr
                                     class="
-                                group-hover:scale-105 group-hover:translate-x-2 cursor-pointer
+                                group-hover:scale-105 group-hover:translate-x-2
                          transition-all duration-300 ease-out
                                 text-2xl font-semibold text-white"
                                 >
@@ -793,8 +789,7 @@
                         >
                             <div
                                 class={`flex items-center  rounded-[15px]
-                                 border px-4 py-3 w-full ${safetyMeta.border} ${safetyMeta.bg} hover:scale-110 
-                                   cursor-pointer 
+                                 border px-4 py-3 w-full ${safetyMeta.border} ${safetyMeta.bg} 
                         hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out`}
                             >
                                 {#if safetyMeta.icon === "check"}
@@ -886,7 +881,7 @@
                         <div
                             data-sr
                             class="flex flex-col text-sm leading-6 px-5
-                        transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-y-3 group-hover:translate-x-3 cursor-pointer"
+                        transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-y-3 group-hover:translate-x-3"
                         >
                             <div class="flex gap-20 justify-between">
                                 <p class="min-w-[4.75rem] text-slate-400">

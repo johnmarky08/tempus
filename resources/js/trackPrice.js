@@ -130,6 +130,25 @@ function resolvePalette(fuelSlug) {
     return PALETTE[fuelSlug] ?? PALETTE.default;
 }
 
+function resolveWeeklyBaseline(historyRows, currentRow) {
+    const targetTime = currentRow.date.getTime() - 7 * 24 * 60 * 60 * 1000;
+
+    for (let index = historyRows.length - 1; index >= 0; index -= 1) {
+        const historyRow = historyRows[index];
+
+        if (historyRow.date.getTime() <= targetTime) {
+            return historyRow;
+        }
+    }
+
+    return (
+        historyRows.find(
+            (historyRow) =>
+                historyRow.date.getTime() < currentRow.date.getTime(),
+        ) ?? null
+    );
+}
+
 function resolveAxisScale(maxPrice) {
     if (maxPrice <= 100) {
         return { axisMax: 100, axisStep: 20 };
@@ -283,6 +302,20 @@ function buildSeries(rows, selectedFuel, selectedMonth) {
     const xIndex = new Map(
         dateAxisRows.map((row, index) => [row.dateIso, index]),
     );
+    const historyByFuel = new Map();
+
+    rows.forEach((row) => {
+        if (!historyByFuel.has(row.fuelSlug)) {
+            historyByFuel.set(row.fuelSlug, []);
+        }
+
+        historyByFuel.get(row.fuelSlug).push(row);
+    });
+
+    historyByFuel.forEach((fuelRows) => {
+        fuelRows.sort((a, b) => a.date - b.date);
+    });
+
     const grouped = new Map();
 
     seriesRows.forEach((row) => {
@@ -313,6 +346,7 @@ function buildSeries(rows, selectedFuel, selectedMonth) {
     const series = [...grouped.entries()].map(([fuelSlug, fuelRows]) => {
         const palette = resolvePalette(fuelSlug);
         const sortedRows = [...fuelRows].sort((a, b) => a.date - b.date);
+        const historyRows = historyByFuel.get(fuelSlug) ?? sortedRows;
         const peakPrice = Math.max(...sortedRows.map((row) => row.price));
 
         const points = sortedRows.map((row, index) => {
@@ -324,7 +358,7 @@ function buildSeries(rows, selectedFuel, selectedMonth) {
                       (axisIndex * innerWidth) / (dateAxisRows.length - 1);
             const y =
                 paddingY + ((scaleMax - row.price) / scaleMax) * innerHeight;
-            const previous = sortedRows[index - 1] ?? null;
+            const previous = resolveWeeklyBaseline(historyRows, row);
             const change = previous ? row.price - previous.price : 0;
 
             return {
