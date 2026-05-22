@@ -238,31 +238,45 @@
                         <div class="hidden flex-1 bg-white/20 lg:block"></div>
                         <div class="grid w-full gap-16 md:grid-cols-3">
                             {#each items.devs as { img, name, alt, description, socials }, i}
-                                <div
-                                    data-sr
-                                    data-sr-delay={i * 140}
-                                    class="group flex flex-col items-center rounded-3xl border border-[#6FB8E7]
-                             bg-[#061E29]/50 cursor-pointer hover:bg-slate-800/70 px-6 py-8
-                              text-center shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm
+                                <div class="relative group">
+                                    <div
+                                        class="place-self-center h-10 w-1/2 translate-y-10
+                                        opacity-100
+                                        border border-[#6FB8E7] bg-[#061E29] rounded-[15px]
+                                        transition-all duration-300 group-hover:-translate-y-5
+                                          flex
+                                        items-center justify-center text-center"
+                                    >
+                                        {description}
+                                    </div>
+                                    <div
+                                        data-sr
+                                        data-sr-delay={i * 140}
+                                        class="group relative flex flex-col items-center rounded-3xl border
+                                         border-[#6FB8E7]
+                             bg-[#061E29] cursor-pointer hover:bg-slate-800/70 px-6 py-8
+                              text-center shadow-[0_18px_50px_rgba(2,6,23,0.45)]
                              hover:translate-y-6 hover:scale-105
                               transition duration-300"
-                                >
-                                    <img
-                                        data-sr
-                                        data-sr-delay={i * 140 + 60}
-                                        src={img}
-                                        alt="{alt} avatar placeholder"
-                                        class="group-hover:scale-125 text-black h-20 w-20 rounded-full bg-white/95 object-cover transition-transform duration-300"
-                                    />
-                                    <p
-                                        class="relative mt-8 text-lg font-medium text-white"
                                     >
-                                        <span
+                                        <img
                                             data-sr
-                                            data-sr-delay={i * 140 + 120}
-                                            class="
+                                            data-sr-delay={i * 140 + 60}
+                                            src={img}
+                                            alt="{alt} avatar placeholder"
+                                            class="group-hover:scale-125 text-black h-20 w-20 rounded-full bg-white/95
+                                         object-cover transition-transform duration-300"
+                                        />
+                                        <p
+                                            class="relative mt-8 text-lg font-medium text-white"
+                                        >
+                                            <span
+                                                data-sr
+                                                data-sr-delay={i * 140 + 120}
+                                                class="
                        after:content-['']
                        after:absolute
+                       after:-z-9999
                        after:left-1/2
                        after:-translate-x-1/2
                        after:-bottom-1
@@ -272,37 +286,31 @@
                        after:transition-all
                        after:duration-300
                        group-hover:after:w-full"
-                                        >
-                                            {name}
-                                        </span>
-                                    </p>
-
-                                    <div
-                                        class="flex mt-8 items-center justify-center gap-4"
-                                    >
-                                        {#each socials as { icon, link }, j}
-                                            <div
-                                                data-sr
-                                                data-sr-delay={i * 140 + j * 80}
-                                                class="hover:-translate-y-3 flex h-10 w-10 items-center justify-center rounded-md border border-sky-400/40 bg-slate-950/35 transition hover:bg-slate-900/60"
                                             >
-                                                <a
-                                                    href={link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    class=""
-                                                >
-                                                    <i class={icon}></i>
-                                                </a>
-                                            </div>
-                                        {/each}
+                                                {name}
+                                            </span>
+                                        </p>
+
                                         <div
-                                            class="-z-9999 place-self-center absolute h-10 w-1/2 translate-y-5 opacity-0 -top-5 left-1/2 -translate-x-1/2
-                                            border border-[#6FB8E7] bg-[#061E29] rounded-[15px]
-                                             transition-all duration-300 group-hover:-translate-y-10 group-hover:opacity-100 flex
-                                             items-center justify-center"
+                                            class="flex mt-8 items-center justify-center gap-4"
                                         >
-                                            {description}
+                                            {#each socials as { icon, link }, j}
+                                                <div
+                                                    data-sr
+                                                    data-sr-delay={i * 140 +
+                                                        j * 80}
+                                                    class="hover:-translate-y-3 flex h-10 w-10 items-center justify-center rounded-md border border-sky-400/40 bg-slate-950/35 transition hover:bg-slate-900/60"
+                                                >
+                                                    <a
+                                                        href={link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        class=""
+                                                    >
+                                                        <i class={icon}></i>
+                                                    </a>
+                                                </div>
+                                            {/each}
                                         </div>
                                     </div>
                                 </div>
