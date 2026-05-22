@@ -557,7 +557,7 @@
                             disabled={optionCooldownLocked}
                             class={`min-w-[5.75rem] rounded-xl px-5 py-2.5 text-base font-semibold tracking-wide transition-all duration-300 ${
                                 dashboard.selectedYear === year.value
-                                    ? "bg-[#6FB8E7] text-slate-950 shadow-[0_0_0_1px_rgba(255,255,255,0.16)]"
+                                    ? "bg-blue-700 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.12)]"
                                     : "bg-white/10 text-slate-200 hover:bg-white/20"
                             }`}
                         >
