@@ -19,6 +19,7 @@
     export let predictions = [];
 
     let selectedFuel = "all";
+    let selectedYear = "";
     let selectedMonth = "";
     let fitScreen = false;
     let hoveredPoint = null;
@@ -30,6 +31,7 @@
     $: dashboard = buildTrackPriceDashboard(
         fuelPrices,
         selectedFuel,
+        selectedYear,
         selectedMonth,
     );
     $: predictionCards = buildPredictionCards(predictions, fuelPrices);
@@ -52,7 +54,7 @@
 
     function buildPredictionPlotPoints(dashboardData, predictionRows = []) {
         const chart = dashboardData?.chart;
-        const latestMonthValue = dashboardData?.monthTabs?.at(-1)?.value ?? "";
+        const latestMonthValue = dashboardData?.latestMonthKey ?? "";
 
         if (!chart?.series?.length) {
             return new Map();
@@ -191,6 +193,22 @@
         }, OPTION_COOLDOWN_MS);
 
         selectedMonth = value;
+        hoveredPoint = null;
+    }
+
+    function selectYear(value) {
+        if (optionCooldownLocked || value === selectedYear) {
+            return;
+        }
+
+        optionCooldownLocked = true;
+        clearTimeout(optionCooldownTimer);
+        optionCooldownTimer = setTimeout(() => {
+            optionCooldownLocked = false;
+        }, OPTION_COOLDOWN_MS);
+
+        selectedYear = value;
+        selectedMonth = "";
         hoveredPoint = null;
     }
 
@@ -529,6 +547,29 @@
                     data-sr
                     data-sr-duration="1400"
                     class="flex w-full flex-wrap justify-center gap-2 self-center transition-all duration-300"
+                >
+                    {#each dashboard.yearTabs as year, yearIndex}
+                        <button
+                            type="button"
+                            data-sr
+                            data-sr-delay={yearIndex * 70}
+                            on:click={() => selectYear(year.value)}
+                            disabled={optionCooldownLocked}
+                            class={`min-w-[5.75rem] rounded-xl px-5 py-2.5 text-base font-semibold tracking-wide transition-all duration-300 ${
+                                dashboard.selectedYear === year.value
+                                    ? "bg-[#6FB8E7] text-slate-950 shadow-[0_0_0_1px_rgba(255,255,255,0.16)]"
+                                    : "bg-white/10 text-slate-200 hover:bg-white/20"
+                            }`}
+                        >
+                            {year.label}
+                        </button>
+                    {/each}
+                </div>
+
+                <div
+                    data-sr
+                    data-sr-duration="1400"
+                    class="mt-3 flex w-full flex-wrap justify-center gap-2 self-center transition-all duration-300"
                 >
                     {#each dashboard.monthTabs as month, monthIndex}
                         <button

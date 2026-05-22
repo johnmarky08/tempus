@@ -213,6 +213,24 @@ function buildMonthTabs(rows) {
     return [...months.values()].sort((a, b) => a.sortValue - b.sortValue);
 }
 
+function buildYearTabs(rows) {
+    const years = new Map();
+
+    rows.forEach((row) => {
+        const yearKey = String(row.date.getFullYear());
+
+        if (!years.has(yearKey)) {
+            years.set(yearKey, {
+                value: yearKey,
+                label: yearKey,
+                sortValue: row.date.getTime(),
+            });
+        }
+    });
+
+    return [...years.values()].sort((a, b) => a.sortValue - b.sortValue);
+}
+
 function buildFuelOptions(rows) {
     const fuels = new Map();
 
@@ -546,16 +564,26 @@ function buildBriefings(
 export function buildTrackPriceDashboard(
     rows = [],
     selectedFuel = "all",
+    selectedYear = "",
     selectedMonth = "",
 ) {
     const sourceRows = enrichRows(rows);
-    const monthTabs = buildMonthTabs(sourceRows);
+    const yearTabs = buildYearTabs(sourceRows);
     const fuelOptions = buildFuelOptions(sourceRows);
     const normalizedFuel = fuelOptions.some(
         (option) => option.value === selectedFuel,
     )
         ? selectedFuel
         : "all";
+    const normalizedYear = yearTabs.some(
+        (option) => option.value === selectedYear,
+    )
+        ? selectedYear
+        : (yearTabs.at(-1)?.value ?? "");
+    const yearRows = sourceRows.filter(
+        (row) => String(row.date.getFullYear()) === normalizedYear,
+    );
+    const monthTabs = buildMonthTabs(yearRows);
     const normalizedMonth = monthTabs.some(
         (option) => option.value === selectedMonth,
     )
@@ -574,12 +602,16 @@ export function buildTrackPriceDashboard(
 
     return {
         fuelOptions,
+        yearTabs,
         monthTabs,
         selectedFuel: normalizedFuel,
+        selectedYear: normalizedYear,
         selectedMonth: normalizedMonth,
+        selectedYearLabel: normalizedYear,
         selectedMonthLabel:
             monthTabs.find((option) => option.value === normalizedMonth)
                 ?.label ?? "",
+        latestMonthKey: sourceRows.at(-1)?.monthKey ?? "",
         chart,
         currentPriceCards,
         briefings,
