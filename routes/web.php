@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\FuelPricesController;
 use App\Http\Controllers\HeatIndexController;
 use Illuminate\Support\Facades\Route;
@@ -15,15 +16,16 @@ Route::get('/about', function () {
     return Inertia::render('About');
 });
 Route::get('/fuel-prices', FuelPricesController::class);
-
 Route::match(['get', 'post'], '/heat-index', HeatIndexController::class);
-
-Route::get('/fuel-history', function () {
-    return Inertia::render('history/fuelPrice');
+Route::get('/history', function () {
+    return redirect('/history/fuel-prices');
 });
-Route::get('/heat-history', function () {
-    return Inertia::render('history/heatIndex');
-});
+Route::get('/history/fuel-prices', [HistoryController::class, 'fuelPrices']);
+Route::get('/history/heat-index', [HistoryController::class, 'heatIndex']);
 Route::get('/about', function () {
     return Inertia::render('About');
+});
+
+Route::fallback(function () {
+    return Inertia::render('NotFound')->toResponse(request())->setStatusCode(404);
 });

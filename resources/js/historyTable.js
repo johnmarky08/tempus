@@ -1,183 +1,5 @@
-const FUEL_PRICE_HISTORY_SAMPLE_ROWS = [
-    {
-        date: "2026-04-24",
-        petrolPrice: 89.5,
-        dieselPrice: 87.5,
-        exchangeRate: 56.7,
-        normalSupply: true,
-    },
-    {
-        date: "2026-04-23",
-        petrolPrice: 89.5,
-        dieselPrice: 87.5,
-        exchangeRate: 56.7,
-        normalSupply: true,
-    },
-    {
-        date: "2026-04-22",
-        petrolPrice: 89.5,
-        dieselPrice: 87.5,
-        exchangeRate: 56.7,
-        normalSupply: true,
-    },
-    {
-        date: "2026-04-21",
-        petrolPrice: 88.0,
-        dieselPrice: 87.5,
-        exchangeRate: 56.75,
-        normalSupply: false,
-    },
-    {
-        date: "2026-04-20",
-        petrolPrice: 88.0,
-        dieselPrice: 86.5,
-        exchangeRate: 56.75,
-        normalSupply: true,
-    },
-    {
-        date: "2026-04-19",
-        petrolPrice: 87.5,
-        dieselPrice: 86.0,
-        exchangeRate: 56.72,
-        normalSupply: true,
-    },
-    {
-        date: "2026-04-18",
-        petrolPrice: 87.5,
-        dieselPrice: 85.5,
-        exchangeRate: 56.7,
-        normalSupply: true,
-    },
-    {
-        date: "2026-04-17",
-        petrolPrice: 87.5,
-        dieselPrice: 85.5,
-        exchangeRate: 56.7,
-        normalSupply: true,
-    },
-    {
-        date: "2026-04-16",
-        petrolPrice: 88.25,
-        dieselPrice: 87.5,
-        exchangeRate: 56.7,
-        normalSupply: false,
-    },
-    {
-        date: "2026-04-15",
-        petrolPrice: 87.5,
-        dieselPrice: 86.5,
-        exchangeRate: 56.75,
-        normalSupply: false,
-    },
-    {
-        date: "2026-04-14",
-        petrolPrice: 87.5,
-        dieselPrice: 85.5,
-        exchangeRate: 56.7,
-        normalSupply: false,
-    },
-    {
-        date: "2026-04-13",
-        petrolPrice: 88.5,
-        dieselPrice: 87.5,
-        exchangeRate: 56.7,
-        normalSupply: false,
-    },
-];
-
-const HEAT_INDEX_HISTORY_SAMPLE_ROWS = [
-    {
-        date: "2026-04-25",
-        temperature: 34.0,
-        humidity: 72,
-        windSpeed: 12.4,
-        heatIndex: 34.0,
-    },
-    {
-        date: "2026-04-24",
-        temperature: 34.0,
-        humidity: 72,
-        windSpeed: 12.4,
-        heatIndex: 34.0,
-    },
-    {
-        date: "2026-04-23",
-        temperature: 34.0,
-        humidity: 72,
-        windSpeed: 12.4,
-        heatIndex: 34.0,
-    },
-    {
-        date: "2026-04-22",
-        temperature: 34.0,
-        humidity: 72,
-        windSpeed: 12.4,
-        heatIndex: 34.0,
-    },
-    {
-        date: "2026-04-21",
-        temperature: 33.5,
-        humidity: 68,
-        windSpeed: 14.0,
-        heatIndex: 39.8,
-    },
-    {
-        date: "2026-04-20",
-        temperature: 34.2,
-        humidity: 75,
-        windSpeed: 10.2,
-        heatIndex: 42.1,
-    },
-    {
-        date: "2026-04-19",
-        temperature: 33.0,
-        humidity: 65,
-        windSpeed: 16.3,
-        heatIndex: 38.5,
-    },
-    {
-        date: "2026-04-18",
-        temperature: 32.8,
-        humidity: 70,
-        windSpeed: 11.0,
-        heatIndex: 38.0,
-    },
-    {
-        date: "2026-04-17",
-        temperature: 34.5,
-        humidity: 78,
-        windSpeed: 9.5,
-        heatIndex: 43.4,
-    },
-    {
-        date: "2026-04-16",
-        temperature: 33.8,
-        humidity: 74,
-        windSpeed: 13.1,
-        heatIndex: 40.0,
-    },
-    {
-        date: "2026-04-15",
-        temperature: 32.5,
-        humidity: 66,
-        windSpeed: 15.7,
-        heatIndex: 37.2,
-    },
-    {
-        date: "2026-04-14",
-        temperature: 33.2,
-        humidity: 69,
-        windSpeed: 12.0,
-        heatIndex: 38.9,
-    },
-    {
-        date: "2026-04-13",
-        temperature: 34.8,
-        humidity: 80,
-        windSpeed: 8.3,
-        heatIndex: 44.7,
-    },
-];
+import { binarySearch } from "./utils/binarySearch.js";
+import { quickSort } from "./utils/quickSort.js";
 
 function pad(value) {
     return String(value).padStart(2, "0");
@@ -203,20 +25,51 @@ function formatDate(value) {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
+function formatDateTime(value) {
+    const date = parseDate(value);
+
+    if (!date) {
+        return "—";
+    }
+
+    const hours = date.getHours();
+    const period = hours >= 12 ? "PM" : "AM";
+    const hour12 = hours % 12 || 12;
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(hour12)}:${pad(date.getMinutes())} ${period}`;
+}
+
+function normalizeText(value) {
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+}
+
+function titleCase(value) {
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+}
+
 function formatTemperature(value) {
-    return `${Number(value).toFixed(1)}°`;
+    return `${Number(value).toFixed(2)}°`;
 }
 
 function formatHumidity(value) {
-    return `${Number(value).toFixed(0)}%`;
+    return `${Number(value).toFixed(2)}%`;
 }
 
 function formatWindSpeed(value) {
-    return `${Number(value).toFixed(1)} km/h`;
+    return `${Number(value).toFixed(2)} km/h`;
 }
 
 function formatHeatIndex(value) {
-    return `${Number(value).toFixed(1)}°`;
+    return `${Number(value).toFixed(2)}°`;
 }
 
 function formatCurrency(value) {
@@ -254,176 +107,354 @@ function badgeCell(value, tone) {
     };
 }
 
-function buildFuelPriceHistoryModel(rows = FUEL_PRICE_HISTORY_SAMPLE_ROWS) {
-    const normalizedRows = rows.map((row) => ({
-        id: row.date,
-        cells: [
-            cell(formatDate(row.date), "justify-start", "text-slate-100"),
-            cell(
-                formatFuelPrice(row.petrolPrice),
-                "justify-center",
-                "text-slate-100",
-            ),
-            cell(
-                formatFuelPrice(row.dieselPrice),
-                "justify-center",
-                "text-slate-100",
-            ),
-            cell(
-                formatExchangeRate(row.exchangeRate),
-                "justify-center",
-                "text-slate-100",
-            ),
-            badgeCell(
-                formatBoolean(row.normalSupply),
-                row.normalSupply ? "success" : "danger",
-            ),
-        ],
-    }));
+function createHistoryRow({ id, cellsByKey, searchValues, sortValues }) {
+    return {
+        id,
+        cellsByKey,
+        searchValues,
+        sortValues,
+    };
+}
+
+function buildFuelPriceHistoryModel(rows = []) {
+    const normalizedRows = rows.map((row, index) => {
+        const id = row.id ?? `${row.date}-${row.fuel_type}-${index}`;
+
+        return createHistoryRow({
+            id,
+            searchValues: {
+                date: normalizeText(row.date),
+                fuelType: normalizeText(row.fuel_type),
+                price: normalizeText(row.price),
+                exchangeRate: normalizeText(row.exchange_rate_to_usd),
+                normalSupply: normalizeText(
+                    formatBoolean(row.normal_supply_flag),
+                ),
+            },
+            sortValues: {
+                date: parseDate(row.date)?.getTime() ?? 0,
+                fuelType: normalizeText(row.fuel_type),
+                price: Number(row.price) || 0,
+                exchangeRate: Number(row.exchange_rate_to_usd) || 0,
+                normalSupply: row.normal_supply_flag ? 1 : 0,
+            },
+            cellsByKey: {
+                date: cell(
+                    formatDate(row.date),
+                    "justify-start",
+                    "text-slate-100",
+                ),
+                fuelType: cell(
+                    titleCase(row.fuel_type),
+                    "justify-center",
+                    "text-slate-100",
+                ),
+                price: cell(
+                    formatFuelPrice(row.price),
+                    "justify-center",
+                    "text-slate-100",
+                ),
+                exchangeRate: cell(
+                    formatExchangeRate(row.exchange_rate_to_usd),
+                    "justify-center",
+                    "text-slate-100",
+                ),
+                normalSupply: badgeCell(
+                    formatBoolean(row.normal_supply_flag),
+                    row.normal_supply_flag ? "success" : "danger",
+                ),
+            },
+        });
+    });
 
     return {
         heading: {
             primary: "FUEL PRICE",
-            accent: "PREDICTION",
+            accent: "HISTORY",
         },
         columns: [
             {
                 key: "date",
                 label: "DATE",
                 align: "left",
-                width: "1.08fr",
+                kind: "date",
+                width: "minmax(7rem,1.08fr)",
                 filterOptions: ["Newest first", "Oldest first"],
             },
             {
-                key: "petrolPrice",
-                label: "PRICE(PETROL)",
+                key: "fuelType",
+                label: "FUEL TYPE",
                 align: "center",
-                width: "1.1fr",
-                filterOptions: ["Highest first", "Lowest first"],
+                kind: "filter",
+                width: "minmax(8rem,1fr)",
+                filterOptions: [
+                    "All Types",
+                    "Shell Fuelsave Diesel",
+                    "Shell Fuelsave Gasoline Ron91",
+                ],
             },
             {
-                key: "dieselPrice",
-                label: "PRICE(DIESEL)",
+                key: "price",
+                label: "PRICE",
                 align: "center",
-                width: "1.1fr",
+                kind: "number",
+                width: "minmax(8rem,1.05fr)",
                 filterOptions: ["Highest first", "Lowest first"],
             },
             {
                 key: "exchangeRate",
                 label: "EXC. RT.(USD)",
                 align: "center",
-                width: "1fr",
+                kind: "number",
+                width: "minmax(8rem,1fr)",
                 filterOptions: ["Highest first", "Lowest first"],
             },
             {
                 key: "normalSupply",
                 label: "NOR. SUPPLY",
                 align: "center",
-                width: "0.9fr",
+                kind: "boolean",
+                width: "minmax(8rem,0.9fr)",
                 filterOptions: ["All", "True", "False"],
             },
         ],
         gridTemplateColumns:
-            "minmax(7rem,1.08fr) minmax(9rem,1.1fr) minmax(9rem,1.1fr) minmax(8rem,1fr) minmax(8rem,0.9fr)",
+            "minmax(7rem,1.08fr) minmax(8rem,1fr) minmax(8rem,1.05fr) minmax(8rem,1fr) minmax(8rem,0.9fr)",
         rows: normalizedRows,
+        searchPlaceholder: "Search Fuel Prices History",
         footer: {
             label: "Normal Supply Flag:",
             items: [
                 {
                     value: "True",
                     tone: "success",
-                    description: "Supply is stable",
+                    description: "Supply is Stable",
                 },
                 {
                     value: "False",
                     tone: "danger",
                     description:
-                        "Supply disrupted (war, sanctions, outage) -> price hike expected",
+                        "Supply Disrupted (War, Sanctions, Outage) -> Price Hike Expected",
                 },
             ],
         },
     };
 }
 
-function buildHeatIndexHistoryModel(rows = HEAT_INDEX_HISTORY_SAMPLE_ROWS) {
-    const normalizedRows = rows.map((row) => ({
-        id: row.date,
-        cells: [
-            cell(formatDate(row.date), "justify-start", "text-slate-100"),
-            cell(
-                formatTemperature(row.temperature),
-                "justify-center",
-                "text-slate-100",
-            ),
-            cell(
-                formatHumidity(row.humidity),
-                "justify-center",
-                "text-slate-100",
-            ),
-            cell(
-                formatWindSpeed(row.windSpeed),
-                "justify-center",
-                "text-slate-100",
-            ),
-            cell(
-                formatHeatIndex(row.heatIndex),
-                "justify-center",
-                "text-orange-400",
-            ),
-        ],
-    }));
+function buildHeatIndexHistoryModel(rows = []) {
+    const normalizedRows = rows.map((row, index) => {
+        const id = row.id ?? `${row.date}-${index}`;
+
+        return createHistoryRow({
+            id,
+            searchValues: {
+                date: normalizeText(row.date),
+                temperature: normalizeText(row.temperature),
+                humidity: normalizeText(row.humidity),
+                windSpeed: normalizeText(row.wind_speed),
+                heatIndex: normalizeText(row.heat_index),
+            },
+            sortValues: {
+                date: parseDate(row.date)?.getTime() ?? 0,
+                temperature: Number(row.temperature) || 0,
+                humidity: Number(row.humidity) || 0,
+                windSpeed: Number(row.wind_speed) || 0,
+                heatIndex: Number(row.heat_index) || 0,
+            },
+            cellsByKey: {
+                date: cell(
+                    formatDateTime(row.date),
+                    "justify-start",
+                    "text-slate-100 text-base",
+                ),
+                temperature: cell(
+                    formatTemperature(row.temperature),
+                    "justify-center",
+                    "text-slate-100",
+                ),
+                humidity: cell(
+                    formatHumidity(row.humidity),
+                    "justify-center",
+                    "text-slate-100",
+                ),
+                windSpeed: cell(
+                    formatWindSpeed(row.wind_speed),
+                    "justify-center",
+                    "text-slate-100",
+                ),
+                heatIndex: cell(
+                    formatHeatIndex(row.heat_index),
+                    "justify-center",
+                    "text-orange-400",
+                ),
+            },
+        });
+    });
 
     return {
         heading: {
             primary: "HEAT INDEX",
-            accent: "PREDICTION",
+            accent: "HISTORY",
         },
         columns: [
             {
                 key: "date",
-                label: "DATE",
+                label: "DATE AND TIME",
                 align: "left",
-                width: "1.08fr",
+                kind: "date",
+                width: "minmax(7rem,1.08fr)",
                 filterOptions: ["Newest first", "Oldest first"],
             },
             {
                 key: "temperature",
                 label: "TEMPERATURE",
                 align: "center",
-                width: "1fr",
+                kind: "number",
+                width: "minmax(8rem,1fr)",
                 filterOptions: ["Highest first", "Lowest first"],
             },
             {
                 key: "humidity",
                 label: "HUMIDITY",
                 align: "center",
-                width: "1fr",
+                kind: "number",
+                width: "minmax(8rem,1fr)",
                 filterOptions: ["Highest first", "Lowest first"],
             },
             {
                 key: "windSpeed",
                 label: "WIND SPEED",
                 align: "center",
-                width: "1.05fr",
+                kind: "number",
+                width: "minmax(8.5rem,1.05fr)",
                 filterOptions: ["Highest first", "Lowest first"],
             },
             {
                 key: "heatIndex",
                 label: "HEAT INDEX",
                 align: "center",
-                width: "0.95fr",
+                kind: "number",
+                width: "minmax(7rem,0.95fr)",
                 filterOptions: ["Highest first", "Lowest first"],
             },
         ],
         gridTemplateColumns:
             "minmax(7rem,1.08fr) minmax(8rem,1fr) minmax(8rem,1fr) minmax(8.5rem,1.05fr) minmax(7rem,0.95fr)",
         rows: normalizedRows,
+        searchPlaceholder: "Search Heat Index History...",
     };
 }
 
+function sortHistoryRows(rows = [], column = null, option = "") {
+    if (!column || !option) {
+        return rows;
+    }
+
+    if (column.key === "fuelType") {
+        if (option === "All Types") {
+            return rows;
+        }
+
+        const normalizedOption = normalizeText(option);
+
+        return rows.filter(
+            (row) => row.sortValues?.fuelType === normalizedOption,
+        );
+    }
+
+    if (column.kind === "boolean") {
+        if (option === "All") {
+            return rows;
+        }
+
+        const shouldShowTrue = option === "True";
+
+        return rows.filter(
+            (row) => Boolean(row.sortValues?.[column.key]) === shouldShowTrue,
+        );
+    }
+
+    const descending =
+        option === "Newest first" ||
+        option === "Highest first" ||
+        option === "Z to A";
+
+    return quickSort(rows, (left, right) => {
+        const leftValue = left.sortValues?.[column.key];
+        const rightValue = right.sortValues?.[column.key];
+
+        if (column.kind === "date" || column.kind === "number") {
+            const numericComparison = Number(leftValue) - Number(rightValue);
+            return descending ? -numericComparison : numericComparison;
+        }
+
+        const textComparison = String(leftValue).localeCompare(
+            String(rightValue),
+        );
+        return descending ? -textComparison : textComparison;
+    });
+}
+
+function searchHistoryRows(rows = [], query = "", columns = []) {
+    const normalizedQuery = normalizeText(query);
+
+    if (!normalizedQuery) {
+        return rows;
+    }
+
+    const searchableColumns = columns.length
+        ? columns
+        : Object.keys(rows[0]?.searchValues ?? {}).map((key) => ({ key }));
+    const matches = new Map();
+
+    searchableColumns.forEach((column) => {
+        const indexedRows = quickSort(
+            rows.map((row) => ({
+                row,
+                value: normalizeText(row.searchValues?.[column.key] ?? ""),
+            })),
+            (left, right) => left.value.localeCompare(right.value),
+        );
+
+        const startIndex = binarySearch(indexedRows, (item) =>
+            item.value.localeCompare(normalizedQuery),
+        );
+
+        if (startIndex < 0) {
+            return;
+        }
+
+        const scanIndex = Math.min(startIndex, indexedRows.length - 1);
+
+        for (let cursor = scanIndex; cursor >= 0; cursor -= 1) {
+            if (indexedRows[cursor].value.includes(normalizedQuery)) {
+                matches.set(
+                    indexedRows[cursor].row.id,
+                    indexedRows[cursor].row,
+                );
+            }
+        }
+
+        for (
+            let cursor = scanIndex + 1;
+            cursor < indexedRows.length;
+            cursor += 1
+        ) {
+            if (indexedRows[cursor].value.includes(normalizedQuery)) {
+                matches.set(
+                    indexedRows[cursor].row.id,
+                    indexedRows[cursor].row,
+                );
+            }
+        }
+    });
+
+    return rows.filter((row) => matches.has(row.id));
+}
+
 export {
-    FUEL_PRICE_HISTORY_SAMPLE_ROWS,
-    HEAT_INDEX_HISTORY_SAMPLE_ROWS,
     buildFuelPriceHistoryModel,
     buildHeatIndexHistoryModel,
+    searchHistoryRows,
+    sortHistoryRows,
 };

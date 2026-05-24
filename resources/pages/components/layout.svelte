@@ -7,11 +7,11 @@
 </script>
 
 <div
-    class="bg-black min-h-screen bg-cover bg-center bg-fixed font-spaceGrotesk font-normal"
+    class="bg-black min-h-screen bg-cover bg-center bg-fixed font-spaceGrotesk font-normal flex flex-col"
     style={`background-image: url("/images/backgrounds/dark_bg.png");`}
 >
     <Navbar {isActive} {isActiveSub} />
-    <main class="px-20 py-14">
+    <main class="flex-1 min-h-screen px-20 py-14">
         <slot />
     </main>
 

@@ -22,15 +22,16 @@ export const nav = [
     {
         name: "History",
         description: "View historical data",
+        link: "/history",
         subMenu: [
             {
                 name: "Fuel Price History",
-                link: "/fuel-history",
+                link: "/history/fuel-prices",
                 description: "View historical fuel price data",
             },
             {
                 name: "Heat Index History",
-                link: "/heat-history",
+                link: "/history/heat-index",
                 description: "View historical heat index data",
             },
         ],

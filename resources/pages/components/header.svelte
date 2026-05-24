@@ -37,9 +37,7 @@
                         use:inertia
                         href={link}
                         class="relative transition-all duration-300
-                        {isActive === name || isActiveDropdown === name
-                            ? 'text-[#6FB8E7]'
-                            : 'text-white'}"
+                        {isActive === name ? 'text-[#6FB8E7]' : 'text-white'}"
                     >
                         <span
                             class="
@@ -65,15 +63,14 @@
 
                     {#if subMenu}
                         <div
-                            class="ri-arrow-up-s-fill text-xl ml-1
-                                    transition-all duration-300 cursor-pointer
-                                    {isActiveDropdown === name
+                            class="ri-arrow-up-s-fill text-lg ml-2 transition-transform duration-300
+                                {isActiveDropdown === name
                                 ? 'rotate-0'
-                                : 'rotate-180'}
-                                    {isActiveDropdown === name ||
-                            isActive === 'History'
+                                : 'rotate-180'} {isActive === name ||
+                            isActiveDropdown === name
                                 ? 'text-[#6FB8E7]'
-                                : 'text-white'}"
+                                : 'text-white/80'}"
+                            aria-hidden="true"
                         ></div>
                     {/if}
                 </div>
@@ -85,39 +82,20 @@
                                 class="absolute top-full left-1/2 -translate-x-1/2 pt-7"
                             >
                                 <div
-                                    class="bg-gradient-to-r from-[#091532]/90 to-[#050a15]/90
-                                           py-5 border-2 border-[#888888]
-                                           rounded-[15px] rounded-t-none w-52"
+                                    class="bg-gradient-to-r from-[#071427] to-[#04080b] py-3 px-2 rounded-xl ring-1 ring-white/60 shadow-lg w-56"
                                 >
                                     {#each subMenu as { name: subName, link }}
-                                        <div
-                                            class="group px-4 py-2
-                                            hover:bg-[#6FB8E7]/20
-                                           
-                                            rounded-[10px] transition-all duration-300 cursor-pointer"
-                                        >
+                                        <div class="px-2">
                                             <a
                                                 href={link}
                                                 use:inertia
-                                                class="relative inline-block"
+                                                class="group block rounded-lg px-4 py-2 transition-colors duration-200 hover:bg-white/6"
                                             >
                                                 <span
-                                                    class="
-                                                            
-                                                        after:content-['']
-                                                        after:absolute
-                                                        after:left-1/2
-                                                        after:-translate-x-1/2
-                                                        after:-bottom-1
-                                                        after:h-[2px]
-                                                         after:w-0
-                                                        after:bg-[#6FB8E7]
-                                                        after:transition-all
-                                                        after:duration-300
-                                                        group-hover:after:w-full
-                                                        {isActiveSub === subName
-                                                        ? 'after:w-full text-[#6FB8E7]'
-                                                        : ''}"
+                                                    class={isActiveSub ===
+                                                    subName
+                                                        ? "relative inline-block text-sm tracking-wide after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[2px] after:bg-[#6FB8E7] after:transition-all after:duration-300 after:w-full text-[#6FB8E7]"
+                                                        : "relative inline-block text-sm tracking-wide after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#6FB8E7] after:transition-all after:duration-300 group-hover:after:w-full text-white"}
                                                 >
                                                     {subName}
                                                 </span>

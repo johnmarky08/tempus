@@ -21,87 +21,17 @@ T.E.M.P.U.S. is a comprehensive monitoring and forecasting platform built to hel
 
 The project separates concerns between the web UI layer (Laravel + Svelte) and the ML layer (Python), with a lightweight PHP bridge orchestrating Python subprocess execution.
 
-## Tech Stack
-
-### Backend
-
-- **Laravel** — web framework for routing, controllers, and API orchestration
-- **PHP** — server language
-- **Inertia.js** — reactive page component framework
-- **MySQL** — database for training data and application state
-
-### Frontend
-
-- **Svelte** — reactive UI component framework
-- **Vite** — build tooling and dev server
-- **Tailwind CSS** — utility-first styling
-- **Bootstrap** — component library
-- **Axios** — HTTP client
-- **JavaScript ES6+** — client-side logic
-
-### Machine Learning & Data
-
-- **Python** — ML script runtime
-- **NumPy** — numerical computing
-- **Pandas** — data manipulation and analysis
-- **scikit-learn** — machine learning algorithms (RandomForest, preprocessing)
-- **statsmodels** — ARIMAX time-series forecasting
-- **PyMySQL** — Python-MySQL connector
-
-### Build & Development Tools
-
-- **Composer** — PHP dependency manager
-- **npm** — Node.js package manager
-- **Vite** — JavaScript bundler
-- **Laravel Artisan** — CLI toolkit
-- **Concurrently** — parallel process runner
-
-## Database Schema
-
-The application uses three primary ML data tables populated by seeders from XLSX datasets:
-
-### fuel_prices
-
-- `id` (Integer, Primary Key)
-- `date` (Date)
-- `price` (Decimal)
-- `fuel_type` (String) — e.g., "Diesel", "Gasoline"
-- `exchange_rate_to_usd` (Decimal)
-- `normal_supply_flag` (Boolean)
-- `timestamps`
-
-### heat_index
-
-- `id` (Integer, Primary Key)
-- `date` (DateTime) — hourly granularity
-- `temperature` (Decimal)
-- `humidity` (Decimal)
-- `wind_speed` (Decimal)
-- `heat_index` (Decimal) — calculated or observed
-- `timestamps`
-
-### safety_assessment
-
-- `id` (Integer, Primary Key)
-- `date` (Date)
-- `temperature` (Decimal)
-- `humidity` (Decimal)
-- `wind_speed` (Decimal)
-- `age_range` (String) — e.g., "18-39", "40-59", "60+"
-- `exertion_level` (Integer) — activity intensity
-- `safety_label` (String) — classification label (e.g., "Safe", "Unsafe", "Moderate Risk")
-- `timestamps`
-
 ## Features
 
 - **Live Dashboard** — Home page with project branding, team showcase, and navigation to feature pages
-- **Fuel Price Tracking** — Display historical fuel prices and ARIMAX-powered predictions with caching
-- **Heat Index Forecast** — Real-time heat index data with Random Forest regression forecasts
-- **Safety Assessment Page** — Interactive form for outdoor safety risk classification
-- **Database-Backed ML** — Training data stored in MySQL, loaded directly by Python scripts
-- **JSON Contract Interface** — Python scripts output JSON; bridge decodes and controllers forward to frontend
-- **Error Handling** — Bridge-level exception handling with descriptive error messages to users
-- **Performance Optimization** — Caching layer for expensive ARIMAX predictions
+- **Fuel Price Tracking** — Display historical fuel prices and ARIMAX-powered predictions with caching (controller caches per-horizon/n_lags)
+- **Heat Index Forecast** — Real-time heat index data with Random Forest regression forecasts (hourly forecasts via `rfr`)
+- **Safety Assessment** — On-demand safety assessment powered by a Random Forest classifier (`rfc`) — accessible via the Heat Index page (JSON API) and the UI form
+- **History Views** — Dedicated history pages for fuel prices and heat-index records (`/history/fuel-prices`, `/history/heat-index`)
+- **Database-Backed ML** — Training data stored in MySQL; Python scripts load tables directly via `ml-algorithms/db_utils.py`
+- **JSON Contract Interface** — Python scripts output JSON; `ml-algorithms/bridge.php` decodes and returns data to Laravel controllers
+- **Error Handling & Resilience** — Bridge-level exception handling, cache fallbacks, and clear error messages surfaced to the frontend
+- **Performance Optimization** — Caching for expensive ARIMAX and RFR predictions; background jobs recommended for heavy workloads
 - **Responsive Design** — Tailwind CSS with Svelte components for mobile and desktop
 
 ## Project Structure
@@ -113,7 +43,8 @@ The application uses three primary ML data tables populated by seeders from XLSX
 │   │   └── Controllers/
 │   │       ├── Controller.php            — Base controller
 │   │       ├── FuelPricesController.php  — Fuel prices page with caching (calls `use_ml('arimax', ...)`)
-│   │       └── HeatIndexController.php   — Heat index page + safety assessment (calls `use_ml('rfr'|'rfc', ...)`)
+│   │       ├── HeatIndexController.php   — Heat index page + safety assessment (calls `use_ml('rfr'|'rfc', ...)`)
+│   │       └── HistoryController.php     — History pages for fuel prices and heat index
 │   ├── Models/
 │   │   └── User.php
 │   ├── Utils/
@@ -142,7 +73,10 @@ The application uses three primary ML data tables populated by seeders from XLSX
 │   │   ├── Home.svelte               — Home/dashboard
 │   │   ├── FuelPrice.svelte          — Fuel prices tracking
 │   │   ├── HeatIndex.svelte          — Heat index display
-│   │   ├── History.svelte            — Historical data
+│   │   ├── History.svelte            — History landing page
+│   │   ├── history/                  — History subpages
+│   │   │   ├── fuelPrice.svelte      — Fuel prices history table
+│   │   │   └── heatIndex.svelte      — Heat index history table
 │   │   ├── About.svelte              — System Overview and Team information
 │   ├── js/
 │   │   ├── app.js                    — Main app entry
@@ -171,6 +105,24 @@ The application uses three primary ML data tables populated by seeders from XLSX
 ├── phpunit.xml, vite.config.js, etc. — Build config files
 └── README.md                         — This file
 ```
+
+## Tech Stacks
+
+- Backend: Laravel (PHP), MySQL
+- Frontend: Svelte, Vite, Tailwind CSS
+- ML: Python (NumPy, Pandas, scikit-learn, statsmodels, PyMySQL)
+- Tooling: Composer, npm, Vite, PHP Artisan
+
+## Key ML Algorithms (files and brief CLI)
+
+- `ml-algorithms/arimax.py` — ARIMAX/SARIMAX forecasting per fuel type
+    - CLI: `python ml-algorithms/arimax.py <horizon> <n_lags>`
+- `ml-algorithms/random-forest-regressor.py` — Heat-index regression (hourly forecasts)
+    - CLI: `python ml-algorithms/random-forest-regressor.py <forecast_hours>`
+- `ml-algorithms/random-forest-classifier.py` — Safety assessment classifier
+    - CLI: `python ml-algorithms/random-forest-classifier.py <date> <temperature> <humidity> <wind_speed> <age_range> <exertion_level>`
+- `ml-algorithms/db_utils.py` — Shared DB utilities for Python scripts
+- `ml-algorithms/bridge.php` — PHP bridge that exposes `use_ml()` to controllers
 
 ## Local Setup
 
@@ -322,142 +274,12 @@ php artisan config:cache
 - `GET /` — Redirects to `/home`
 - `GET /home` — Home dashboard
 - `GET /about` — Team/About page
-- `GET /fuel-prices` — Fuel prices tracking with predictions
-- `GET /heat-index` — Heat index display page
-- `GET /history` — Historical data view
-
-## Controllers
-
-### FuelPricesController
-
-Displays historical fuel prices and cached ARIMAX predictions. Includes `refresh=1` query parameter to bypass cache.
-
-## Team
-
-### John Marky Natividad
-
-- **GitHub:** https://github.com/johnmarky08
-- **Facebook:** https://facebook.com/johnmarky.natividad
-- **Email:** johnmarky.dev@gmail.com
-
-### Nico Gabriel Domingo
-
-- **GitHub:** https://github.com/dnekooo
-- **Facebook:** https://facebook.com/nekoo.d6
-- **Email:** domingonicogabriel06@gmail.com
-
-### Joshua Bartolome
-
-- **GitHub:** https://github.com/J0SH-ua
-- **Facebook:** https://facebook.com/joshua.bartolome.906
-- **Email:** bartolomej863@gmail.com
-
-## How the ML Pipeline Works
-
-T.E.M.P.U.S. implements a clean separation of concerns between the web tier (Laravel + Svelte) and the ML tier (Python), orchestrated by a lightweight PHP-Python bridge.
-
-### Data Flow
-
-1. **Data Preparation**
-    - XLSX source files in `datasets/` are loaded by seeders
-    - Seeders read the first sheet and insert records into the corresponding MySQL tables
-    - Heat index table stores hourly granularity (datetime values)
-    - Fuel prices and safety assessment tables store daily or event-level granularity
-
-2. **Python ML Scripts**
-    - Each ML algorithm is a standalone CLI script in `ml-algorithms/`:
-        - **arimax.py** — ARIMAX/SARIMAX forecasting (per fuel type)
-            - CLI: `python arimax.py <horizon> <n_lags>` (e.g. `7 3`)
-            - Reads `fuel_prices` and uses exogenous regressors (`exchange_rate_to_usd`, `normal_supply_flag`)
-            - Runs a small grid search over (p,d,q) and uses a process per fuel type for parallelism
-            - Outputs JSON: list of forecast rows with `date`, `fuel_type`, `predicted_price`, `lower_95`, `upper_95`
-        - **random-forest-regressor.py** — Heat-index regression (hourly)
-            - CLI: `python random-forest-regressor.py <forecast_hours>` (default 24)
-            - Reads `heat_index`, engineers time and lag features, trains `RandomForestRegressor`, and returns iterative forecasts
-            - Outputs JSON: evaluation `metrics` and `forecasts` array (ISO datetimes and heat_index values)
-        - **random-forest-classifier.py** — Safety classification for outdoor activity
-            - CLI: `python random-forest-classifier.py <date> <temperature> <humidity> <wind_speed> <age_range> <exertion_level>`
-            - Reads `safety_assessment`, performs ordinal encoding for `age_range`, trains `RandomForestClassifier`, and returns metrics + single prediction with ordered probabilities
-            - Outputs JSON: `metrics` and `result` (label and probability fields in a fixed order)
-
-    - All Python scripts use `ml-algorithms/db_utils.py` for database connectivity:
-        - Loads connection settings from `.env` file (DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD)
-        - Returns pandas DataFrames with optional date parsing
-        - Handles date/datetime columns appropriately per table schema
-
-### Python dependencies (exact)
-
-The repository pins these Python packages in `requirements.txt`:
-
-- `numpy==2.4.6`
-- `pandas==3.0.3`
-- `pymysql==1.1.2`
-- `scikit-learn==1.8.0`
-- `statsmodels==0.14.6`
-
-3. **PHP Bridge Layer**
-    - `ml-algorithms/bridge.php` exports the `use_ml()` function
-    - Bridge launches the appropriate Python script as a subprocess
-    - Passes CLI arguments safely using `escapeshellarg()`
-    - Captures stdout (JSON) and stderr (error messages)
-    - Decodes JSON and returns PHP objects/arrays, or throws exceptions on error
-    - Disables PHP execution time limits for long-running ARIMAX grid search
-
-4. **Laravel Controllers**
-    - Controllers load the bridge function and call `use_ml(script, ...args)`
-    - Catch exceptions and format error messages for frontend display
-    - Return data as Inertia props to Svelte pages
-    - Can cache results (e.g., `FuelPricesController` caches ARIMAX predictions indefinitely)
-    - Display inputs, results, and error states to users
-
-5. **Svelte Frontend**
-    - Svelte components receive props from Inertia responses
-    - Display input forms or parameters used by ML model
-    - Show results in formatted tables or JSON displays
-    - Display error messages if ML execution fails
-    - Sample pages (`arimax.svelte`, `rfr.svelte`, `rfc.svelte`) show raw JSON for debugging
-
-### Key Architectural Patterns
-
-- **JSON Contract**: Python scripts output structured JSON; bridge and controllers pass it unchanged to frontend
-- **Stateless Inference**: RFC is pure inference; ARIMAX and RFR train on historical data at request time
-- **Lazy Loading**: Bridge function loaded on-demand in controllers; Python interpreter path resolved at runtime
-- **Error Propagation**: Python errors surface with descriptive messages to help debugging
-- **Caching**: FuelPricesController caches ARIMAX results to reduce computation overhead
-
-### Best Practices & Recommendations
-
-1. **Long-Running Tasks**
-    - ARIMAX grid search can be slow for large histories (multiple fuel types, auto p/d/q search)
-    - For production, offload to Laravel queued jobs and return async results via polling/WebSocket
-    - Use `set_time_limit(0)` in bridge to handle long execution times
-
-2. **Reproducibility**
-    - Always use the bundled `.venv` virtual environment for consistent package versions
-    - Activate `.venv` before running artisan commands or starting the dev server
-    - Version-pin all Python packages in `requirements.txt`
-
-3. **Database**
-    - Ensure MySQL charset is `utf8mb4` (configured in migrations)
-    - PyMySQL connection uses `autocommit=True` to avoid transaction issues
-    - Seeders insert records in bulk; expect multi-second seeding for large XLSX files
-
-4. **Error Handling**
-    - Bridge throws `InvalidArgumentException` for wrong argument counts
-    - Bridge throws `RuntimeException` if Python exits non-zero or returns invalid JSON
-    - Controllers display error text in the `error` prop; sample pages show it in red
-
-5. **Extensibility**
-    - To add a new ML model:
-        1. Create a Python script in `ml-algorithms/` following the JSON stdout contract
-        2. Register it in `use_ml()` switch statement in `bridge.php`
-        3. Create a Laravel controller that calls `use_ml()`
-        4. Create a Svelte page and add a route in `routes/web.php`
-
-6. **Performance Optimization**
-    - Cache expensive results (ARIMAX predictions are cached indefinitely in FuelPricesController)
-    - Use database indexes on date columns for faster seeding and queries
-    - Consider running ARIMAX training in a background job for production
+- `GET /fuel-prices` — Fuel prices tracking (uses `FuelPricesController`)
+- `GET|POST /heat-index` — Heat index page and safety assessment endpoint (renders page on GET; accepts JSON/POST assessment requests)
+- `GET /history` — Redirects to `/history/fuel-prices`
+- `GET /history/fuel-prices` — Fuel prices history table (`HistoryController::fuelPrices`)
+- `GET /history/heat-index` — Heat index history table (`HistoryController::heatIndex`)
+- `Fallback` — Unmatched routes render a 404 `NotFound` Svelte page
 
 ## Configuration Files
 
@@ -515,6 +337,26 @@ php artisan tinker
 # View registered routes
 php artisan route:list
 ```
+
+## Developers
+
+### John Marky Natividad
+
+- **GitHub:** https://github.com/johnmarky08
+- **Facebook:** https://facebook.com/johnmarky.natividad
+- **Email:** johnmarky.dev@gmail.com
+
+### Nico Gabriel Domingo
+
+- **GitHub:** https://github.com/dnekooo
+- **Facebook:** https://facebook.com/nekoo.d6
+- **Email:** domingonicogabriel06@gmail.com
+
+### Joshua Bartolome
+
+- **GitHub:** https://github.com/J0SH-ua
+- **Facebook:** https://facebook.com/joshua.bartolome.906
+- **Email:** bartolomej863@gmail.com
 
 ---
 

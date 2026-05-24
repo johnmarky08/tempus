@@ -1,7 +1,8 @@
-﻿<script>
+<script>
     import Layout from "./components/layout.svelte";
     import { historyTableDefaults } from "../js/items.js";
     import { fade, fly } from "svelte/transition";
+    import { searchHistoryRows, sortHistoryRows } from "../js/historyTable.js";
 
     export let isActive = "";
     export let isActiveSub = "";
@@ -9,12 +10,47 @@
     export let model = historyTableDefaults;
 
     $: heading = model?.heading ?? null;
+    $: columns = model?.columns ?? [];
+    $: rows = model?.rows ?? [];
 
     let activeFilterKey = null;
     let activeFilterOption = {};
+    let searchDraft = "";
+    let appliedSearch = "";
+    let isColumnFilterOpen = false;
+    let visibleColumnKeys = [];
+    let hasInitializedColumns = false;
+    let visibleRowLimit = 100;
+
+    $: if (!hasInitializedColumns && columns.length) {
+        visibleColumnKeys = columns.map((column) => column.key);
+        hasInitializedColumns = true;
+    }
+
+    $: visibleColumns = columns.filter((column) =>
+        visibleColumnKeys.includes(column.key),
+    );
+    $: rowTextSize =
+        heading?.primary === "HEAT INDEX" ? "text-lg" : "text-base";
+    $: searchResults = searchHistoryRows(rows, appliedSearch, columns);
+    $: activeSortColumnKey = Object.keys(activeFilterOption)[0] ?? null;
+    $: activeSortColumn = columns.find(
+        (column) => column.key === activeSortColumnKey,
+    );
+    $: sortedRows = sortHistoryRows(
+        searchResults,
+        activeSortColumn,
+        activeSortColumnKey ? activeFilterOption[activeSortColumnKey] : "",
+    );
+    $: displayedRows = sortedRows.slice(0, visibleRowLimit);
+    $: hasMoreRows = sortedRows.length > visibleRowLimit;
+    $: tableGridTemplateColumns = visibleColumns
+        .map((column) => column.width ?? "1fr")
+        .join(" ");
 
     function toggleFilter(columnKey) {
         activeFilterKey = activeFilterKey === columnKey ? null : columnKey;
+        isColumnFilterOpen = false;
     }
 
     function isActiveFilterOption(columnKey, option) {
@@ -23,20 +59,49 @@
 
     function selectFilterOption(columnKey, option) {
         activeFilterOption = {
-            ...activeFilterOption,
             [columnKey]: option,
         };
         activeFilterKey = null;
+        visibleRowLimit = 100;
+    }
+
+    function submitSearch() {
+        appliedSearch = String(searchDraft ?? "").trim();
+        activeFilterKey = null;
+        visibleRowLimit = 100;
     }
 
     function closeFilter() {
         activeFilterKey = null;
+        isColumnFilterOpen = false;
+    }
+
+    function toggleColumnVisibility(columnKey) {
+        if (visibleColumnKeys.includes(columnKey)) {
+            visibleColumnKeys = visibleColumnKeys.filter(
+                (key) => key !== columnKey,
+            );
+            visibleRowLimit = 100;
+
+            return;
+        }
+
+        visibleColumnKeys = [...visibleColumnKeys, columnKey];
+        visibleRowLimit = 100;
+    }
+
+    function showMoreRows() {
+        visibleRowLimit += 100;
+    }
+
+    function isColumnVisible(columnKey) {
+        return visibleColumnKeys.includes(columnKey);
     }
 </script>
 
 <Layout {isActive} {isActiveSub}>
     <div
-        class="relative -mt-20 -mb-20 scale-[0.80] overflow-hidden font-jetbrainsMono text-slate-100"
+        class="relative cursor-default -mt-20 -mb-20 scale-[0.80] overflow-hidden font-jetbrainsMono text-slate-100"
         role="button"
         tabindex="0"
         on:click={closeFilter}
@@ -75,8 +140,9 @@
                                 data-sr
                                 data-sr-delay="180"
                                 class="ml-3 text-orange-400"
-                                >{heading.accent}</span
                             >
+                                {heading.accent}
+                            </span>
                         </h1>
                     {:else}
                         <h1
@@ -91,9 +157,148 @@
             </div>
 
             <div
+                role="presentation"
+                class="relative z-40 flex flex-col gap-4 rounded-[20px] border border-white/25 bg-[#081624]/85 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_18px_50px_rgba(1,6,17,0.4)] backdrop-blur-sm"
+                on:click|stopPropagation
+            >
+                <form
+                    class="flex flex-col gap-3 lg:flex-row"
+                    on:submit|preventDefault={submitSearch}
+                >
+                    <div class="relative flex-1">
+                        <input
+                            bind:value={searchDraft}
+                            type="search"
+                            placeholder={model?.searchPlaceholder ??
+                                "Search history"}
+                            class="w-full rounded-[16px] border border-white/15 bg-[#0f2236] px-5 py-3 pr-14 text-sm tracking-[0.12em] text-slate-100 placeholder:text-slate-500 outline-none transition-all duration-300 focus:border-sky-400/60 focus:bg-[#12263d] focus:shadow-[0_0_0_1px_rgba(56,189,248,0.15)]"
+                            on:keydown={(event) => {
+                                if (event.key === "Enter") {
+                                    submitSearch();
+                                }
+                            }}
+                        />
+
+                        <button
+                            type="submit"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 rounded-[12px] border border-sky-400/30 bg-sky-500/15 px-3 py-2 text-sky-100 transition-colors duration-200 hover:bg-sky-400/25"
+                            aria-label="Search history"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                class="h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="m20 20-3.5-3.5"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="relative lg:w-[13rem]">
+                        <button
+                            type="button"
+                            class="flex w-full items-center justify-between rounded-[16px] border border-white/15 bg-[#0f2236] px-5 py-3 text-sm uppercase tracking-[0.16em] text-slate-100 transition-all duration-300 hover:border-sky-400/50 hover:bg-[#12263d]"
+                            on:click|stopPropagation={() => {
+                                isColumnFilterOpen = !isColumnFilterOpen;
+                                activeFilterKey = null;
+                            }}
+                        >
+                            <span>Columns</span>
+                            <span class="text-sky-300"
+                                >{visibleColumnKeys.length}</span
+                            >
+                        </button>
+
+                        {#if isColumnFilterOpen}
+                            <div
+                                class="absolute right-0 top-full z-50 mt-3 w-full min-w-[17rem] overflow-hidden rounded-[18px] border border-white/20 bg-[#091423] shadow-[0_24px_45px_rgba(1,6,17,0.55)]"
+                                transition:fly={{ y: -8, duration: 180 }}
+                            >
+                                <div
+                                    class="border-b border-white/10 px-4 py-3 text-xs uppercase tracking-[0.24em] text-slate-400"
+                                >
+                                    Show columns
+                                </div>
+                                <div class="max-h-72 overflow-y-auto p-2">
+                                    {#each columns as column (column.key)}
+                                        <label
+                                            class="flex items-center justify-between rounded-[14px] px-3 py-2 text-sm text-slate-100 transition-colors duration-200 hover:bg-white/5"
+                                        >
+                                            <span>{column.label}</span>
+                                            <div class="flex items-center">
+                                                <div class="relative w-5 h-5">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isColumnVisible(
+                                                            column.key,
+                                                        )}
+                                                        on:change={() =>
+                                                            toggleColumnVisibility(
+                                                                column.key,
+                                                            )}
+                                                        class="sr-only peer absolute inset-0 w-full h-full"
+                                                    />
+
+                                                    <div
+                                                        class="w-5 h-5 rounded-md border border-white/30 bg-[#071427] transition-colors duration-150 peer-checked:border-sky-400 peer-checked:bg-sky-500/10"
+                                                    ></div>
+
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white/90 peer-checked:text-sky-400 opacity-0 peer-checked:opacity-100 transition-colors transition-opacity duration-150 pointer-events-none"
+                                                        fill="currentColor"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.193 9.193-3.172-3.172a1 1 0 1 0-1.414 1.414l3.88 3.88a1 1 0 0 0 1.414 0l9.899-9.897z"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    {/each}
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+                </form>
+
+                {#if appliedSearch}
+                    <div
+                        class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-400"
+                    >
+                        <span
+                            class="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-sky-200"
+                        >
+                            Search: {appliedSearch}
+                        </span>
+                        <button
+                            type="button"
+                            class="rounded-full border border-white/15 px-3 py-1 text-slate-300 transition-colors duration-200 hover:border-white/30 hover:text-white"
+                            on:click|stopPropagation={() => {
+                                searchDraft = "";
+                                appliedSearch = "";
+                                visibleRowLimit = 100;
+                            }}
+                        >
+                            Clear
+                        </button>
+                    </div>
+                {/if}
+            </div>
+
+            <div
                 data-sr
                 data-sr-delay="140"
-                class="rounded-[20px] border border-white/35 bg-[#0a1a2d]/78 p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_18px_50px_rgba(1,6,17,0.55)] backdrop-blur-sm"
+                role="presentation"
+                class="relative z-10 rounded-[20px] border border-white/35 bg-[#0a1a2d]/78 p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_18px_50px_rgba(1,6,17,0.55)] backdrop-blur-sm"
+                on:click|stopPropagation
             >
                 <div
                     data-sr
@@ -109,25 +314,21 @@
                             <div
                                 data-sr
                                 data-sr-delay="260"
-                                class="rounded-[14px] border border-white/20 bg-white/5"
+                                class="grid gap-0 rounded-t-[14px] border-b border-white/15 bg-[#1b2530]/95 text-[0.92rem] uppercase tracking-[0.18em] text-white"
+                                style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                             >
-                                <div
-                                    data-sr
-                                    data-sr-delay="300"
-                                    class="grid gap-0 rounded-t-[14px] border-b border-white/15 bg-[#1b2530]/95 text-[0.92rem] uppercase tracking-[0.18em] text-white"
-                                    style={`grid-template-columns: ${model.gridTemplateColumns};`}
-                                >
-                                    {#each model.columns as column, columnIndex (column.key)}
-                                        <div
-                                            class="relative"
-                                            role="group"
-                                            on:mouseenter={() => {
-                                                activeFilterKey = column.key;
-                                            }}
-                                            on:mouseleave={() => {
-                                                activeFilterKey = null;
-                                            }}
-                                        >
+                                {#each visibleColumns as column, columnIndex (column.key)}
+                                    <div
+                                        class="relative"
+                                        role="group"
+                                        on:mouseenter={() => {
+                                            activeFilterKey = column.key;
+                                        }}
+                                        on:mouseleave={() => {
+                                            activeFilterKey = null;
+                                        }}
+                                    >
+                                        {#if column.filterOptions?.length}
                                             <button
                                                 type="button"
                                                 data-sr
@@ -174,16 +375,7 @@
                                                                     )}
                                                             >
                                                                 <span
-                                                                    class={`relative inline-block transition-all duration-300 
-                                                                    after:content-[''] 
-                                                                    after:absolute 
-                                                                    after:left-1/2 after:-translate-x-1/2 
-                                                                    after:-bottom-1 
-                                                                    after:h-[2px] after:w-0 
-                                                                    after:bg-[#6FB8E7] 
-                                                                    after:transition-all after:duration-300 
-                                                                    group-hover:after:w-full 
-                                                                    ${isActiveFilterOption(column.key, option) ? "after:w-full text-[#6FB8E7]" : "text-white"}`}
+                                                                    class={`relative inline-block transition-all duration-300 after:absolute after:-bottom-1 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 after:bg-[#6FB8E7] after:transition-all after:duration-300 group-hover:after:w-full ${isActiveFilterOption(column.key, option) ? "after:w-full text-[#6FB8E7]" : "text-white"}`}
                                                                 >
                                                                     {option}
                                                                 </span>
@@ -192,35 +384,107 @@
                                                     </div>
                                                 </div>
                                             {/if}
-                                        </div>
-                                    {/each}
-                                </div>
+                                        {:else}
+                                            <div
+                                                class={`flex items-center px-4 py-3 ${column.align === "left" ? "justify-start" : "justify-center"}`}
+                                            >
+                                                <span>{column.label}</span>
+                                            </div>
+                                        {/if}
+                                    </div>
+                                {/each}
+                            </div>
 
-                                <div
-                                    data-sr
-                                    data-sr-delay="340"
-                                    class="flex max-h-[525px] flex-col overflow-y-auto"
-                                >
-                                    {#each model.rows as row, rowIndex (row.id ?? rowIndex)}
+                            <div
+                                class="flex max-h-[525px] flex-col overflow-y-auto"
+                            >
+                                {#if visibleColumns.length === 0}
+                                    <div
+                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] bg-[#0d1b2b]/65 px-6 py-10 text-sm uppercase tracking-[0.18em] text-slate-400"
+                                    >
+                                        No columns selected.
+                                    </div>
+                                {:else if sortedRows.length === 0}
+                                    <div
+                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] bg-[#0d1b2b]/65 px-6 py-10 text-sm uppercase tracking-[0.18em] text-slate-400"
+                                        transition:fade={{ duration: 180 }}
+                                    >
+                                        No rows have been found.
+                                    </div>
+                                {:else}
+                                    {#each displayedRows as row, rowIndex (row.id)}
                                         <div
                                             data-sr
-                                            class={`grid border-b border-white/8 text-xl text-slate-100 transition-all duration-200 last:border-b-0 hover:bg-white/5 ${rowIndex % 2 === 0 ? "bg-[#0d1b2b]/65" : "bg-[#0b1726]/75"}`}
-                                            style={`grid-template-columns: ${model.gridTemplateColumns};`}
+                                            class={`grid border-b border-white/8 ${rowTextSize} text-slate-100 transition-all duration-200 last:border-b-0 hover:bg-white/5 ${rowIndex % 2 === 0 ? "bg-[#0d1b2b]/65" : "bg-[#0b1726]/75"}`}
+                                            style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                                         >
-                                            {#each row.cells as cell, cellIndex (cellIndex)}
+                                            {#each visibleColumns as column (column.key)}
                                                 <div
-                                                    class={`flex items-center px-4 py-3 ${cell.wrapperClass ?? "justify-center"}`}
+                                                    class={`flex items-center px-4 py-3 ${row.cellsByKey?.[column.key]?.wrapperClass ?? "justify-center"}`}
                                                 >
                                                     <span
-                                                        class={cell.valueClass ??
-                                                            ""}
-                                                        >{cell.value}</span
+                                                        class={row.cellsByKey?.[
+                                                            column.key
+                                                        ]?.valueClass ?? ""}
                                                     >
+                                                        {row.cellsByKey?.[
+                                                            column.key
+                                                        ]?.value}
+                                                    </span>
                                                 </div>
                                             {/each}
                                         </div>
                                     {/each}
-                                </div>
+
+                                    {#if hasMoreRows}
+                                        <button
+                                            type="button"
+                                            class={`grid w-full border-b border-white/8 text-xl text-slate-100 transition-all duration-200 last:border-b-0 hover:bg-white/5 ${displayedRows.length % 2 === 0 ? "bg-[#0d1b2b]/65" : "bg-[#0b1726]/75"}`}
+                                            style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
+                                            on:click|stopPropagation={showMoreRows}
+                                        >
+                                            <span
+                                                class="col-span-full flex items-center justify-center px-4 py-4 text-sm uppercase tracking-[0.22em] text-sky-200 transition-colors duration-200 hover:text-white"
+                                            >
+                                                Show more
+                                            </span>
+                                        </button>
+                                    {/if}
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="border-t border-white/10 bg-[#091423]/95 px-4 py-3 backdrop-blur-sm"
+                    >
+                        <div
+                            class="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-300"
+                        >
+                            <div
+                                class="flex flex-wrap items-center gap-3 uppercase tracking-[0.18em]"
+                            >
+                                <span
+                                    class="rounded-full border border-sky-400/25 bg-sky-500/10 px-3 py-1 text-[0.72rem] text-sky-200"
+                                >
+                                    Showing {displayedRows.length} of {sortedRows.length}
+                                </span>
+                                <span class="text-[0.72rem] text-slate-500">
+                                    {Math.max(
+                                        sortedRows.length -
+                                            displayedRows.length,
+                                        0,
+                                    )} remaining
+                                </span>
+                            </div>
+
+                            <div
+                                class="text-[0.72rem] uppercase tracking-[0.2em] text-slate-500"
+                            >
+                                {#if hasMoreRows}
+                                    More rows available
+                                {:else}
+                                    All rows are visible
+                                {/if}
                             </div>
                         </div>
                     </div>
