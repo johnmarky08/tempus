@@ -22,7 +22,6 @@
     let sizeTransitioning = false;
 
     const MIN_PANEL_HEIGHT = 54;
-    const LIVE_SHIFT_THRESHOLD = PANEL_H - 64;
 
     function updateViewport() {
         viewportWidth = window.innerWidth;

@@ -2,7 +2,7 @@
     import Navbar from "./header.svelte";
     import Footer from "./footer.svelte";
     import TempusFAQPanel from "./tempusFaqPanel.svelte";
-    import { onMount, tick } from "svelte";
+    import { onMount } from "svelte";
 
     export let isActive = "";
     export let isActiveSub = "";
@@ -11,7 +11,6 @@
     let y = 100;
     let targetX = 100;
     let targetY = 100;
-    let viewportWidth = 0;
     let viewportHeight = 0;
 
     let dragging = false;
@@ -136,8 +135,6 @@
                 (panelHeight > 0 ? panelHeight : CHAT_PANEL_HEIGHT),
         );
 
-        // When the panel would sit below the icon and clip the bottom edge,
-        // move the icon up so the panel stays on-screen.
         if (targetY < CHAT_PANEL_HEIGHT && targetY > maxYForPanelBelow) {
             targetY = maxYForPanelBelow;
         }
