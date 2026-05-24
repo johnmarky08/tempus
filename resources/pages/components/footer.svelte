@@ -31,17 +31,19 @@
     <div class="flex flex-col gap-3 mr-40">
         <h1 class="font-bold text-lg text-center">Quick Links</h1>
         <ul
-            class="flex gap-3 text-gray-300 max-w-[90px] flex-wrap justify-left"
+            class="flex gap-3 text-gray-300 max-w-[125px] flex-wrap justify-center"
         >
-            {#each nav as { name, link }}
-                <li class="">
-                    <a
-                        use:inertia
-                        href={link}
-                        class="relative hover:text-[#6FB8E7] transition-all duration-300"
-                    >
-                        <span
-                            class="
+            {#each nav as { name, link, subMenu }}
+                {#if subMenu}
+                    {#each subMenu as { name: subName, link: subLink }}
+                        <li class="w-full">
+                            <a
+                                use:inertia
+                                href={subLink}
+                                class="relative hover:text-[#6FB8E7] transition-all duration-300"
+                            >
+                                <span
+                                    class="
                        after:content-['']
                        after:absolute
                        after:left-1/2
@@ -53,11 +55,38 @@
                        after:transition-all
                        after:duration-300
                        hover:after:w-full"
+                                >
+                                    {subName}
+                                </span>
+                            </a>
+                        </li>
+                    {/each}
+                {:else}
+                    <li class="w-full">
+                        <a
+                            use:inertia
+                            href={link}
+                            class="relative hover:text-[#6FB8E7] transition-all duration-300"
                         >
-                            {name}
-                        </span>
-                    </a>
-                </li>
+                            <span
+                                class="
+                       after:content-['']
+                       after:absolute
+                       after:left-1/2
+                       after:-translate-x-1/2
+                       after:-bottom-1
+                       after:h-[2px]
+                       after:w-0
+                       after:bg-[#6FB8E7]
+                       after:transition-all
+                       after:duration-300
+                       hover:after:w-full"
+                            >
+                                {name}
+                            </span>
+                        </a>
+                    </li>
+                {/if}
             {/each}
         </ul>
     </div>

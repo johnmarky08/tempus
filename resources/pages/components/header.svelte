@@ -37,7 +37,8 @@
                         use:inertia
                         href={link}
                         class="relative transition-all duration-300
-                        {isActive === name ? 'text-[#6FB8E7]' : 'text-white'}"
+                        {isActive === name ? 'text-[#6FB8E7]' : 'text-white'}
+                        {name === 'History' ? 'pointer-events-none' : ''}"
                     >
                         <span
                             class="
