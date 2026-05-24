@@ -7,11 +7,7 @@
     void errors;
 </script>
 
-<svelte:head>
-    <title>404 | T.E.M.P.U.S.</title>
-</svelte:head>
-
-<Layout>
+<Layout isActive="404">
     <div
         class="flex min-h-[60vh] items-center justify-center text-center text-white"
     >
@@ -19,7 +15,7 @@
             <div
                 class="inline-flex items-center gap-3 rounded-full border border-sky-300/30 bg-sky-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.32em] text-sky-100"
             >
-                <span class="h-2 w-2 rounded-full bg-sky-300"></span>
+                <span class="h-2 w-2 rounded-full bg-red-400"></span>
                 Error 404
             </div>
 

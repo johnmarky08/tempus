@@ -6,6 +6,10 @@
     export let isActiveSub = "";
 </script>
 
+<svelte:head>
+    <title>{isActive} | T.E.M.P.U.S.</title>
+</svelte:head>
+
 <div
     class="bg-black min-h-screen bg-cover bg-center bg-fixed font-spaceGrotesk font-normal flex flex-col"
     style={`background-image: url("/images/backgrounds/dark_bg.png");`}
