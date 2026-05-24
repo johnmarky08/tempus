@@ -32,6 +32,11 @@
     let isAssessing = !(heatIndexData?.assess ?? false);
     let isSubmitting = false;
     let hoveredPointIndex = null;
+    let syncStatus = heatIndexData?.syncStatus ?? {
+        error: false,
+        message: "",
+        updatedToLatestHour: true,
+    };
 
     const ageRiskMap = AGE_GROUPS.reduce((accumulator, group) => {
         accumulator[group.value] = group.risk;
@@ -79,7 +84,15 @@
                 ageRange: payload.ageRange,
                 exertionLevel: payload.exertionLevel,
                 assess: payload.assess,
+                syncStatus: {
+                    error: Boolean(payload.error),
+                    message:
+                        payload.message ??
+                        "Currently it is not updated to the latest hour as no data is available.",
+                    updatedToLatestHour: !payload.error,
+                },
             };
+            syncStatus = heatIndexData.syncStatus;
             selectedAgeRange = payload.ageRange;
             exertionLevel = payload.exertionLevel;
             isAssessing = false;
@@ -194,16 +207,36 @@
             : (heatIndexData?.safetyHighlights ??
               SAFETY_HIGHLIGHTS[safetyStateKey] ??
               SAFETY_HIGHLIGHTS.safe);
+    $: archiveSyncMessage =
+        syncStatus?.error && syncStatus?.message
+            ? syncStatus.message
+            : "Currently it is not updated to the latest hour as no data is available.";
 </script>
 
 <Layout isActive="Heat Index">
     <div
         class="smooth-scroll flex flex-col space-y-36 -mt-8 text-slate-100 font-jetbrainsMono scale-[0.95]"
     >
+        {#if syncStatus?.error}
+            <div
+                data-sr
+                class="mx-28 rounded-[20px] -mb-24 border border-amber-400/60 bg-amber-400/10 px-5 py-4 text-sm text-amber-100 shadow-[0_0_30px_rgba(251,191,36,0.12)]"
+            >
+                <span
+                    class="font-semibold uppercase tracking-[0.22em] text-amber-200"
+                >
+                    Data Notice
+                </span>
+                <p class="mt-2 leading-relaxed text-amber-50/90">
+                    {archiveSyncMessage}
+                </p>
+            </div>
+        {/if}
+
         <section class="flex flex-col space-y-16 -mb-12">
             <div
                 data-sr
-                class=" mx-28 flex flex-col space-y-10 bg-[#152A42]/50 border border-white rounded-[24px] p-8 justify-center items-center"
+                class="mx-28 flex flex-col space-y-10 bg-[#152A42]/50 border border-white rounded-[24px] p-8 justify-center items-center"
             >
                 <p
                     data-sr

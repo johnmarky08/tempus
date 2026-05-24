@@ -125,7 +125,7 @@
         messages = [
             {
                 role: "assistant",
-                text: "Hey! I'm Tempest. Pick a topic below, then tap any question to get an answer.",
+                text: "Hey there! I'm Tempest, your FAQ assistant. Pick a topic below, then tap any question to get an answer.",
             },
         ];
     }
@@ -296,7 +296,7 @@
         role="dialog"
         aria-modal="true"
         aria-label="Chat with Tempest"
-        class="font-jetbrainsMono fixed z-50 flex flex-col rounded-2xl overflow-hidden
+        class="font-jetbrainsMono fixed z-[9999] flex flex-col rounded-2xl overflow-hidden
            border border-white shadow-[0_0_20px_#6FB8E7] bg-[#061E29] text-white"
         style={`
             left: ${panelLeft}px;

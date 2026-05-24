@@ -23,7 +23,7 @@ class HeatIndexController extends Controller
             'assess' => $request->boolean('assess', false),
         ];
 
-        $this->syncArchiveDataIfNeeded();
+        $archiveSyncStatus = $this->syncArchiveDataIfNeeded();
 
         $rows = DB::table('heat_index')
             ->select(['date', 'temperature', 'humidity', 'wind_speed', 'heat_index'])
@@ -36,7 +36,9 @@ class HeatIndexController extends Controller
 
         if ($rows->isEmpty()) {
             return Inertia::render('HeatIndex', [
-                'heatIndexData' => null,
+                'heatIndexData' => [
+                    'syncStatus' => $archiveSyncStatus,
+                ],
             ]);
         }
 
@@ -80,6 +82,8 @@ class HeatIndexController extends Controller
                 'ageRange' => $inputs['age_range'],
                 'exertionLevel' => $inputs['exertion_level'],
                 'assess' => true,
+                'error' => $archiveSyncStatus['error'],
+                'message' => $archiveSyncStatus['message'],
             ]);
         }
 
@@ -160,6 +164,7 @@ class HeatIndexController extends Controller
                 'ageRange' => $inputs['age_range'],
                 'exertionLevel' => $inputs['exertion_level'],
                 'assess' => $inputs['assess'],
+                'syncStatus' => $archiveSyncStatus,
             ],
         ]);
     }
@@ -171,8 +176,14 @@ class HeatIndexController extends Controller
         }
     }
 
-    private function syncArchiveDataIfNeeded(): void
+    private function syncArchiveDataIfNeeded(): array
     {
+        $status = [
+            'error' => false,
+            'message' => '',
+            'updatedToLatestHour' => true,
+        ];
+
         $latestRow = DB::table('heat_index')
             ->select(['date'])
             ->orderByDesc('date')
@@ -182,27 +193,45 @@ class HeatIndexController extends Controller
         $currentHour = Carbon::now('Asia/Manila')->startOfHour();
 
         if ($latestRow === null) {
-            $this->refreshArchiveRange(
+            $refreshed = $this->refreshArchiveRange(
                 $currentHour->copy()->startOfDay(),
                 $currentHour
             );
 
-            return;
+            if (! $refreshed) {
+                return [
+                    'error' => true,
+                    'message' => 'As of ' . $currentHour->format('g A') . ', data is not updated to the latest hour as no new data could be fetched from the archive API.',
+                    'updatedToLatestHour' => false,
+                ];
+            }
+
+            return $status;
         }
 
         $latestHour = Carbon::parse($latestRow->date, 'Asia/Manila')->startOfHour();
 
         if ($latestHour->equalTo($currentHour)) {
-            return;
+            return $status;
         }
 
-        $this->refreshArchiveRange($latestHour->copy()->addHour(), $currentHour);
+        $refreshed = $this->refreshArchiveRange($latestHour->copy()->addHour(), $currentHour);
+
+        if (! $refreshed) {
+            return [
+                'error' => true,
+                'message' => 'As of ' . $currentHour->format('g A') . ', data is not updated to the latest hour as no new data could be fetched from the archive API.',
+                'updatedToLatestHour' => false,
+            ];
+        }
+
+        return $status;
     }
 
-    private function refreshArchiveRange(Carbon $startHour, Carbon $endHour): void
+    private function refreshArchiveRange(Carbon $startHour, Carbon $endHour): bool
     {
         if ($startHour->greaterThan($endHour)) {
-            return;
+            return true;
         }
 
         $response = Http::timeout(30)->get(
@@ -218,7 +247,7 @@ class HeatIndexController extends Controller
         );
 
         if (! $response->successful()) {
-            return;
+            return false;
         }
 
         $payload = $response->json();
@@ -257,23 +286,25 @@ class HeatIndexController extends Controller
         }
 
         if (empty($rows)) {
-            return;
+            return false;
         }
 
         DB::table('heat_index')->insert($rows);
+
+        return true;
     }
 
     private function resolveHeatStateKey(float $heatIndex): string
     {
-        if ($heatIndex < 25) {
+        if ($heatIndex < 27) {
             return 'safe';
         }
 
-        if ($heatIndex < 39) {
+        if ($heatIndex < 33) {
             return 'moderate';
         }
 
-        if ($heatIndex < 46) {
+        if ($heatIndex < 42) {
             return 'high';
         }
 

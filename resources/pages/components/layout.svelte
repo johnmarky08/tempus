@@ -7,10 +7,15 @@
     export let isActive = "";
     export let isActiveSub = "";
 
-    let x = 100;
-    let y = 100;
-    let targetX = 100;
-    let targetY = 100;
+    const ICON_SIZE = 48;
+    const EDGE_MARGIN = 48;
+    const CHAT_PANEL_HEIGHT = 480;
+    const CHAT_SHIFT_THRESHOLD = CHAT_PANEL_HEIGHT - 64;
+
+    let x = EDGE_MARGIN;
+    let y = EDGE_MARGIN;
+    let targetX = EDGE_MARGIN;
+    let targetY = EDGE_MARGIN;
     let viewportHeight = 0;
 
     let dragging = false;
@@ -27,11 +32,6 @@
     let chatOpen = false;
     let hasDragged = false;
     let chatPanelHeight = 0;
-
-    const ICON_SIZE = 48;
-    const EDGE_MARGIN = 8;
-    const CHAT_PANEL_HEIGHT = 480;
-    const CHAT_SHIFT_THRESHOLD = CHAT_PANEL_HEIGHT - 64;
 
     const animationStyles = {
         shiver: "animation: shiver 0.6s ease-in-out forwards;",
@@ -57,14 +57,7 @@
 
     onMount(() => {
         updateViewport();
-        const savedX = localStorage.getItem("rimuru-x");
-        const savedY = localStorage.getItem("rimuru-y");
-
-        if (savedX) x = targetX = Number(savedX);
-        if (savedY) y = targetY = Number(savedY);
-
-        clampTargetToViewport();
-        forceChatAnchorIntoView(chatPanelHeight);
+        updateAnchorPosition();
 
         window.addEventListener("resize", handleResize);
         animate();
@@ -92,9 +85,6 @@
         targetX = event.clientX - offsetX;
         targetY = event.clientY - offsetY;
         clampTargetToViewport();
-        forceChatAnchorIntoView(chatPanelHeight);
-        localStorage.setItem("rimuru-x", targetX);
-        localStorage.setItem("rimuru-y", targetY);
     }
 
     function stopDrag() {
@@ -104,8 +94,16 @@
     }
 
     function updateViewport() {
-        viewportWidth = window.innerWidth;
         viewportHeight = window.innerHeight;
+    }
+
+    function updateAnchorPosition() {
+        updateViewport();
+        x = targetX = EDGE_MARGIN;
+        y = targetY = Math.max(
+            EDGE_MARGIN,
+            window.innerHeight - ICON_SIZE - EDGE_MARGIN,
+        );
     }
 
     function clampTargetToViewport() {
@@ -141,11 +139,7 @@
     }
 
     function handleResize() {
-        updateViewport();
-        clampTargetToViewport();
-        forceChatAnchorIntoView(chatPanelHeight);
-        localStorage.setItem("rimuru-x", targetX);
-        localStorage.setItem("rimuru-y", targetY);
+        updateAnchorPosition();
     }
 
     function animate() {
@@ -196,28 +190,27 @@
 
     function handleRimuruClick() {
         if (!hasDragged) chatOpen = !chatOpen;
-        if (chatOpen) forceChatAnchorIntoView(chatPanelHeight);
         hasDragged = false;
-    }
-
-    $: if (chatOpen) {
-        forceChatAnchorIntoView(chatPanelHeight);
     }
 </script>
 
+<svelte:head>
+    <title>{isActive} | T.E.M.P.U.S.</title>
+</svelte:head>
+
 <div
-    class="bg-black min-h-screen bg-cover bg-center bg-fixed font-spaceGrotesk font-normal"
+    class="bg-black min-h-screen bg-cover bg-center bg-fixed font-spaceGrotesk font-normal flex flex-col"
     style={`background-image: url("/images/backgrounds/dark_bg.png");`}
 >
     <Navbar {isActive} {isActiveSub} />
 
-    <main class="px-20 py-14">
+    <main class="flex-1 min-h-screen px-20 py-14">
         <slot />
 
         <div
             role="button"
             tabindex="0"
-            class="fixed z-50 select-none flex items-center justify-center group
+            class="fixed z-[9999] select-none flex items-center justify-center group
          w-12 h-12 rounded-full border border-[#6FB8E7] overflow-hidden
          bg-[#061E29] hover:bg-[#0A2A3A] cursor-pointer
          hover:border-[#8FD3FF]"
@@ -225,7 +218,6 @@
             class:dragging
             class:animating={currentAnim !== "idle"}
             style="left: {x}px; top: {y}px;"
-            on:mousedown={startDrag}
             on:mouseup={handleRimuruClick}
         >
             {#key animationKey}
