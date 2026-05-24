@@ -1,5 +1,3 @@
-// File: tempusFAQ.js
-
 export const faqTopics = [
     "General",
     "Fuel Prices",
