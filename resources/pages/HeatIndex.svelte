@@ -17,6 +17,9 @@
     } from "../js/heatIndexData.js";
 
     export let heatIndexData = null;
+    export let errors = null;
+
+    void errors;
 
     const csrfToken =
         typeof document === "undefined"

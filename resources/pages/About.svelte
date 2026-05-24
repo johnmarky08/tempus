@@ -3,6 +3,10 @@
     import * as items from "../js/items.js";
     import { fade, scale } from "svelte/transition";
 
+    export let errors = null;
+
+    void errors;
+
     let showDescription = false;
 </script>
 

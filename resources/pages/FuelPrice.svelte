@@ -17,6 +17,9 @@
 
     export let fuelPrices = [];
     export let predictions = [];
+    export let errors = null;
+
+    void errors;
 
     let selectedFuel = "all";
     let selectedYear = "";
@@ -460,7 +463,7 @@
     });
 </script>
 
-<Layout isActive="Fuel Prices" class="transition-all duration-300">
+<Layout isActive="Fuel Prices">
     <div
         class={`flex flex-col gap-8 text-slate-100 font-jetbrainsMono transition-all duration-300 ${
             fitScreen

@@ -2,6 +2,10 @@
     import { inertia } from "@inertiajs/svelte";
     import Layout from "./components/layout.svelte";
 
+    export let errors = null;
+
+    void errors;
+
     let now = new Date();
 
     let day;

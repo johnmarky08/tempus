@@ -5,6 +5,9 @@
     export let rows = [];
     export let isActive = "History";
     export let isActiveSub = "Fuel Price History";
+    export let errors = null;
+
+    void errors;
 
     $: model = buildFuelPriceHistoryModel(rows);
 </script>

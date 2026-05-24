@@ -1,6 +1,10 @@
 <script>
     import Layout from "./components/layout.svelte";
     import { inertia } from "@inertiajs/svelte";
+
+    export let errors = null;
+
+    void errors;
 </script>
 
 <svelte:head>
