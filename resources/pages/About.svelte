@@ -241,10 +241,9 @@
                                 <div class="relative group">
                                     <div
                                         class="place-self-center h-10 w-1/2 translate-y-10
-                                        opacity-100
-                                        border border-[#6FB8E7] bg-[#061E29] rounded-[15px]
-                                        transition-all duration-300 group-hover:-translate-y-5
-                                          flex
+                                        border border-[#6FB8E7] bg-[#061E29] rounded-[15px] opacity-0
+                                        transition-all duration-300 group-hover:opacity-100 group-hover:-translate-y-5
+                                          flex cursor-pointer
                                         items-center justify-center text-center"
                                     >
                                         {description}
@@ -254,9 +253,9 @@
                                         data-sr-delay={i * 140}
                                         class="group relative flex flex-col items-center rounded-3xl border
                                          border-[#6FB8E7]
-                             bg-[#061E29] cursor-pointer hover:bg-slate-800/70 px-6 py-8
+                             bg-[#061E29]/70 cursor-pointer group-hover:bg-slate-800/70 px-6 py-8
                               text-center shadow-[0_18px_50px_rgba(2,6,23,0.45)]
-                             hover:translate-y-6 hover:scale-105
+                             group-hover:translate-y-6 group-hover:scale-105
                               transition duration-300"
                                     >
                                         <img

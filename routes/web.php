@@ -17,8 +17,12 @@ Route::get('/about', function () {
 Route::get('/fuel-prices', FuelPricesController::class);
 
 Route::match(['get', 'post'], '/heat-index', HeatIndexController::class);
-Route::get('/history', function () {
-    return Inertia::render('History');
+
+Route::get('/fuel-history', function () {
+    return Inertia::render('history/fuelPrice');
+});
+Route::get('/heat-history', function () {
+    return Inertia::render('history/heatIndex');
 });
 Route::get('/about', function () {
     return Inertia::render('About');

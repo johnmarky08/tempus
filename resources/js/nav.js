@@ -21,7 +21,18 @@ export const nav = [
     },
     {
         name: "History",
-        link: "/history",
         description: "View historical data",
+        subMenu: [
+            {
+                name: "Fuel Price History",
+                link: "/fuel-history",
+                description: "View historical fuel price data",
+            },
+            {
+                name: "Heat Index History",
+                link: "/heat-history",
+                description: "View historical heat index data",
+            },
+        ],
     },
 ];

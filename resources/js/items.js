@@ -150,3 +150,12 @@ export const devs = [
         ],
     },
 ];
+
+export const historyTableDefaults = {
+    heading: null,
+    subtitle: "",
+    columns: [],
+    rows: [],
+    gridTemplateColumns: "1fr",
+    footer: null,
+};
