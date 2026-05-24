@@ -537,7 +537,7 @@
                                 hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00]
                                  transition-all duration-500 ease-out
                                 flex place-items-center flex-col space-y-5 rounded-[18px] border border-white/80 bg-[#152A42]
-                             px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                                px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                                 transition:fade
                             >
                                 <div class=" flex flex-col gap-1">
@@ -974,7 +974,10 @@
                         </div>
                     </div>
 
-                    <p data-sr class="text-sm leading-6 text-slate-200">
+                    <p
+                        data-sr
+                        class="text-sm leading-6 text-slate-200 min-h-[3.25rem]"
+                    >
                         {selectedPreset.recommendation}
                     </p>
                 </div>
