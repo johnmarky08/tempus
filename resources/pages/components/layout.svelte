@@ -2,7 +2,6 @@
     import Navbar from "./header.svelte";
     import Footer from "./footer.svelte";
     import TempusFAQPanel from "./tempusFaqPanel.svelte";
-    import { dark } from "../../js/theme.js";
     import { onMount } from "svelte";
 
     export let isActive = "";
@@ -11,11 +10,11 @@
     const ICON_SIZE = 48;
     const EDGE_MARGIN = 48;
 
-    let viewportWidth = 0;
     let x = EDGE_MARGIN;
     let y = EDGE_MARGIN;
     let targetX = EDGE_MARGIN;
     let targetY = EDGE_MARGIN;
+    let viewportHeight = 0;
 
     let dragging = false;
 
@@ -41,11 +40,6 @@
     };
 
     $: currentAnimStyle = animationStyles[currentAnim] ?? "";
-
-    $: iconSize =
-        viewportWidth < 640 ? 40 : viewportWidth < 1024 ? 44 : ICON_SIZE;
-    $: edgeMargin =
-        viewportWidth < 640 ? 16 : viewportWidth < 1024 ? 24 : EDGE_MARGIN;
 
     const randoms = [
         { name: "shiver", duration: 600 },
@@ -73,15 +67,15 @@
     });
 
     function updateViewport() {
-        viewportWidth = window.innerWidth;
+        viewportHeight = window.innerHeight;
     }
 
     function updateAnchorPosition() {
         updateViewport();
-        x = targetX = edgeMargin;
+        x = targetX = EDGE_MARGIN;
         y = targetY = Math.max(
-            edgeMargin,
-            window.innerHeight - iconSize - edgeMargin,
+            EDGE_MARGIN,
+            window.innerHeight - ICON_SIZE - EDGE_MARGIN,
         );
     }
 
@@ -151,23 +145,20 @@
 >
     <Navbar {isActive} {isActiveSub} />
 
-    <main
-        class="flex-1 min-h-screen min-w-0 px-3 sm:px-6 lg:px-20 py-5 sm:py-10 lg:py-14"
-    >
+    <main class="flex-1 min-h-screen px-20 py-14">
         <slot />
 
         <div
             role="button"
             tabindex="0"
             class="fixed z-[9999] select-none flex items-center justify-center group
-         w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full border border-[#6FB8E7] overflow-hidden
+         w-12 h-12 rounded-full border border-[#6FB8E7] overflow-hidden
          bg-[#061E29] hover:bg-[#0A2A3A] cursor-pointer
-         hover:border-[#8FD3FF] shadow-[0_0_18px_rgba(111,184,231,0.25)]
-         touch-manipulation transition-colors duration-300 max-[359px]:w-8 max-[359px]:h-8"
+         hover:border-[#8FD3FF]"
             class:idle={!dragging}
             class:dragging
             class:animating={currentAnim !== "idle"}
-            style={`left: ${x}px; top: ${y}px;`}
+            style="left: {x}px; top: {y}px;"
             on:mouseup={handleRimuruClick}
         >
             {#key animationKey}
