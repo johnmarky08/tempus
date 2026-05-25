@@ -2,6 +2,7 @@
     import Navbar from "./header.svelte";
     import Footer from "./footer.svelte";
     import TempusFAQPanel from "./tempusFaqPanel.svelte";
+    import { dark } from "../../js/theme.js";
     import { onMount } from "svelte";
 
     export let isActive = "";
@@ -9,18 +10,14 @@
 
     const ICON_SIZE = 48;
     const EDGE_MARGIN = 48;
-    const CHAT_PANEL_HEIGHT = 480;
-    const CHAT_SHIFT_THRESHOLD = CHAT_PANEL_HEIGHT - 64;
 
+    let viewportWidth = 0;
     let x = EDGE_MARGIN;
     let y = EDGE_MARGIN;
     let targetX = EDGE_MARGIN;
     let targetY = EDGE_MARGIN;
-    let viewportHeight = 0;
 
     let dragging = false;
-    let offsetX = 0;
-    let offsetY = 0;
 
     let frame;
     let animTimer;
@@ -44,6 +41,11 @@
     };
 
     $: currentAnimStyle = animationStyles[currentAnim] ?? "";
+
+    $: iconSize =
+        viewportWidth < 640 ? 40 : viewportWidth < 1024 ? 44 : ICON_SIZE;
+    $: edgeMargin =
+        viewportWidth < 640 ? 16 : viewportWidth < 1024 ? 24 : EDGE_MARGIN;
 
     const randoms = [
         { name: "shiver", duration: 600 },
@@ -70,72 +72,17 @@
         };
     });
 
-    function startDrag(event) {
-        dragging = true;
-        hasDragged = false;
-        offsetX = event.clientX - targetX;
-        offsetY = event.clientY - targetY;
-        window.addEventListener("mousemove", drag);
-        window.addEventListener("mouseup", stopDrag);
-    }
-
-    function drag(event) {
-        if (!dragging) return;
-        hasDragged = true;
-        targetX = event.clientX - offsetX;
-        targetY = event.clientY - offsetY;
-        clampTargetToViewport();
-    }
-
-    function stopDrag() {
-        dragging = false;
-        window.removeEventListener("mousemove", drag);
-        window.removeEventListener("mouseup", stopDrag);
-    }
-
     function updateViewport() {
-        viewportHeight = window.innerHeight;
+        viewportWidth = window.innerWidth;
     }
 
     function updateAnchorPosition() {
         updateViewport();
-        x = targetX = EDGE_MARGIN;
+        x = targetX = edgeMargin;
         y = targetY = Math.max(
-            EDGE_MARGIN,
-            window.innerHeight - ICON_SIZE - EDGE_MARGIN,
+            edgeMargin,
+            window.innerHeight - iconSize - edgeMargin,
         );
-    }
-
-    function clampTargetToViewport() {
-        const minX = EDGE_MARGIN;
-        const minY = EDGE_MARGIN;
-        const maxX = Math.max(
-            EDGE_MARGIN,
-            window.innerWidth - ICON_SIZE - EDGE_MARGIN,
-        );
-        const maxY = Math.max(
-            EDGE_MARGIN,
-            window.innerHeight - ICON_SIZE - EDGE_MARGIN,
-        );
-        if (targetX < minX) targetX = minX;
-        if (targetY < minY) targetY = minY;
-        if (targetX > maxX) targetX = maxX;
-        if (targetY > maxY) targetY = maxY;
-    }
-
-    function forceChatAnchorIntoView(panelHeight = 0) {
-        if (!chatOpen || viewportHeight <= 0) return;
-        if (panelHeight > 0 && panelHeight < CHAT_SHIFT_THRESHOLD) return;
-
-        const maxYForPanelBelow = Math.max(
-            EDGE_MARGIN,
-            viewportHeight -
-                (panelHeight > 0 ? panelHeight : CHAT_PANEL_HEIGHT),
-        );
-
-        if (targetY < CHAT_PANEL_HEIGHT && targetY > maxYForPanelBelow) {
-            targetY = maxYForPanelBelow;
-        }
     }
 
     function handleResize() {
@@ -199,25 +146,28 @@
 </svelte:head>
 
 <div
-    class="bg-black min-h-screen bg-cover bg-center bg-fixed font-spaceGrotesk font-normal flex flex-col"
+    class="bg-black min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-scroll md:bg-fixed font-spaceGrotesk font-normal flex flex-col"
     style={`background-image: url("/images/backgrounds/dark_bg.png");`}
 >
     <Navbar {isActive} {isActiveSub} />
 
-    <main class="flex-1 min-h-screen px-20 py-14">
+    <main
+        class="flex-1 min-h-screen min-w-0 px-3 sm:px-6 lg:px-20 py-5 sm:py-10 lg:py-14"
+    >
         <slot />
 
         <div
             role="button"
             tabindex="0"
             class="fixed z-[9999] select-none flex items-center justify-center group
-         w-12 h-12 rounded-full border border-[#6FB8E7] overflow-hidden
+         w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full border border-[#6FB8E7] overflow-hidden
          bg-[#061E29] hover:bg-[#0A2A3A] cursor-pointer
-         hover:border-[#8FD3FF]"
+         hover:border-[#8FD3FF] shadow-[0_0_18px_rgba(111,184,231,0.25)]
+         touch-manipulation transition-colors duration-300 max-[359px]:w-8 max-[359px]:h-8"
             class:idle={!dragging}
             class:dragging
             class:animating={currentAnim !== "idle"}
-            style="left: {x}px; top: {y}px;"
+            style={`left: ${x}px; top: ${y}px;`}
             on:mouseup={handleRimuruClick}
         >
             {#key animationKey}
