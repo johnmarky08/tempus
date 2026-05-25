@@ -9,8 +9,6 @@
 
     const ICON_SIZE = 48;
     const EDGE_MARGIN = 48;
-    const CHAT_PANEL_HEIGHT = 480;
-    const CHAT_SHIFT_THRESHOLD = CHAT_PANEL_HEIGHT - 150;
 
     let x = EDGE_MARGIN;
     let y = EDGE_MARGIN;
@@ -60,14 +58,7 @@
         updateViewport();
         updateAnchorPosition();
 
-        const savedX = localStorage.getItem("rimuru-x");
-        const savedY = localStorage.getItem("rimuru-y");
-
-        if (savedX) x = targetX = Number(savedX);
-        if (savedY) y = targetY = Number(savedY);
-
         clampTargetToViewport();
-        forceChatAnchorIntoView(chatPanelHeight);
 
         window.addEventListener("resize", handleResize);
         animate();
@@ -97,9 +88,6 @@
     function handleResize() {
         updateViewport();
         clampTargetToViewport();
-        forceChatAnchorIntoView(chatPanelHeight);
-        localStorage.setItem("rimuru-x", targetX);
-        localStorage.setItem("rimuru-y", targetY);
     }
 
     function startDrag(event) {
@@ -117,9 +105,6 @@
         targetX = event.clientX - offsetX;
         targetY = event.clientY - offsetY;
         clampTargetToViewport();
-        forceChatAnchorIntoView(chatPanelHeight);
-        localStorage.setItem("rimuru-x", targetX);
-        localStorage.setItem("rimuru-y", targetY);
     }
 
     function stopDrag() {
@@ -140,40 +125,10 @@
             viewportHeight - ICON_SIZE - EDGE_MARGIN,
         );
 
-        if (chatOpen) {
-            const effectiveOpenPanelHeight =
-                chatPanelHeight > 0
-                    ? Math.max(chatPanelHeight, CHAT_SHIFT_THRESHOLD)
-                    : CHAT_PANEL_HEIGHT;
-            const maxYForExpandedPanel = Math.max(
-                EDGE_MARGIN,
-                viewportHeight - effectiveOpenPanelHeight,
-            );
-            maxY = Math.min(maxY, maxYForExpandedPanel);
-        }
-
         if (targetX < minX) targetX = minX;
         if (targetY < minY) targetY = minY;
         if (targetX > maxX) targetX = maxX;
         if (targetY > maxY) targetY = maxY;
-    }
-
-    function forceChatAnchorIntoView(panelHeight = 0) {
-        if (!chatOpen || viewportHeight <= 0) return;
-
-        const effectiveOpenPanelHeight =
-            panelHeight > 0
-                ? Math.max(panelHeight, CHAT_SHIFT_THRESHOLD)
-                : CHAT_PANEL_HEIGHT;
-
-        const maxYForPanelBelow = Math.max(
-            EDGE_MARGIN,
-            viewportHeight - effectiveOpenPanelHeight,
-        );
-
-        if (targetY > maxYForPanelBelow) {
-            targetY = maxYForPanelBelow;
-        }
     }
 
     function animate() {
@@ -224,12 +179,7 @@
 
     function handleRimuruClick() {
         if (!hasDragged) chatOpen = !chatOpen;
-        if (chatOpen) forceChatAnchorIntoView(chatPanelHeight);
         hasDragged = false;
-    }
-
-    $: if (chatOpen) {
-        forceChatAnchorIntoView(chatPanelHeight);
     }
 </script>
 
@@ -243,7 +193,7 @@
 >
     <Navbar {isActive} {isActiveSub} />
 
-    <main class="flex-1 min-h-screen px-20 py-14">
+    <main class="flex-1 min-h-screen mt-20 px-20 py-14">
         <slot />
 
         <div

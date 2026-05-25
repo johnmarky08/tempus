@@ -246,6 +246,7 @@
                 </p>
 
                 <form
+                    name="assessForm"
                     class="flex flex-col gap-5 xl:flex-row"
                     method="POST"
                     action="/heat-index"
@@ -271,7 +272,7 @@
                                 <p
                                     class="text-xs uppercase tracking-[0.28em] text-slate-500"
                                 >
-                                    Single select
+                                    Select One
                                 </p>
                             </div>
 

@@ -162,6 +162,7 @@
                 on:click|stopPropagation
             >
                 <form
+                    name="searchForm"
                     class="flex flex-col gap-3 lg:flex-row"
                     on:submit|preventDefault={submitSearch}
                 >
@@ -268,29 +269,6 @@
                         {/if}
                     </div>
                 </form>
-
-                {#if appliedSearch}
-                    <div
-                        class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-400"
-                    >
-                        <span
-                            class="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-sky-200"
-                        >
-                            Search: {appliedSearch}
-                        </span>
-                        <button
-                            type="button"
-                            class="rounded-full border border-white/15 px-3 py-1 text-slate-300 transition-colors duration-200 hover:border-white/30 hover:text-white"
-                            on:click|stopPropagation={() => {
-                                searchDraft = "";
-                                appliedSearch = "";
-                                visibleRowLimit = 100;
-                            }}
-                        >
-                            Clear
-                        </button>
-                    </div>
-                {/if}
             </div>
 
             <div
