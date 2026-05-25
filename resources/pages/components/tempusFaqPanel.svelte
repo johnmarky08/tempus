@@ -14,6 +14,7 @@
     const ANCHOR_HEIGHT = 48;
     const TOP_ANCHOR_SIZE = 0;
     const SIDE_GAP = 10;
+    const CHAT_STATE_STORAGE_KEY = "tempest-chat-state-v1";
 
     let viewportWidth = 0;
     let viewportHeight = 0;
@@ -47,7 +48,7 @@
         ? Math.max(SIDE_GAP, anchorX - PANEL_W - SIDE_GAP)
         : anchorX + ANCHOR_WIDTH + SIDE_GAP;
 
-    $: useTopSide = viewportHeight > 0 && anchorY - effectivePanelHeight < 0;
+    $: useTopSide = viewportHeight > 0 && anchorY - effectivePanelHeight < 64;
     $: panelBottom = viewportHeight - (anchorY + ANCHOR_HEIGHT);
     $: panelTop = useTopSide
         ? anchorY + TOP_ANCHOR_SIZE
@@ -69,6 +70,63 @@
     let messagesEl;
     let typingHandles = [];
     let isTyping = false;
+
+    function saveChatState() {
+        const serializableMessages = messages.map((message) => ({
+            role: message.role,
+            text: message.text,
+            typing: false,
+        }));
+
+        localStorage.setItem(
+            CHAT_STATE_STORAGE_KEY,
+            JSON.stringify({
+                messages: serializableMessages,
+                welcomed,
+                activeTopicIdx,
+                minimized,
+            }),
+        );
+    }
+
+    function loadChatState() {
+        const raw = localStorage.getItem(CHAT_STATE_STORAGE_KEY);
+        if (!raw) return;
+
+        try {
+            const parsed = JSON.parse(raw);
+
+            if (
+                Array.isArray(parsed.messages) &&
+                parsed.messages.every(
+                    (message) =>
+                        typeof message?.role === "string" &&
+                        typeof message?.text === "string",
+                )
+            ) {
+                messages = parsed.messages;
+            }
+
+            if (typeof parsed.welcomed === "boolean") {
+                welcomed = parsed.welcomed;
+            }
+
+            if (
+                typeof parsed.activeTopicIdx === "number" &&
+                parsed.activeTopicIdx >= 0 &&
+                parsed.activeTopicIdx < topicLabels.length
+            ) {
+                activeTopicIdx = parsed.activeTopicIdx;
+                prevTopicIdx = parsed.activeTopicIdx;
+            }
+
+            if (typeof parsed.minimized === "boolean") {
+                minimized = parsed.minimized;
+            }
+        } catch {
+            localStorage.removeItem(CHAT_STATE_STORAGE_KEY);
+        }
+    }
 
     async function scrollBottom() {
         await tick();
@@ -103,6 +161,8 @@
                 await sleep(speed);
             }
         }
+
+        saveChatState();
     }
 
     async function ask(question, answer) {
@@ -128,6 +188,7 @@
                 text: "Hey there! I'm Tempest, your FAQ assistant. Pick a topic below, then tap any question to get an answer.",
             },
         ];
+        saveChatState();
     }
 
     const topicLabels = [
@@ -247,6 +308,7 @@
     $: if (activeTopicIdx !== prevTopicIdx) {
         prevTopicIdx = activeTopicIdx;
         questionCarousel.reset();
+        saveChatState();
     }
 
     $: topicItems = [...topicLabels, ...topicLabels, ...topicLabels];
@@ -257,6 +319,7 @@
     ];
 
     onMount(() => {
+        loadChatState();
         updateViewport();
         updatePanelHeight();
         heightObserver = new ResizeObserver(updatePanelHeight);
@@ -274,6 +337,7 @@
 
     $: if (open) {
         updatePanelHeight();
+        scrollBottom();
     }
 
     onDestroy(() => {

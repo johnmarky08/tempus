@@ -1178,7 +1178,7 @@
                     data-sr
                     data-sr-delay="220"
                     class="prediction-highlight flex flex-col rounded-[28px] border-2 border-white/75
-                    bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm transition-all duration-300"
+                    bg-[#152A42]/20 p-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] backdrop-blur-sm transition-all duration-300 max-h-[20rem]"
                 >
                     <div
                         class="flex w-full items-center justify-center gap-3 border-b border-[white]/30 pb-4 transition-all duration-300"
@@ -1193,7 +1193,7 @@
                     </div>
 
                     <div
-                        class="mt-4 flex flex-col gap-4 transition-all duration-300 min-h-[8.5rem]"
+                        class="mt-4 flex flex-col gap-4 transition-all duration-300"
                     >
                         {#if predictionCards.length}
                             {#each predictionCards as card, index}

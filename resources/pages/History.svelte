@@ -251,7 +251,7 @@
 
                                                     <svg
                                                         viewBox="0 0 24 24"
-                                                        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white/90 peer-checked:text-sky-400 opacity-0 peer-checked:opacity-100 transition-colors transition-opacity duration-150 pointer-events-none"
+                                                        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white/90 peer-checked:text-sky-400 opacity-0 peer-checked:opacity-100 transition-all duration-300 pointer-events-none"
                                                         fill="currentColor"
                                                         aria-hidden="true"
                                                     >
