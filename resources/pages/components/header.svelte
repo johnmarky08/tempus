@@ -29,9 +29,9 @@
 </script>
 
 <nav
-    class="relative bg-gradient-to-r from-[#091532]/90 to-[#050a15]/90 h-20
+    class="bg-gradient-to-r from-[#091532]/90 to-[#050a15]/90 h-20
     flex justify-between items-center pl-4 pr-5 sm:px-6 lg:px-20 border-b-2 border-[#888888]
-    sticky top-0 z-50 backdrop-blur-sm"
+    fixed w-full top-0 z-50 backdrop-blur-sm"
 >
     <div class="flex items-center gap-2 sm:gap-3">
         <img
