@@ -164,7 +164,7 @@
                 class="relative z-40 flex flex-col gap-4 rounded-[20px] border p-4
                  shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_18px_50px_rgba(1,6,17,0.4)] backdrop-blur-sm {$dark
                     ? 'border-white/25 bg-[#081624]/85'
-                    : 'border-[var(--border-color)] bg-[var(--panel-bg)]'}"
+                    : 'border-[var(--border-color)] bg-[#f4f8fd]'}"
                 on:click|stopPropagation
             >
                 <form
@@ -180,7 +180,7 @@
                                 "Search history"}
                             class="w-full rounded-[16px] border px-5 py-3 pr-14 text-sm tracking-[0.12em] outline-none transition-all duration-300 focus:border-sky-400/60 focus:shadow-[0_0_0_1px_rgba(56,189,248,0.15)] {$dark
                                 ? 'border-white/15 bg-[#0f2236] dark:text-slate-100 text-[var(--primary-text)] dark:placeholder:text-slate-500 placeholder:text-[var(--text-primary)] focus:bg-[#12263d]'
-                                : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] placeholder:text-[var(--muted-text)] focus:bg-[var(--hover)]'}"
+                                : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] placeholder:text-[var(--muted-text)] focus:bg-[#dceeff]'}"
                             on:keydown={(event) => {
                                 if (event.key === "Enter") {
                                     submitSearch();
@@ -190,7 +190,7 @@
 
                         <button
                             type="submit"
-                            class="absolute right-2 top-1/2 -translate-y-1/2 rounded-[12px] border border-sky-400/30 bg-sky-500/15 px-3 py-2 text-sky-100 transition-colors duration-200 hover:bg-sky-400/25"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 rounded-[12px] border border-sky-400/30 bg-sky-500/15 px-3 py-2 text-[var(--primary-text)] dark:text-sky-100 transition-colors duration-200 dark:hover:bg-sky-400/25 hover:bg-[#dceeff]"
                             aria-label="Search history"
                         >
                             <svg
@@ -202,11 +202,8 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 aria-hidden="true"
-                                circle
-                                cx="11"
-                                cy="11"
-                                r="7"
                             >
+                                <circle cx="11" cy="11" r="7"></circle>
                                 <path d="m20 20-3.5-3.5"></path>
                             </svg>
                         </button>
@@ -217,7 +214,7 @@
                             type="button"
                             class="flex w-full items-center justify-between rounded-[16px] border px-5 py-3 text-sm uppercase tracking-[0.16em] transition-all duration-300 hover:border-sky-400/50 {$dark
                                 ? 'border-white/15 bg-[#0f2236] dark:text-slate-100 text-[var(--primary-text)] hover:bg-[#12263d]'
-                                : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:bg-[var(--hover)]'}"
+                                : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:bg-[#dceeff]'}"
                             on:click|stopPropagation={() => {
                                 isColumnFilterOpen = !isColumnFilterOpen;
                                 activeFilterKey = null;
@@ -249,7 +246,7 @@
                                         <label
                                             class="flex items-center justify-between rounded-[14px] px-3 py-2 text-sm transition-colors duration-200 {$dark
                                                 ? 'text-slate-100 hover:bg-white/5'
-                                                : 'text-[var(--secondary-text)] hover:bg-[var(--hover)]'}"
+                                                : 'text-[var(--secondary-text)] hover:bg-[#dceeff]'}"
                                         >
                                             <span>{column.label}</span>
                                             <div class="flex items-center">
@@ -267,7 +264,7 @@
                                                     />
 
                                                     <div
-                                                        class="w-5 h-5 rounded-md border border-white/30 bg-[#071427] transition-colors duration-150 peer-checked:border-sky-400 peer-checked:bg-sky-500/10"
+                                                        class="w-5 h-5 rounded-md border dark:border-white/30 border-sky-400 dark:bg-[#071427] transition-colors duration-150 peer-checked:border-sky-400 peer-checked:bg-sky-500/10"
                                                     ></div>
 
                                                     <svg
@@ -289,29 +286,6 @@
                         {/if}
                     </div>
                 </form>
-
-                {#if appliedSearch}
-                    <div
-                        class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] dark:text-slate-400 text-[var(--primary-text)]"
-                    >
-                        <span
-                            class="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-sky-200"
-                        >
-                            Search: {appliedSearch}
-                        </span>
-                        <button
-                            type="button"
-                            class="rounded-full border border-white/15 px-3 py-1 dark:text-slate-300 text-[var(--primary-text)] transition-colors duration-200 hover:border-white/30 hover:text-white"
-                            on:click|stopPropagation={() => {
-                                searchDraft = "";
-                                appliedSearch = "";
-                                visibleRowLimit = 100;
-                            }}
-                        >
-                            Clear
-                        </button>
-                    </div>
-                {/if}
             </div>
 
             <div
@@ -328,7 +302,7 @@
                     data-sr-delay="180"
                     class="overflow-hidden rounded-[18px] border {$dark
                         ? 'border-white/20 bg-[#102133]/75'
-                        : 'border-[var(--border-color)] bg-[var(--panel-bg)]'}"
+                        : 'border-[var(--border-color)] bg-[#f4f8fd]'}"
                 >
                     <div class="overflow-x-auto">
                         <div
@@ -341,7 +315,7 @@
                                 data-sr-delay="260"
                                 class="grid gap-0 rounded-t-[14px] border-b text-[0.92rem] uppercase tracking-[0.18em] {$dark
                                     ? 'border-white/15 bg-[#1b2530]/95 text-white'
-                                    : 'border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--primary-text)]'}"
+                                    : 'border-[var(--border-color)] bg-[#e5f0fb] text-[var(--primary-text)]'}"
                                 style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                             >
                                 {#each visibleColumns as column, columnIndex (column.key)}
@@ -388,7 +362,7 @@
                                                     <div
                                                         class="overflow-hidden rounded-[14px] border shadow-[0_20px_40px_rgba(1,6,17,0.45)] {$dark
                                                             ? 'border-white bg-[#091423]'
-                                                            : 'border-[var(--border-color)] bg-[var(--panel-bg)] shadow-[0_20px_40px_rgba(59,130,246,0.12)]'}"
+                                                            : 'border-[var(--border-color)] bg-[#f7fbff] shadow-[0_20px_40px_rgba(59,130,246,0.12)]'}"
                                                         transition:fade={{
                                                             duration: 160,
                                                         }}
@@ -396,7 +370,7 @@
                                                         {#each column.filterOptions ?? [] as option, optionIndex (option)}
                                                             <button
                                                                 type="button"
-                                                                class={`group w-full px-4 py-2 text-left text-sm uppercase tracking-[0.14em] transition-colors duration-200 ${$dark ? "bg-[#091423] text-white hover:bg-[var(--accent)]/15" : "bg-[var(--panel-bg)] text-[var(--primary-text)] hover:bg-[var(--active-bg)]"} ${optionIndex !== (column.filterOptions ?? []).length - 1 ? ($dark ? "border-b border-white/10" : "border-b border-[var(--border-color)]") : ""}`}
+                                                                class={`group w-full px-4 py-2 text-left text-sm uppercase tracking-[0.14em] transition-colors duration-200 ${$dark ? "bg-[#091423] text-white hover:bg-[var(--accent)]/15" : "bg-[#f7fbff] text-[var(--primary-text)] hover:bg-[#dceeff]"} ${optionIndex !== (column.filterOptions ?? []).length - 1 ? ($dark ? "border-b border-white/10" : "border-b border-[var(--border-color)]") : ""}`}
                                                                 on:click|stopPropagation={() =>
                                                                     selectFilterOption(
                                                                         column.key,
@@ -429,7 +403,7 @@
                             >
                                 {#if visibleColumns.length === 0}
                                     <div
-                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] bg-[#0d1b2b]/65 px-6 py-10 text-sm uppercase tracking-[0.18em] dark:text-slate-400 text-[var(--primary-text)]"
+                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] dark:bg-[#0d1b2b]/65 bg-[#edf5fd] px-6 py-10 text-sm uppercase tracking-[0.18em] dark:text-slate-400 text-[var(--primary-text)]"
                                     >
                                         No columns selected.
                                     </div>
@@ -437,14 +411,16 @@
                                     <div
                                         class="flex min-h-[240px] items-center justify-center rounded-b-[14px] px-6 py-10 text-sm uppercase tracking-[0.18em] {$dark
                                             ? 'bg-[#0d1b2b]/65 text-slate-400'
-                                            : 'bg-[var(--bg-secondary)] text-[var(--primary-text)]'}"
+                                            : 'bg-[#edf5fd] text-[var(--primary-text)]'}"
                                         transition:fade={{ duration: 180 }}
-                                    ></div>
+                                    >
+                                        No rows have been found.
+                                    </div>
                                 {:else}
                                     {#each displayedRows as row, rowIndex (row.id)}
                                         <div
                                             data-sr
-                                            class={`grid border-b ${rowTextSize} transition-all duration-200 last:border-b-0 ${$dark ? "border-white/8 dark:text-slate-100 text-[var(--primary-text)] hover:bg-white/5" : "border-[var(--border-color)] text-[var(--primary-text)] hover:bg-[var(--active-bg)]"} ${rowIndex % 2 === 0 ? ($dark ? "bg-[#0d1b2b]/65" : "bg-[var(--panel-bg)]") : $dark ? "bg-[#0b1726]/75" : "bg-[var(--bg-secondary)]"}`}
+                                            class={`grid border-b ${rowTextSize} transition-all duration-200 last:border-b-0 ${$dark ? "border-white/8 dark:text-slate-100 text-[var(--primary-text)] hover:bg-white/5" : "border-[var(--border-color)] text-[var(--primary-text)] hover:bg-[#dceeff]"} ${rowIndex % 2 === 0 ? ($dark ? "bg-[#0d1b2b]/65" : "bg-[#f7fbff]") : $dark ? "bg-[#0b1726]/75" : "bg-[#edf5fd]"}`}
                                             style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                                         >
                                             {#each visibleColumns as column (column.key)}
@@ -469,7 +445,7 @@
                                     {#if hasMoreRows}
                                         <button
                                             type="button"
-                                            class={`grid w-full border-b text-xl transition-all duration-200 last:border-b-0 ${$dark ? "border-white/8 dark:text-slate-100 text-[var(--primary-text)] transition duration-300 ease-out hover:bg-white/5" : "border-[var(--border-color)] text-[var(--primary-text)] hover:bg-[var(--bg-secondary)]"} ${displayedRows.length % 2 === 0 ? ($dark ? "bg-[#0d1b2b]/65" : "bg-[var(--panel-bg)]") : $dark ? "bg-[#0b1726]/75" : "bg-[var(--bg-secondary)]"}`}
+                                            class={`grid w-full border-b text-xl transition-all duration-200 last:border-b-0 ${$dark ? "border-white/8 dark:text-slate-100 text-[var(--primary-text)] transition duration-300 ease-out hover:bg-white/5" : "border-[var(--border-color)] text-[var(--primary-text)] hover:bg-[#dceeff]"} ${displayedRows.length % 2 === 0 ? ($dark ? "bg-[#0d1b2b]/65" : "bg-[#f7fbff]") : $dark ? "bg-[#0b1726]/75" : "bg-[#edf5fd]"}`}
                                             style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                                             on:click|stopPropagation={showMoreRows}
                                         >
@@ -487,7 +463,7 @@
                     <div
                         class="border-t px-4 py-3 backdrop-blur-sm {$dark
                             ? 'border-white/10 bg-[#091423]/95'
-                            : 'border-[var(--border-color)] bg-[var(--bg-secondary)]'}"
+                            : 'border-[var(--border-color)] bg-[#e5f0fb]'}"
                     >
                         <div
                             class="flex flex-wrap items-center justify-between gap-3 text-sm {$dark
@@ -500,7 +476,7 @@
                                 <span
                                     class="rounded-full border px-3 py-1 text-[0.72rem] {$dark
                                         ? 'border-sky-400/25 bg-sky-500/10 text-sky-200'
-                                        : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--active-border)]'}"
+                                        : 'border-[var(--border-color)] bg-[#f7fbff] text-[var(--active-border)]'}"
                                 >
                                     Showing {displayedRows.length} of {sortedRows.length}
                                 </span>

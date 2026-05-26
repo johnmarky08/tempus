@@ -1,5 +1,5 @@
-import { binarySearch } from "./utils/binarySearch.js";
-import { quickSort } from "./utils/quickSort.js";
+import { binarySearch } from "./utils/binarySearch";
+import { quickSort } from "./utils/quickSort";
 
 function pad(value) {
     return String(value).padStart(2, "0");
@@ -285,7 +285,7 @@ function buildHeatIndexHistoryModel(rows = []) {
                 heatIndex: cell(
                     formatHeatIndex(row.heat_index),
                     "justify-center",
-                    "dark:text-orange-400 text-[var(--primary-text)]",
+                    "dark:text-orange-400 text-orange-500",
                 ),
             },
         });

@@ -72,9 +72,9 @@
                         href={link}
                         class="relative transition-all duration-300 ease-out
                         {isActive === name
-                            ? 'dark:text-[#6FB8E7]  transition-all duration-300 ease-out '
+                            ? 'dark:text-[#6FB8E7] text-[var(--accent)] transition-all duration-300 ease-out '
                             : 'dark:text-white dark:hover:text-[#6FB8E7] hover:text-[var(--accent)] text-black transition-all duration-300  ease-out '}
-                        {name === 'History' ? 'pointer-events-none' : ''}"
+                        {subMenu ? 'pointer-events-none' : ''}"
                     >
                         <span
                             class="
@@ -123,24 +123,24 @@
                                 <div
                                     class="{$dark
                                         ? 'bg-gradient-to-r from-[#071427] to-[#04080b] ring-white/60'
-                                        : 'bg-[var(--panel-bg)] ring-[var(--accent)]'} py-3 px-2 rounded-xl ring-1 shadow-lg w-56"
+                                        : 'bg-gradient-to-r from-[color-mix(in_srgb,var(--accent)_20%,white)] to-[color-mix(in_srgb,var(--bg)_90%,white)] ring-[var(--accent)]'} py-3 px-2 rounded-xl ring-1 shadow-lg w-56"
                                 >
                                     {#each subMenu as { name: subName, link }}
                                         <div class="px-2">
                                             <a
                                                 href={link}
                                                 use:inertia
-                                                class={`group block rounded-lg px-4 py-2 transition-colors duration-200 ${$dark ? "hover:bg-[#6FB8E7]/40" : "hover:bg-[var(--active-bg)]"}`}
+                                                class={`group block rounded-lg px-4 py-2 transition-colors duration-200`}
                                             >
                                                 <span
-                                                    class={`${
+                                                    class={`dark:hover:text-[#6FB8E7] hover:text-[var(--accent)] relative inline-block text-sm tracking-wide after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[2px] after:transition-all after:duration-300 ${
                                                         isActiveSub === subName
                                                             ? $dark
-                                                                ? "relative inline-block text-sm tracking-wide after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[2px] after:w-full after:bg-[#6FB8E7] after:transition-all after:duration-300 text-[#6FB8E7]"
-                                                                : "relative inline-block text-sm tracking-wide after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[2px] after:w-full after:bg-[var(--active-border)] after:transition-all after:duration-300 text-[var(--primary-text)]"
+                                                                ? "after:w-full after:bg-[#6FB8E7] text-[#6FB8E7]"
+                                                                : "after:w-full after:bg-[var(--active-border)] text-[var(--accent)]"
                                                             : $dark
-                                                              ? "relative inline-block text-sm tracking-wide after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#6FB8E7] after:transition-all after:duration-300 group-hover:after:w-full text-white"
-                                                              : "relative inline-block text-sm tracking-wide after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[var(--active-border)] after:transition-all after:duration-300 group-hover:after:w-full text-[var(--primary-text)]"
+                                                              ? "after:w-0 after:bg-[#6FB8E7] group-hover:after:w-full text-white"
+                                                              : "after:w-0 after:bg-[var(--active-border)] group-hover:after:w-full text-[var(--primary-text)]"
                                                     }`}
                                                 >
                                                     {subName}

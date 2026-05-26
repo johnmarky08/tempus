@@ -2,8 +2,10 @@
     import Navbar from "./header.svelte";
     import Footer from "./footer.svelte";
     import TempusFAQPanel from "./tempusFaqPanel.svelte";
+    import Loader from "./loader.svelte";
     import { onMount } from "svelte";
     import { dark } from "../../js/theme.js";
+    import { globalLoaderActive } from "../../js/loaderState";
 
     export let isActive = "";
     export let isActiveSub = "";
@@ -192,7 +194,6 @@
     <title>{isActive} | T.E.M.P.U.S.</title>
 </svelte:head>
 
-
 <div
     class=" ease-out min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-scroll md:bg-fixed font-spaceGrotesk font-normal flex flex-col transition-all duration-300"
     class:dark={$dark}
@@ -200,6 +201,12 @@
         ? `background-image: url("/images/backgrounds/dark_bg.png"); background-color: #020617;`
         : `background-image: url("/images/backgrounds/light_bg.png"); background-color: var(--bg);`}
 >
+    <Loader
+        show={$globalLoaderActive}
+        text="Loading"
+        subtitle="Waiting for the page to load."
+    />
+
     <Navbar {isActive} {isActiveSub} />
 
     <main class="flex-1 min-h-screen px-20 py-14 mt-20">
@@ -209,7 +216,7 @@
             role="button"
             tabindex="0"
             class="fixed z-[9999] select-none flex items-center justify-center group
-            w-12 h-12 rounded-full border overflow-hidden transition-all ease-out duration-300
+            w-12 h-12 rounded-full border overflow-hidden transition-all ease-linear duration-[10ms]
                 bg-[#061E29] hover:bg-[#0A2A3A] cursor-pointer
                 {$dark
                 ? 'shadow-[0_0_24px_rgba(111,184,231,0.22)] border-[#6FB8E7] '
@@ -243,4 +250,3 @@
 
     <Footer />
 </div>
-

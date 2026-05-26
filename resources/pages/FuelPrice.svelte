@@ -660,7 +660,7 @@
                                             cx="8"
                                             cy="8"
                                             r="3.5"
-                                            fill="#1A1F26"
+                                            fill={$dark ? "#1A1F26" : "white"}
                                             stroke="#8979FF"
                                         />
                                     </svg>
@@ -685,7 +685,7 @@
                                             cx="8"
                                             cy="8"
                                             r="3.5"
-                                            fill="#1A1F26"
+                                            fill={$dark ? "#1A1F26" : "white"}
                                             stroke="#FF928A"
                                         />
                                     </svg>
@@ -846,7 +846,9 @@
                                     <line
                                         class="transition-all duration-300 dark:text-white/40 text-black/40"
                                         x1="74"
-                                        x2="955"
+                                        x2={predictionAxisX !== null
+                                            ? 955
+                                            : 926}
                                         y1={tick.y}
                                         y2={tick.y}
                                         stroke="currentColor"
@@ -1025,7 +1027,9 @@
                                                 hoveredPoint.fuelSlug ===
                                                     point.fuelSlug
                                                     ? series.stroke
-                                                    : ""}
+                                                    : $dark
+                                                      ? ""
+                                                      : "white"}
                                                 stroke={series.stroke}
                                                 stroke-width="2"
                                                 opacity={hoveredPoint

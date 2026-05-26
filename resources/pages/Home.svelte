@@ -55,7 +55,7 @@
                         >
                             <span>Live monitoring</span>
                             <span
-                                class="transition-all duration-300  ease-out  h-1 w-1 rounded-full dark:bg-sky-300 bg-[var(--primary-text)]"
+                                class="transition-all duration-300 ease-out h-1 w-1 rounded-full dark:bg-sky-300 bg-[var(--primary-text)]"
                             ></span>
                             <span>Updated now</span>
                         </div>
@@ -64,13 +64,13 @@
                             <h1
                                 data-sr
                                 data-sr-delay="100"
-                                class="transition-all duration-300  ease-out max-w-xl text-4xl font-bold leading-tight tracking-tight {$dark
+                                class="transition-all duration-300 ease-out max-w-xl text-4xl font-bold leading-tight tracking-tight {$dark
                                     ? 'text-white'
                                     : 'text-[var(--primary-text)]'} sm:text-5xl lg:text-5xl"
                             >
                                 Monitor
                                 <span
-                                    class="transition-all duration-300 ease-out  dark:text-sky-300 text-[var(--accent)]"
+                                    class="transition-all duration-300 ease-out dark:text-sky-300 text-[var(--accent)]"
                                     >Fuel Price</span
                                 >
                                 and
@@ -169,14 +169,18 @@
                             <img
                                 data-sr
                                 data-sr-delay="150"
-                                src="/images/items/demo-2.png"
+                                src="/images/items/{$dark
+                                    ? 'demo-2'
+                                    : 'light-demo-2'}.png"
                                 alt="Fuel Price Graph"
                                 class="absolute rounded-[10px] object-fit h-auto w-[80%] right-[2rem] top-[2rem] border border-[var(--border-color)]"
                             />
                             <img
                                 data-sr
                                 data-sr-delay="150"
-                                src="/images/items/demo.png"
+                                src="/images/items/{$dark
+                                    ? 'demo'
+                                    : 'light-demo'}.png"
                                 alt="Fuel Price Graph"
                                 class="absolute rounded-[10px] object-fit h-auto w-[80%] left-[2rem] bottom-[2rem] border border-[var(--border-color)]"
                             />

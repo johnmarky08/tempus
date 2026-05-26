@@ -202,7 +202,7 @@
                                 </h2>
 
                                 <div
-                                    class="cursor-default flex flex-col gap-4 pt-2 max-h-72 overflow-x-hidden px-8 py-4 overflow-y-scroll scroll-smooth"
+                                    class="cursor-default flex flex-col gap-4 pt-6 max-h-72 overflow-x-hidden px-8 py-4 overflow-y-scroll scroll-smooth"
                                 >
                                     {#each items.techStacks as { img, name, description, alt, color, colorDark, textColor, textColorDark }, i}
                                         <div
@@ -273,7 +273,7 @@
                                 <div class="relative group">
                                     <div
                                         class="place-self-center h-10 w-1/2 translate-y-10
-                                        border-2 dark:border-[#6FB8E7] border-[var(--active-border)] dark:bg-[#061E29] bg-[color-mix(in_srgb,var(--accent)_30%,transparent)] rounded-[15px] opacity-0
+                                        border-2 dark:border-[#6FB8E7] border-[var(--active-border)] bg-[color-mix(in_srgb,var(--accent)_30%,transparent)] rounded-[15px] opacity-0
                                         transition-all duration-300 ease-out group-hover:opacity-100 group-hover:-translate-y-5
                                         flex items-center justify-center text-center"
                                     >
@@ -328,7 +328,27 @@
                                                     data-sr
                                                     data-sr-delay={i * 140 +
                                                         j * 80}
-                                                    class="hover:-translate-y-3 flex h-10 w-10 items-center justify-center rounded-md
+                                                    role="link"
+                                                    tabindex="0"
+                                                    on:click={(event) =>
+                                                        event.currentTarget
+                                                            .querySelector("a")
+                                                            ?.click()}
+                                                    on:keydown={(event) => {
+                                                        if (
+                                                            event.key ===
+                                                                "Enter" ||
+                                                            event.key === " "
+                                                        ) {
+                                                            event.preventDefault();
+                                                            event.currentTarget
+                                                                .querySelector(
+                                                                    "a",
+                                                                )
+                                                                ?.click();
+                                                        }
+                                                    }}
+                                                    class="hover:-translate-y-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-md
                                                     border dark:border-sky-400/40 border-[--accent] dark:bg-slate-950/35 bg-gray-400/35 transition dark:hover:bg-slate-900/60 hover:bg-gray-350/60"
                                                 >
                                                     <a

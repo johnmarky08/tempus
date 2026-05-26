@@ -296,7 +296,7 @@
                                             selectAgeRange(ageGroup.value)}
                                         class={`hover:scale-[1.15] flex min-w-[5.75rem] flex-1 items-center justify-center 
                                         rounded-lg border px-4 py-3 text-sm transition duration-300
-                                        ${$dark ? (selectedAgeRange === ageGroup.value ? "border-sky-300 bg-sky-400/15 text-sky-100 shadow-[0_0_24px_rgba(56,189,248,0.16)]" : "border-sky-900 bg-[#061E29] text-slate-300 hover:border-sky-400/40 hover:bg-sky-900/40") : selectedAgeRange === ageGroup.value ? "border-black bg-[var(--bg-secondary)] text-[var(--primary-text)] shadow-[0_0_24px_rgba(56,189,248,0.12)]" : "border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:border-black hover:bg-[var(--bg-secondary)]"}`}
+                                        ${$dark ? (selectedAgeRange === ageGroup.value ? "border-sky-300 bg-sky-400/15 text-sky-100 shadow-[0_0_24px_rgba(56,189,248,0.16)]" : "border-sky-900 bg-[#061E29] text-slate-300 hover:border-sky-400/40 hover:bg-sky-900/40") : selectedAgeRange === ageGroup.value ? "border-[var(--accent)] bg-sky-200 text-[var(--primary-text)] shadow-[0_0_24px_rgba(56,189,248,0.12)]" : "border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:border-[var(--accent)] hover:bg-sky-200"}`}
                                     >
                                         {ageGroup.label}
                                     </button>
@@ -313,7 +313,7 @@
                             data-sr
                             class="transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] flex flex-col gap-3 rounded-[20px] border p-5 {$dark
                                 ? 'border-white bg-[#152A42]'
-                                : 'border-2  border-[var(--accent)] bg-[var(--panel-bg)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
+                                : 'border-2  border-[var(--accent)] bg-[var(--active-bg)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                             style={`--exertion-shadow: ${exertionShadowColor};`}
                         >
                             <div
@@ -346,10 +346,10 @@
                                         style="left: calc({exertionPercent}% - 8px); transition: left .18s ease;"
                                     >
                                         <div
-                                            class={`h-8 w-8 rounded-full flex items-center justify-center shadow-lg ${$dark ? "bg-[#0b4a7a] border-2 border-white" : "bg-sky-200 border-2 border-[var(--border-color)]"}`}
+                                            class={`h-8 w-8 rounded-full flex items-center justify-center shadow-lg ${$dark ? "bg-[#0b4a7a] border-2 border-white" : "bg-[var(--accent)] border-2 border-[var(--border-color)]"}`}
                                         >
                                             <div
-                                                class={`h-3 w-3 rounded-full ${$dark ? "bg-white/90" : "bg-[var(--primary-text)]"}`}
+                                                class="h-3 w-3 rounded-full bg-white/90"
                                             ></div>
                                         </div>
                                     </div>
@@ -399,10 +399,10 @@
 
                             {#if isSubmitting}
                                 <div
-                                    class="flex items-center gap-2 text-sm text-sky-100"
+                                    class="flex items-center gap-2 text-sm dark:text-sky-100 text-[var(--primary-text)]"
                                 >
                                     <span
-                                        class="h-4 w-4 animate-spin rounded-full border-2 border-sky-200/30 border-t-sky-100"
+                                        class="h-4 w-4 animate-spin rounded-full border-2 dark:border-sky-200/30 dark:border-t-sky-100 border-[var(--primary-text)] border-t-[var(--accent)]"
                                     ></span>
                                     <span>Processing...</span>
                                 </div>
@@ -439,7 +439,7 @@
                         >
                             <div
                                 class={`flex items-center  rounded-[15px] 
-                                 border dark:border-none border-black px-4 py-3 w-full ${safetyMeta.border} ${safetyMeta.bg} 
+                                 border border-none px-4 py-3 w-full ${safetyMeta.border} ${$dark ? safetyMeta.bg : "bg-white/50"} 
                         hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out`}
                             >
                                 {#if safetyMeta.icon === "check"}
@@ -615,7 +615,7 @@
                                 flex place-items-center flex-col space-y-5 rounded-[18px] border
                                 px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] {$dark
                                     ? 'border-white/80 bg-[#152A42]'
-                                    : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
+                                    : 'border-[var(--accent)] hover:border-none bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                                 transition:fade
                             >
                                 <div class=" flex flex-col gap-1">
@@ -948,7 +948,9 @@
                                             r={hoveredPointIndex === index
                                                 ? 10
                                                 : 8}
-                                            fill="rgba(21,42,66,0.5)"
+                                            fill={$dark
+                                                ? "rgba(21,42,66,0.5)"
+                                                : "rgba(255,255,255,0.5)"}
                                             stroke="none"
                                             class="transition-all duration-200 ease-in-out"
                                         ></circle>
@@ -985,7 +987,9 @@
                                             r={hoveredPointIndex === index
                                                 ? 14
                                                 : 12}
-                                            fill="rgba(251,146,60,0.15)"
+                                            fill={$dark
+                                                ? "rgba(251,146,60,0.15)"
+                                                : "rgba(251,146,60,0.15)"}
                                             opacity={hoveredPointIndex === index
                                                 ? "1"
                                                 : "0.55"}
@@ -1008,8 +1012,12 @@
                                     >
                                         <path
                                             d="M -16 0 H 16 A 8 8 0 0 1 24 8 V 11 A 8 8 0 0 1 16 19 H 8 L 0 29 L -8 19 H -16 A 8 8 0 0 1 -24 11 V 8 A 8 8 0 0 1 -16 0 Z"
-                                            fill="rgba(21,42,66,0.96)"
-                                            stroke="rgba(255,255,255,0.18)"
+                                            fill={$dark
+                                                ? "rgba(21,42,66,0.96)"
+                                                : "rgba(255,255,255,0.96)"}
+                                            stroke={$dark
+                                                ? "rgba(255,255,255,0.18)"
+                                                : "rgba(251,146,60,0.98)"}
                                             stroke-width="1"
                                             stroke-linejoin="round"
                                         ></path>

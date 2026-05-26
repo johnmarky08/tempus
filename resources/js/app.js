@@ -1,5 +1,23 @@
 import { createInertiaApp } from "@inertiajs/svelte";
+import { router } from "@inertiajs/svelte";
 import initScrollReveal from "./scrollReveal";
+import { beginGlobalLoad, endGlobalLoad, resetGlobalLoad } from "./loaderState";
+
+router.on("start", () => {
+    beginGlobalLoad();
+});
+
+router.on("finish", () => {
+    endGlobalLoad();
+});
+
+router.on("invalid", () => {
+    resetGlobalLoad();
+});
+
+router.on("exception", () => {
+    resetGlobalLoad();
+});
 
 createInertiaApp({
     resolve: (name) => {
