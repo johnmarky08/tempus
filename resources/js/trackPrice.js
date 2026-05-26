@@ -19,6 +19,27 @@ const PALETTE = {
     },
 };
 
+const LIGHT_PALETTE = {
+    petrol: {
+        line: "blue",
+        fill: "rgba(37,99,235,0.30)",
+        dot: "blue",
+        glow: "rgba(37,99,235,0.30)",
+    },
+    diesel: {
+        line: "red",
+        fill: "rgba(249,115,22,0.40)",
+        dot: "red",
+        glow: "rgba(249,115,22,0.40)",
+    },
+    default: {
+        line: "#0891B2",
+        fill: "rgba(8,145,178,0.14)",
+        dot: "#0891B2",
+        glow: "rgba(8,145,178,0.22)",
+    },
+};
+
 function parseDate(value) {
     if (value instanceof Date) {
         return new Date(value.getFullYear(), value.getMonth(), value.getDate());
@@ -126,8 +147,9 @@ function getMonthKey(date) {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}`;
 }
 
-function resolvePalette(fuelSlug) {
-    return PALETTE[fuelSlug] ?? PALETTE.default;
+function resolvePalette(fuelSlug, isDark = true) {
+    const paletteMap = isDark ? PALETTE : LIGHT_PALETTE;
+    return paletteMap[fuelSlug] ?? paletteMap.default;
 }
 
 function resolveWeeklyBaseline(historyRows, currentRow) {
@@ -252,7 +274,7 @@ function buildFuelOptions(rows) {
     ];
 }
 
-function buildCurrentPriceCards(rows) {
+function buildCurrentPriceCards(rows, isDark = true) {
     const latestRows = new Map();
 
     rows.forEach((row) => {
@@ -278,13 +300,13 @@ function buildCurrentPriceCards(rows) {
                 .sort((a, b) => a.date - b.date);
             const previous = history.at(-2) ?? null;
             const change = previous ? latest.price - previous.price : 0;
-            const palette = resolvePalette(latest.fuelSlug);
+            const palette = resolvePalette(latest.fuelSlug, isDark);
 
             return {
                 label: latest.fuelLabel,
                 price: formatMoney(latest.price),
                 delta: formatDelta(change, "vs last week"),
-                deltaClass: change >= 0 ? "text-[#FF928A]" : "text-[#7BE495]",
+                deltaClass: change >= 0 ? "text-[#FF928A] " : "text-[#7BE495]",
                 priceClass: change >= 0 ? "text-[#FF928A]" : "text-[#7BE495]",
                 dot: palette.dot,
                 accent: palette.line,
@@ -295,7 +317,7 @@ function buildCurrentPriceCards(rows) {
         });
 }
 
-function buildSeries(rows, selectedFuel, selectedMonth) {
+function buildSeries(rows, selectedFuel, selectedMonth, isDark = true) {
     const monthRows = rows.filter((row) => {
         return !selectedMonth || row.monthKey === selectedMonth;
     });
@@ -362,7 +384,7 @@ function buildSeries(rows, selectedFuel, selectedMonth) {
     const innerHeight = height - paddingY * 2;
 
     const series = [...grouped.entries()].map(([fuelSlug, fuelRows]) => {
-        const palette = resolvePalette(fuelSlug);
+        const palette = resolvePalette(fuelSlug, isDark);
         const sortedRows = [...fuelRows].sort((a, b) => a.date - b.date);
         const historyRows = historyByFuel.get(fuelSlug) ?? sortedRows;
         const peakPrice = Math.max(...sortedRows.map((row) => row.price));
@@ -566,6 +588,7 @@ export function buildTrackPriceDashboard(
     selectedFuel = "all",
     selectedYear = "",
     selectedMonth = "",
+    isDark = true,
 ) {
     const sourceRows = enrichRows(rows);
     const yearTabs = buildYearTabs(sourceRows);
@@ -589,8 +612,13 @@ export function buildTrackPriceDashboard(
     )
         ? selectedMonth
         : (monthTabs.at(-1)?.value ?? "");
-    const chart = buildSeries(sourceRows, normalizedFuel, normalizedMonth);
-    const currentPriceCards = buildCurrentPriceCards(sourceRows);
+    const chart = buildSeries(
+        sourceRows,
+        normalizedFuel,
+        normalizedMonth,
+        isDark,
+    );
+    const currentPriceCards = buildCurrentPriceCards(sourceRows, isDark);
     const briefings = buildBriefings(
         sourceRows,
         chart.series,

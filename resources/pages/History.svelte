@@ -1,6 +1,7 @@
 <script>
     import Layout from "./components/layout.svelte";
     import { historyTableDefaults } from "../js/items.js";
+    import { dark } from "../js/theme.js";
     import { fade, fly } from "svelte/transition";
     import { searchHistoryRows, sortHistoryRows } from "../js/historyTable.js";
 
@@ -101,7 +102,9 @@
 
 <Layout {isActive} {isActiveSub}>
     <div
-        class="relative cursor-default -mt-20 -mb-20 scale-[0.80] overflow-hidden font-jetbrainsMono text-slate-100"
+        class="relative cursor-default -mt-20 -mb-20 scale-[0.80] overflow-hidden font-jetbrainsMono {$dark
+            ? 'text-slate-100'
+            : 'text-[var(--primary-text)]'}"
         role="button"
         tabindex="0"
         on:click={closeFilter}
@@ -131,7 +134,7 @@
                         <h1
                             data-sr
                             data-sr-delay="80"
-                            class="text-3xl font-semibold tracking-[0.02em] text-white sm:text-5xl"
+                            class="text-3xl font-semibold tracking-[0.02em] dark:text-white text-[var(--primary-text)] transition-all duration-300 ease-out sm:text-5xl"
                         >
                             <span data-sr data-sr-delay="120"
                                 >{heading.primary}</span
@@ -148,7 +151,7 @@
                         <h1
                             data-sr
                             data-sr-delay="80"
-                            class="text-3xl font-semibold tracking-[0.02em] text-white sm:text-5xl"
+                            class="text-3xl font-semibold tracking-[0.02em] dark:text-white text-[var(--primary-text)] transition-all duration-300 ease-out sm:text-5xl"
                         >
                             {test}
                         </h1>
@@ -158,7 +161,10 @@
 
             <div
                 role="presentation"
-                class="relative z-40 flex flex-col gap-4 rounded-[20px] border border-white/25 bg-[#081624]/85 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_18px_50px_rgba(1,6,17,0.4)] backdrop-blur-sm"
+                class="relative z-40 flex flex-col gap-4 rounded-[20px] border p-4
+                 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_18px_50px_rgba(1,6,17,0.4)] backdrop-blur-sm {$dark
+                    ? 'border-white/25 bg-[#081624]/85'
+                    : 'border-[var(--border-color)] bg-[var(--panel-bg)]'}"
                 on:click|stopPropagation
             >
                 <form
@@ -171,7 +177,9 @@
                             type="search"
                             placeholder={model?.searchPlaceholder ??
                                 "Search history"}
-                            class="w-full rounded-[16px] border border-white/15 bg-[#0f2236] px-5 py-3 pr-14 text-sm tracking-[0.12em] text-slate-100 placeholder:text-slate-500 outline-none transition-all duration-300 focus:border-sky-400/60 focus:bg-[#12263d] focus:shadow-[0_0_0_1px_rgba(56,189,248,0.15)]"
+                            class="w-full rounded-[16px] border px-5 py-3 pr-14 text-sm tracking-[0.12em] outline-none transition-all duration-300 focus:border-sky-400/60 focus:shadow-[0_0_0_1px_rgba(56,189,248,0.15)] {$dark
+                                ? 'border-white/15 bg-[#0f2236] dark:text-slate-100 text-[var(--primary-text)] dark:placeholder:text-slate-500 placeholder:text-[var(--text-primary)] focus:bg-[#12263d]'
+                                : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] placeholder:text-[var(--muted-text)] focus:bg-[var(--hover)]'}"
                             on:keydown={(event) => {
                                 if (event.key === "Enter") {
                                     submitSearch();
@@ -193,8 +201,11 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 aria-hidden="true"
+                                circle
+                                cx="11"
+                                cy="11"
+                                r="7"
                             >
-                                <circle cx="11" cy="11" r="7"></circle>
                                 <path d="m20 20-3.5-3.5"></path>
                             </svg>
                         </button>
@@ -203,7 +214,9 @@
                     <div class="relative lg:w-[13rem]">
                         <button
                             type="button"
-                            class="flex w-full items-center justify-between rounded-[16px] border border-white/15 bg-[#0f2236] px-5 py-3 text-sm uppercase tracking-[0.16em] text-slate-100 transition-all duration-300 hover:border-sky-400/50 hover:bg-[#12263d]"
+                            class="flex w-full items-center justify-between rounded-[16px] border px-5 py-3 text-sm uppercase tracking-[0.16em] transition-all duration-300 hover:border-sky-400/50 {$dark
+                                ? 'border-white/15 bg-[#0f2236] dark:text-slate-100 text-[var(--primary-text)] hover:bg-[#12263d]'
+                                : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:bg-[var(--hover)]'}"
                             on:click|stopPropagation={() => {
                                 isColumnFilterOpen = !isColumnFilterOpen;
                                 activeFilterKey = null;
@@ -217,18 +230,25 @@
 
                         {#if isColumnFilterOpen}
                             <div
-                                class="absolute right-0 top-full z-50 mt-3 w-full min-w-[17rem] overflow-hidden rounded-[18px] border border-white/20 bg-[#091423] shadow-[0_24px_45px_rgba(1,6,17,0.55)]"
+                                class="absolute right-0 top-full z-50 mt-3 w-full
+                                    min-w-[17rem] overflow-hidden rounded-[18px] border shadow-[0_24px_45px_rgba(1,6,17,0.55)] {$dark
+                                    ? 'border-white/20 bg-[#091423]'
+                                    : 'border-[var(--border-color)] bg-[var(--panel-bg)]'}"
                                 transition:fly={{ y: -8, duration: 180 }}
                             >
                                 <div
-                                    class="border-b border-white/10 px-4 py-3 text-xs uppercase tracking-[0.24em] text-slate-400"
+                                    class="border-b px-4 py-3 text-xs uppercase tracking-[0.24em] {$dark
+                                        ? 'border-white/10 text-slate-400'
+                                        : 'border-[var(--border-color)] text-[var(--secondary-text)]'}"
                                 >
                                     Show columns
                                 </div>
                                 <div class="max-h-72 overflow-y-auto p-2">
                                     {#each columns as column (column.key)}
                                         <label
-                                            class="flex items-center justify-between rounded-[14px] px-3 py-2 text-sm text-slate-100 transition-colors duration-200 hover:bg-white/5"
+                                            class="flex items-center justify-between rounded-[14px] px-3 py-2 text-sm transition-colors duration-200 {$dark
+                                                ? 'text-slate-100 hover:bg-white/5'
+                                                : 'text-[var(--secondary-text)] hover:bg-[var(--hover)]'}"
                                         >
                                             <span>{column.label}</span>
                                             <div class="flex items-center">
@@ -271,7 +291,7 @@
 
                 {#if appliedSearch}
                     <div
-                        class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-400"
+                        class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] dark:text-slate-400 text-[var(--primary-text)]"
                     >
                         <span
                             class="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-sky-200"
@@ -280,7 +300,7 @@
                         </span>
                         <button
                             type="button"
-                            class="rounded-full border border-white/15 px-3 py-1 text-slate-300 transition-colors duration-200 hover:border-white/30 hover:text-white"
+                            class="rounded-full border border-white/15 px-3 py-1 dark:text-slate-300 text-[var(--primary-text)] transition-colors duration-200 hover:border-white/30 hover:text-white"
                             on:click|stopPropagation={() => {
                                 searchDraft = "";
                                 appliedSearch = "";
@@ -297,13 +317,17 @@
                 data-sr
                 data-sr-delay="140"
                 role="presentation"
-                class="relative z-10 rounded-[20px] border border-white/35 bg-[#0a1a2d]/78 p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_18px_50px_rgba(1,6,17,0.55)] backdrop-blur-sm"
+                class="relative z-10 rounded-[20px] border p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_18px_50px_rgba(1,6,17,0.55)] backdrop-blur-sm {$dark
+                    ? 'border-white/35 bg-[#0a1a2d]/78'
+                    : 'border-[var(--border-color)] bg-[var(--panel-bg)]'}"
                 on:click|stopPropagation
             >
                 <div
                     data-sr
                     data-sr-delay="180"
-                    class="overflow-hidden rounded-[18px] border border-white/20 bg-[#102133]/75"
+                    class="overflow-hidden rounded-[18px] border {$dark
+                        ? 'border-white/20 bg-[#102133]/75'
+                        : 'border-[var(--border-color)] bg-[var(--panel-bg)]'}"
                 >
                     <div class="overflow-x-auto">
                         <div
@@ -314,7 +338,9 @@
                             <div
                                 data-sr
                                 data-sr-delay="260"
-                                class="grid gap-0 rounded-t-[14px] border-b border-white/15 bg-[#1b2530]/95 text-[0.92rem] uppercase tracking-[0.18em] text-white"
+                                class="grid gap-0 rounded-t-[14px] border-b text-[0.92rem] uppercase tracking-[0.18em] {$dark
+                                    ? 'border-white/15 bg-[#1b2530]/95 text-white'
+                                    : 'border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--primary-text)]'}"
                                 style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                             >
                                 {#each visibleColumns as column, columnIndex (column.key)}
@@ -334,7 +360,7 @@
                                                 data-sr
                                                 data-sr-delay={340 +
                                                     columnIndex * 100}
-                                                class={`group flex w-full items-center gap-2 px-4 py-3 text-left transition-all duration-300 ${column.align === "left" ? "justify-start" : "justify-center"} ${activeFilterKey === column.key ? "bg-[#243145] text-sky-200" : "hover:bg-[#243145]/90 hover:text-sky-100"}`}
+                                                class={`group flex w-full items-center gap-2 px-4 py-3 text-left transition-all duration-300 ${column.align === "left" ? "justify-start" : "justify-center"} ${$dark ? (activeFilterKey === column.key ? "bg-[#243145] text-sky-200" : "hover:bg-[#243145]/90 hover:text-sky-100") : activeFilterKey === column.key ? "bg-[var(--active-bg)] text-[var(--primary-text)]" : "hover:bg-[var(--active-bg)] hover:text-[var(--primary-text)]"}`}
                                                 aria-expanded={activeFilterKey ===
                                                     column.key}
                                                 on:click|stopPropagation={() =>
@@ -359,7 +385,9 @@
                                                     }}
                                                 >
                                                     <div
-                                                        class="overflow-hidden rounded-[14px] border border-white bg-[#091423] shadow-[0_20px_40px_rgba(1,6,17,0.45)]"
+                                                        class="overflow-hidden rounded-[14px] border shadow-[0_20px_40px_rgba(1,6,17,0.45)] {$dark
+                                                            ? 'border-white bg-[#091423]'
+                                                            : 'border-[var(--border-color)] bg-[var(--panel-bg)] shadow-[0_20px_40px_rgba(59,130,246,0.12)]'}"
                                                         transition:fade={{
                                                             duration: 160,
                                                         }}
@@ -367,7 +395,7 @@
                                                         {#each column.filterOptions ?? [] as option, optionIndex (option)}
                                                             <button
                                                                 type="button"
-                                                                class={`group w-full px-4 py-2 text-left text-sm uppercase tracking-[0.14em] transition-colors duration-200 hover:bg-[#6FB8E7]/15 ${optionIndex !== (column.filterOptions ?? []).length - 1 ? "border-b border-white/10" : ""}`}
+                                                                class={`group w-full px-4 py-2 text-left text-sm uppercase tracking-[0.14em] transition-colors duration-200 ${$dark ? "bg-[#091423] text-white hover:bg-[var(--accent)]/15" : "bg-[var(--panel-bg)] text-[var(--primary-text)] hover:bg-[var(--active-bg)]"} ${optionIndex !== (column.filterOptions ?? []).length - 1 ? ($dark ? "border-b border-white/10" : "border-b border-[var(--border-color)]") : ""}`}
                                                                 on:click|stopPropagation={() =>
                                                                     selectFilterOption(
                                                                         column.key,
@@ -375,7 +403,7 @@
                                                                     )}
                                                             >
                                                                 <span
-                                                                    class={`relative inline-block transition-all duration-300 after:absolute after:-bottom-1 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 after:bg-[#6FB8E7] after:transition-all after:duration-300 group-hover:after:w-full ${isActiveFilterOption(column.key, option) ? "after:w-full text-[#6FB8E7]" : "text-white"}`}
+                                                                    class={`relative inline-block transition-all duration-300 after:absolute after:-bottom-1 after:left-1/2 after:h-[2px] after:w-0 after:-translate-x-1/2 after:bg-[var(--accent)] after:transition-all after:duration-300 group-hover:after:w-full ${isActiveFilterOption(column.key, option) ? "after:w-full text-[var(--accent)]" : $dark ? "text-white" : "text-[var(--primary-text)]"}`}
                                                                 >
                                                                     {option}
                                                                 </span>
@@ -400,22 +428,22 @@
                             >
                                 {#if visibleColumns.length === 0}
                                     <div
-                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] bg-[#0d1b2b]/65 px-6 py-10 text-sm uppercase tracking-[0.18em] text-slate-400"
+                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] bg-[#0d1b2b]/65 px-6 py-10 text-sm uppercase tracking-[0.18em] dark:text-slate-400 text-[var(--primary-text)]"
                                     >
                                         No columns selected.
                                     </div>
                                 {:else if sortedRows.length === 0}
                                     <div
-                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] bg-[#0d1b2b]/65 px-6 py-10 text-sm uppercase tracking-[0.18em] text-slate-400"
+                                        class="flex min-h-[240px] items-center justify-center rounded-b-[14px] px-6 py-10 text-sm uppercase tracking-[0.18em] {$dark
+                                            ? 'bg-[#0d1b2b]/65 text-slate-400'
+                                            : 'bg-[var(--bg-secondary)] text-[var(--primary-text)]'}"
                                         transition:fade={{ duration: 180 }}
-                                    >
-                                        No rows have been found.
-                                    </div>
+                                    ></div>
                                 {:else}
                                     {#each displayedRows as row, rowIndex (row.id)}
                                         <div
                                             data-sr
-                                            class={`grid border-b border-white/8 ${rowTextSize} text-slate-100 transition-all duration-200 last:border-b-0 hover:bg-white/5 ${rowIndex % 2 === 0 ? "bg-[#0d1b2b]/65" : "bg-[#0b1726]/75"}`}
+                                            class={`grid border-b ${rowTextSize} transition-all duration-200 last:border-b-0 ${$dark ? "border-white/8 dark:text-slate-100 text-[var(--primary-text)] hover:bg-white/5" : "border-[var(--border-color)] text-[var(--primary-text)] hover:bg-[var(--active-bg)]"} ${rowIndex % 2 === 0 ? ($dark ? "bg-[#0d1b2b]/65" : "bg-[var(--panel-bg)]") : $dark ? "bg-[#0b1726]/75" : "bg-[var(--bg-secondary)]"}`}
                                             style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                                         >
                                             {#each visibleColumns as column (column.key)}
@@ -425,7 +453,8 @@
                                                     <span
                                                         class={row.cellsByKey?.[
                                                             column.key
-                                                        ]?.valueClass ?? ""}
+                                                        ]?.valueClass ??
+                                                            "text-[var(--primary-text)]"}
                                                     >
                                                         {row.cellsByKey?.[
                                                             column.key
@@ -439,12 +468,12 @@
                                     {#if hasMoreRows}
                                         <button
                                             type="button"
-                                            class={`grid w-full border-b border-white/8 text-xl text-slate-100 transition-all duration-200 last:border-b-0 hover:bg-white/5 ${displayedRows.length % 2 === 0 ? "bg-[#0d1b2b]/65" : "bg-[#0b1726]/75"}`}
+                                            class={`grid w-full border-b text-xl transition-all duration-200 last:border-b-0 ${$dark ? "border-white/8 dark:text-slate-100 text-[var(--primary-text)] transition duration-300 ease-out hover:bg-white/5" : "border-[var(--border-color)] text-[var(--primary-text)] hover:bg-[var(--bg-secondary)]"} ${displayedRows.length % 2 === 0 ? ($dark ? "bg-[#0d1b2b]/65" : "bg-[var(--panel-bg)]") : $dark ? "bg-[#0b1726]/75" : "bg-[var(--bg-secondary)]"}`}
                                             style={`grid-template-columns: ${tableGridTemplateColumns || model.gridTemplateColumns};`}
                                             on:click|stopPropagation={showMoreRows}
                                         >
                                             <span
-                                                class="col-span-full flex items-center justify-center px-4 py-4 text-sm uppercase tracking-[0.22em] text-sky-200 transition-colors duration-200 hover:text-white"
+                                                class={`col-span-full flex items-center justify-center px-4 py-4 text-sm uppercase tracking-[0.22em] transition-colors duration-200 ${$dark ? "text-sky-200 hover:text-white" : "text-[var(--active-border)] hover:text-[var(--primary-text)]"}`}
                                             >
                                                 Show more
                                             </span>
@@ -455,16 +484,22 @@
                         </div>
                     </div>
                     <div
-                        class="border-t border-white/10 bg-[#091423]/95 px-4 py-3 backdrop-blur-sm"
+                        class="border-t px-4 py-3 backdrop-blur-sm {$dark
+                            ? 'border-white/10 bg-[#091423]/95'
+                            : 'border-[var(--border-color)] bg-[var(--bg-secondary)]'}"
                     >
                         <div
-                            class="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-300"
+                            class="flex flex-wrap items-center justify-between gap-3 text-sm {$dark
+                                ? 'text-slate-300'
+                                : 'text-[var(--primary-text)]'}"
                         >
                             <div
                                 class="flex flex-wrap items-center gap-3 uppercase tracking-[0.18em]"
                             >
                                 <span
-                                    class="rounded-full border border-sky-400/25 bg-sky-500/10 px-3 py-1 text-[0.72rem] text-sky-200"
+                                    class="rounded-full border px-3 py-1 text-[0.72rem] {$dark
+                                        ? 'border-sky-400/25 bg-sky-500/10 text-sky-200'
+                                        : 'border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--active-border)]'}"
                                 >
                                     Showing {displayedRows.length} of {sortedRows.length}
                                 </span>
@@ -493,9 +528,10 @@
 
             {#if model?.footer}
                 <div
-                    class="flex flex-wrap items-center gap-4 px-2 text-sm text-slate-200"
+                    class="flex flex-wrap items-center gap-4 px-2 text-sm dark:text-slate-200 text-[var(--secondary-text)] transition-all duration-300 ease-out"
                 >
-                    <span class="font-semibold text-white"
+                    <span
+                        class="font-semibold dark:text-white text-black transition-all duration-300 ease-out"
                         >{model.footer.label}</span
                     >
 
@@ -503,11 +539,12 @@
                         {#each model.footer.items as item, footerIndex (item.value ?? footerIndex)}
                             <div class="flex flex-wrap items-center gap-2">
                                 <span
-                                    class={`rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] ${item.tone === "success" ? "border-green-400/70 bg-green-500/15 text-green-300" : "border-red-400/70 bg-red-500/15 text-red-300"}`}
+                                    class={`transition-all duration-300 ease-out rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] ${item.tone === "success" ? "border-green-400/70 bg-green-500/15 dark:text-green-300 text-green-600 " : "border-red-400/70 bg-red-500/15 dark:text-red-300 text-red-600 "}`}
                                 >
                                     {item.value}
                                 </span>
-                                <span class="text-[0.85rem] text-slate-400"
+                                <span
+                                    class="text-[0.85rem] dark:text-slate-400 text-[var(--primary-text)]"
                                     >{item.description}</span
                                 >
                             </div>

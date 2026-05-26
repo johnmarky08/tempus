@@ -95,9 +95,9 @@ function cell(value, wrapperClass = "justify-center", valueClass = "") {
 function badgeCell(value, tone) {
     const toneClasses =
         tone === "success"
-            ? "border-green-500/90 bg-green-500/20 text-green-300 shadow-[0_0_18px_rgba(34,197,94,0.2)]"
+            ? "border-green-500/90 bg-green-500/20 dark:text-green-300 text-green-600 shadow-[0_0_18px_rgba(34,197,94,0.2)]"
             : tone === "danger"
-              ? "border-red-500/90 bg-red-500/20 text-red-300 shadow-[0_0_18px_rgba(239,68,68,0.2)]"
+              ? "border-red-500/90 bg-red-500/20 dark:text-red-300 text-red-600 shadow-[0_0_18px_rgba(239,68,68,0.2)]"
               : "border-sky-400/40 bg-sky-400/10 text-sky-100";
 
     return {
@@ -142,22 +142,22 @@ function buildFuelPriceHistoryModel(rows = []) {
                 date: cell(
                     formatDate(row.date),
                     "justify-start",
-                    "text-slate-100",
+                    "dark:text-slate-100 text-[var(--primary-text)] ",
                 ),
                 fuelType: cell(
                     titleCase(row.fuel_type),
                     "justify-center",
-                    "text-slate-100",
+                    "dark:text-slate-100 text-[var(--primary-text)]",
                 ),
                 price: cell(
                     formatFuelPrice(row.price),
                     "justify-center",
-                    "text-slate-100",
+                    "dark:text-slate-100 text-[var(--primary-text)]",
                 ),
                 exchangeRate: cell(
                     formatExchangeRate(row.exchange_rate_to_usd),
                     "justify-center",
-                    "text-slate-100",
+                    "dark:text-slate-100 text-[var(--primary-text)]",
                 ),
                 normalSupply: badgeCell(
                     formatBoolean(row.normal_supply_flag),
@@ -265,27 +265,27 @@ function buildHeatIndexHistoryModel(rows = []) {
                 date: cell(
                     formatDateTime(row.date),
                     "justify-start",
-                    "text-slate-100 text-base",
+                    "dark:text-slate-100 text-[var(--primary-text)] text-base",
                 ),
                 temperature: cell(
                     formatTemperature(row.temperature),
                     "justify-center",
-                    "text-slate-100",
+                    "dark:text-slate-100 text-[var(--primary-text)]",
                 ),
                 humidity: cell(
                     formatHumidity(row.humidity),
                     "justify-center",
-                    "text-slate-100",
+                    "dark:text-slate-100 text-[var(--primary-text)]",
                 ),
                 windSpeed: cell(
                     formatWindSpeed(row.wind_speed),
                     "justify-center",
-                    "text-slate-100",
+                    "dark:text-slate-100 text-[var(--primary-text)]",
                 ),
                 heatIndex: cell(
                     formatHeatIndex(row.heat_index),
                     "justify-center",
-                    "text-orange-400",
+                    "dark:text-orange-400 text-[var(--primary-text)]",
                 ),
             },
         });

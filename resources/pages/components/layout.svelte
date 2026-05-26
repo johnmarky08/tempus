@@ -3,6 +3,7 @@
     import Footer from "./footer.svelte";
     import TempusFAQPanel from "./tempusFaqPanel.svelte";
     import { onMount } from "svelte";
+    import { dark } from "../../js/theme.js";
 
     export let isActive = "";
     export let isActiveSub = "";
@@ -33,6 +34,10 @@
     let chatOpen = false;
     let hasDragged = false;
     let chatPanelHeight = 0;
+
+    $: if (typeof document !== "undefined") {
+        document.documentElement.classList.toggle("dark", $dark);
+    }
 
     const animationStyles = {
         shiver: "animation: shiver 0.6s ease-in-out forwards;",
@@ -238,21 +243,26 @@
 </svelte:head>
 
 <div
-    class="bg-black min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-scroll md:bg-fixed font-spaceGrotesk font-normal flex flex-col"
-    style={`background-image: url("/images/backgrounds/dark_bg.png");`}
+    class=" ease-out min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-scroll md:bg-fixed font-spaceGrotesk font-normal flex flex-col transition-all duration-300"
+    class:dark={$dark}
+    style={$dark
+        ? `background-image: url("/images/backgrounds/dark_bg.png"); background-color: #020617;`
+        : `background-image: url("/images/backgrounds/light_bg.png"); background-color: var(--bg);`}
 >
     <Navbar {isActive} {isActiveSub} />
 
-    <main class="flex-1 min-h-screen px-20 py-14">
+    <main class="flex-1 min-h-screen px-20 py-14 mt-20">
         <slot />
 
         <div
             role="button"
             tabindex="0"
             class="fixed z-[9999] select-none flex items-center justify-center group
-         w-12 h-12 rounded-full border border-[#6FB8E7] overflow-hidden
-         bg-[#061E29] hover:bg-[#0A2A3A] cursor-pointer
-         hover:border-[#8FD3FF]"
+            w-12 h-12 rounded-full border overflow-hidden transition-all ease-out duration-300
+                bg-[#061E29] hover:bg-[#0A2A3A] cursor-pointer
+                {$dark
+                ? 'shadow-[0_0_24px_rgba(111,184,231,0.22)] border-[#6FB8E7] '
+                : 'border-[var(--active-border)] bg-[var(--panel-bg)] hover:bg-[var(--card-hover)] shadow-[0_12px_30px_rgba(59,130,246,0.18)] hover:shadow-[0_16px_36px_rgba(59,130,246,0.24)]'}"
             class:idle={!dragging}
             class:dragging
             class:animating={currentAnim !== "idle"}
@@ -263,7 +273,9 @@
             {#key animationKey}
                 <img
                     alt="Rimuru Slime Icon"
-                    class="jump w-full h-full"
+                    class="jump w-full h-full {$dark
+                        ? ''
+                        : 'drop-shadow-[0_2px_6px_rgba(15,23,42,0.18)]'}"
                     style={currentAnimStyle}
                     src="/images/items/rimuru_chatbox_icon.png"
                     draggable="false"

@@ -2,6 +2,7 @@
     import { onMount, onDestroy, tick } from "svelte";
     import { fly } from "svelte/transition";
     import { faqData } from "../../js/tempusFAQ.js";
+    import { dark } from "../../js/theme.js";
 
     export let open = false;
     export let anchorX = 100;
@@ -361,24 +362,29 @@
         aria-modal="true"
         aria-label="Chat with Tempest"
         class="font-jetbrainsMono fixed z-[9999] flex flex-col rounded-2xl overflow-hidden
-           border border-white shadow-[0_0_20px_#6FB8E7] bg-[#061E29] text-white"
+           border shadow-[0_0_20px_var(--accent)]
+            border-white text-white bg-[#061E29] transition-all duration-300
+            dark:border-sky-200 dark:text-slate-900 dark:bg-[var(--bg)] dark:shadow-[0_0px_20px_rgba(59,130,246,1)] dark:transition-all dark:duration-300"
         style={`
             left: ${panelLeft}px;
             ${useTopSide ? `top: ${panelTop}px;` : `bottom: ${panelBottom}px;`}
             width: ${PANEL_W}px;
             max-width: calc(100vw - ${panelLeft}px - 12px);
-            background: #061E29;
+            background: ${$dark ? "#061E29" : "#F8FCFF"};
             max-height: ${minimized ? "54px" : PANEL_H + "px"};
             transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
         `}
     >
         <!-- ══ HEADER ══ -->
         <div
-            class=" flex items-center justify-between px-4 py-3 shrink-0"
-            style="background: #061E29; border-bottom: 1px solid #ffffff;"
+            class="dark:bg-[#061E29] bg-[var(--bg)]
+            border-2 dark:border-b-[#ffffff] dark:border border-b-[#B8D8F1]
+            flex items-center justify-between px-4 py-3 shrink-0 transition-all duration-300"
         >
             <h2
-                class="text-white font-bold text-lg tracking-tight leading-none select-none"
+                class="font-bold text-lg tracking-tight leading-none select-none {$dark
+                    ? 'text-white'
+                    : 'text-[var(--primary-text)]'}"
             >
                 Chat with Tempest
             </h2>
@@ -386,8 +392,9 @@
                 <!-- Minimize -->
                 <button
                     type="button"
-                    class="w-7 h-7 flex items-center justify-center rounded-md border border-[#1E3A4A]
-                 text-[#6FB8E7] hover:bg-[#1A3040] hover:border-[#4A9AC0] transition-all duration-300"
+                    class="w-7 h-7 flex items-center justify-center rounded-md border transition-all duration-300 {$dark
+                        ? 'border-2 border-[#1E3A4A] text-[#6FB8E7] hover:bg-[#1A3040] hover:border-[#4A9AC0]'
+                        : 'border-2 border-sky-200 text-[#2563EB] hover:bg-[#DCEEFF] hover:border-[#60A5FA]'}"
                     on:click|stopPropagation={toggleMinimize}
                     aria-label={minimized ? "Expand" : "Minimize"}
                 >
@@ -427,9 +434,9 @@
                 <!-- Close -->
                 <button
                     type="button"
-                    class="w-7 h-7 flex items-center justify-center rounded-md border border-[#1E3A4A]
-                 text-[#6FB8E7] hover:bg-[#2A0D0D] hover:border-[#C06060] hover:text-[#FF8080]
-                 transition-all duration-300"
+                    class="w-7 h-7 flex items-center justify-center rounded-md border-2 transition-all duration-300 {$dark
+                        ? 'border-[#1E3A4A] text-[#6FB8E7] hover:bg-[#2A0D0D] hover:border-[#C06060] hover:text-[#FF8080]'
+                        : 'border-sky-200 text-[#2563EB] hover:bg-[#FEE2E2] hover:border-[#FCA5A5] hover:text-[#B91C1C]'}"
                     on:click|stopPropagation={() => {
                         open = false;
                     }}
@@ -461,8 +468,10 @@
 
         <div
             bind:this={messagesEl}
-            class="flex-1 overflow-y-auto px-4 py-4 space-y-4"
-            style="min-height: 0; background: #061E29;"
+            class="flex-1 overflow-y-auto px-4 py-4 space-y-4 transition-all duration-300"
+            style="min-height: 0; background: {$dark
+                ? '#061E29'
+                : 'var(--bg)'};"
         >
             {#each messages as msg}
                 {#if msg.role === "user"}
@@ -470,7 +479,11 @@
                     <div class="flex justify-end">
                         <div
                             class="max-w-[78%] px-4 py-2.5 rounded-2xl rounded-tr-sm text-[12px] leading-snug"
-                            style="background: #1E3F92; color: #ffffff; word-break: break-word;"
+                            style="background: {$dark
+                                ? '#1E3F92'
+                                : 'var(--active-bg)'}; color: {$dark
+                                ? '#ffffff'
+                                : 'var(--primary-text)'}; word-break: break-word;"
                         >
                             {msg.text}
                         </div>
@@ -479,8 +492,12 @@
                     <!-- Tempest bubble — left with avatar -->
                     <div class="flex items-start gap-3">
                         <div
-                            class="shrink-0 w-8 h-8 rounded-full overflow-hidden border border-[#2A5070]"
-                            style="background: transparent;"
+                            class="shrink-0 w-8 h-8 rounded-full overflow-hidden border {$dark
+                                ? 'border-[#2A5070]'
+                                : 'border-sky-200'}"
+                            style="background: {$dark
+                                ? 'transparent'
+                                : '#EAF4FF'};"
                         >
                             <img
                                 src="/images/items/rimuru_chatbox_icon.png"
@@ -491,7 +508,9 @@
                         </div>
                         <div
                             class="flex-1 text-[12px] leading-relaxed"
-                            style="color: #ffffff; word-break: break-word; text-align: left;"
+                            style="color: {$dark
+                                ? '#ffffff'
+                                : 'var(--primary-text)'}; word-break: break-word; text-align: left;"
                         >
                             {msg.text}
                         </div>
@@ -502,11 +521,13 @@
 
         <!-- ══ TOPIC CAROUSEL ══ -->
         <div
-            class="shrink-0 py-2.5"
-            style="border-top: 1px solid #ffffff; background: #0D1824;"
+            class="transition-all duration-300 shrink-0 py-2.5 border-t-2
+            dark:border-t-[#ffffff] border-[#B8D8F1] dark:border-t dark:bg-[#0D1824] bg-[var(--bg-secondary)]"
+            style=""
         >
             <p
-                class="px-4 text-[9px] text-white uppercase tracking-[0.18em] font-bold mb-2 select-none"
+                class="px-4 text-[9px] dark:text-white text-[var(--primary-text)]
+                uppercase tracking-[0.18em] font-bold mb-2 select-none"
             >
                 Topics
             </p>
@@ -534,7 +555,7 @@
                                   disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
                                   {activeTopicIdx === realIdx
                                 ? 'bg-[#2B63D9] border-[#8FD3FF] text-white'
-                                : 'bg-[#1E3F92] border-[#6FB8E7] text-white hover:bg-[#2B63D9] hover:border-[#8FD3FF] hover:scale-110 '}"
+                                : 'dark:bg-[#1E3F92] bg-[var(--accent)] border-[#6FB8E7] dark:text-white text-[#ffffff] hover:bg-[#ffffff] hover:text-[#000000] dark:hover:bg-[#2B63D9] hover:border-[var(--active-border)] dark:hover:border-[#8FD3FF] hover:scale-110 '}"
                             disabled={isTyping}
                             on:click|stopPropagation={() => {
                                 activeTopicIdx = realIdx;
@@ -549,11 +570,11 @@
 
         <!-- ══ QUESTION CAROUSEL ══ -->
         <div
-            class="shrink-0 py-2.5"
-            style="border-top: 1px solid #182E3C; background: #08121A;"
+            class="transition-all duration-300 dark:border-t dark:border-[#182E3C] dark:bg-[#08121A] border-t-2 border-t-[#B8D8F1] bg-[var(--bg-secondary)] shrink-0 py-2.5"
+            style=""
         >
             <p
-                class="px-4 text-[9px] text-white uppercase tracking-[0.18em] font-bold mb-2 select-none"
+                class="transition-all duration-300 px-4 text-[9px] dark:text-white text-[var(--primary-text)] uppercase tracking-[0.18em] font-bold mb-2 select-none"
             >
                 {faqData[activeTopicIdx]?.category ?? "Questions"}
             </p>
@@ -575,11 +596,10 @@
                         <button
                             type="button"
                             class="mt-2 shrink-0 px-3 py-2 rounded-xl text-[10px]
-                                border border-[#6FB8E7]
-                              bg-[#1E3F92] text-white
-                              hover:bg-[#2B63D9]
-                              hover:border-[#8FD3FF]
-                              hover:text-white
+                                border dark:bg-[#1E3F92] bg-[var(--accent)] border-[#6FB8E7]
+                                 dark:text-white text-[#ffffff] hover:bg-[#ffffff]
+                                  hover:text-[#000000] dark:hover:bg-[#2B63D9]
+                                   hover:border-[var(--active-border)] dark:hover:border-[#8FD3FF]
                               hover:scale-110
                                 transition-all duration-300 ease-out
                                 leading-snug

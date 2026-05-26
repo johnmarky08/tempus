@@ -1,6 +1,7 @@
 <script>
     import Layout from "./components/layout.svelte";
     import { inertia } from "@inertiajs/svelte";
+    import { dark } from "../js/theme.js";
 
     export let errors = null;
 
@@ -9,7 +10,9 @@
 
 <Layout isActive="404">
     <div
-        class="flex min-h-[60vh] items-center justify-center text-center text-white"
+        class="flex min-h-[60vh] items-center justify-center text-center {$dark
+            ? 'text-white'
+            : 'text-[var(--primary-text)]'}"
     >
         <div class="space-y-4">
             <div
@@ -23,7 +26,11 @@
                 Page Not Found.
             </h1>
 
-            <p class="text-sm text-slate-300 sm:text-base">
+            <p
+                class="text-sm sm:text-base {$dark
+                    ? 'text-slate-300'
+                    : 'text-slate-600'}"
+            >
                 Hmm, this doesn't seem like the right place. Let's go back home.
             </p>
 

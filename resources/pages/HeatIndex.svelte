@@ -1,6 +1,7 @@
 <script>
     import { fade, fly } from "svelte/transition";
     import Layout from "./components/layout.svelte";
+    import { dark } from "../js/theme.js";
     import {
         AGE_GROUPS,
         DEFAULT_INTRADAY_LABELS,
@@ -215,7 +216,9 @@
 
 <Layout isActive="Heat Index">
     <div
-        class="smooth-scroll flex flex-col space-y-36 -mt-8 text-slate-100 font-jetbrainsMono scale-[0.95]"
+        class="smooth-scroll flex flex-col space-y-36 -mt-8 font-jetbrainsMono scale-[0.95] {$dark
+            ? 'text-slate-100'
+            : 'text-[var(--primary-text)]'}"
     >
         {#if syncStatus?.error}
             <div
@@ -236,11 +239,15 @@
         <section class="flex flex-col space-y-16 -mb-12">
             <div
                 data-sr
-                class="mx-28 flex flex-col space-y-10 bg-[#152A42]/50 border border-white rounded-[24px] p-8 justify-center items-center"
+                class="mx-28 flex flex-col space-y-10 border rounded-[24px] p-8 justify-center items-center {$dark
+                    ? 'bg-[#152A42]/50 border-white shadow-[0_16px_40px_rgba(0,0,0,0.22)]'
+                    : 'bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] border-2 border-[var(--accent)] shadow-[0_16px_40px_rgba(15,23,42,0.10)]'}"
             >
                 <p
                     data-sr
-                    class="text-2xl font-semibold text-white sm:text-4xl"
+                    class="text-2xl font-semibold sm:text-4xl {$dark
+                        ? 'text-white'
+                        : 'text-[var(--primary-text)]'}"
                 >
                     Heat Index Assessment
                 </p>
@@ -255,21 +262,26 @@
                     <div class="space-y-5">
                         <div
                             data-sr
-                            class="flex flex-wrap flex-col gap-4 rounded-[22px] border
-                            border-white bg-[#152A42] p-4 sm:p-5 max-w-lg
-                     transition-all duration-300 ease-out hover:shadow-[0px_0px_10px_rgba(56,189,248,2)]"
+                            class="flex flex-wrap flex-col gap-4 rounded-[22px] border p-4 sm:p-5 max-w-lg transition-all duration-300 ease-out
+                            hover:shadow-[0px_0px_10px_rgba(56,189,248,2)] {$dark
+                                ? 'border-white bg-[#152A42]'
+                                : 'border-[var(--accent)] bg-[var(--active-bg)] border-2   shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                         >
                             <div
                                 data-sr
                                 class="flex items-center justify-between"
                             >
                                 <p
-                                    class="text-base tracking-[0.2em] text-slate-300"
+                                    class="text-base tracking-[0.2em] {$dark
+                                        ? 'text-slate-300'
+                                        : 'text-[var(--primary-text)]'}"
                                 >
                                     AGE GROUP
                                 </p>
                                 <p
-                                    class="text-xs uppercase tracking-[0.28em] text-slate-500"
+                                    class="text-xs uppercase tracking-[0.28em] {$dark
+                                        ? 'text-slate-500'
+                                        : 'text-[var(--primary-text)]'}"
                                 >
                                     Single select
                                 </p>
@@ -283,7 +295,7 @@
                                             selectAgeRange(ageGroup.value)}
                                         class={`hover:scale-[1.15] flex min-w-[5.75rem] flex-1 items-center justify-center 
                                         rounded-lg border px-4 py-3 text-sm transition duration-300
-                                         ${selectedAgeRange === ageGroup.value ? "border-sky-300 bg-sky-400/15 text-sky-100 shadow-[0_0_24px_rgba(56,189,248,0.16)]" : "border-sky-900/60 bg-[#061E29] text-slate-300 hover:border-sky-400/40 hover:bg-sky-900/40"}`}
+                                        ${$dark ? (selectedAgeRange === ageGroup.value ? "border-sky-300 bg-sky-400/15 text-sky-100 shadow-[0_0_24px_rgba(56,189,248,0.16)]" : "border-sky-900 bg-[#061E29] text-slate-300 hover:border-sky-400/40 hover:bg-sky-900/40") : selectedAgeRange === ageGroup.value ? "border-black bg-[var(--bg-secondary)] text-[var(--primary-text)] shadow-[0_0_24px_rgba(56,189,248,0.12)]" : "border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:border-black hover:bg-[var(--bg-secondary)]"}`}
                                     >
                                         {ageGroup.label}
                                     </button>
@@ -298,7 +310,9 @@
                         </div>
                         <div
                             data-sr
-                            class="transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] flex flex-col gap-3 rounded-[20px] border border-white bg-[#152A42] p-5"
+                            class="transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] flex flex-col gap-3 rounded-[20px] border p-5 {$dark
+                                ? 'border-white bg-[#152A42]'
+                                : 'border-2  border-[var(--accent)] bg-[var(--panel-bg)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                             style={`--exertion-shadow: ${exertionShadowColor};`}
                         >
                             <div
@@ -306,18 +320,20 @@
                                 class="flex items-center justify-between"
                             >
                                 <p
-                                    class="text-base tracking-[0.2em] text-slate-300"
+                                    class={`text-base tracking-[0.2em] ${$dark ? "text-slate-300" : "text-[var(--primary-text)]"}`}
                                 >
                                     EXERTION LEVEL
                                 </p>
-                                <p class="text-sm text-amber-200">
+                                <p
+                                    class={`text-sm ${$dark ? "text-amber-200" : "text-[var(--primary-text)]"}`}
+                                >
                                     {exertionLevel}/10
                                 </p>
                             </div>
 
                             <div data-sr class="relative w-full">
                                 <div
-                                    class="relative h-4 rounded-full bg-[#061E29] border border-white/8 overflow-hidden"
+                                    class={`relative h-4 rounded-full overflow-hidden border ${$dark ? "bg-[#061E29] border-white/8" : "bg-[var(--bg-secondary)] border-[var(--border-color)]"}`}
                                 >
                                     <div
                                         class="absolute left-0 top-0 h-4 rounded-full"
@@ -329,10 +345,10 @@
                                         style="left: calc({exertionPercent}% - 8px); transition: left .18s ease;"
                                     >
                                         <div
-                                            class="h-8 w-8 rounded-full bg-[#0b4a7a] border-2 border-white flex items-center justify-center shadow-lg"
+                                            class={`h-8 w-8 rounded-full flex items-center justify-center shadow-lg ${$dark ? "bg-[#0b4a7a] border-2 border-white" : "bg-sky-200 border-2 border-[var(--border-color)]"}`}
                                         >
                                             <div
-                                                class="h-3 w-3 rounded-full bg-white/90"
+                                                class={`h-3 w-3 rounded-full ${$dark ? "bg-white/90" : "bg-[var(--primary-text)]"}`}
                                             ></div>
                                         </div>
                                     </div>
@@ -354,7 +370,7 @@
                                 </div>
 
                                 <div
-                                    class="flex justify-between text-xs text-slate-400 mt-3 w-full tracking-widest px-1"
+                                    class={`flex justify-between text-xs mt-3 w-full tracking-widest px-1 ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
                                     {#each Array.from({ length: 11 }, (_, index) => index) as tick}
                                         <span class="text-center text-base"
@@ -373,7 +389,9 @@
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                class="rounded-xl w-40 border border-sky-300/40 bg-sky-400/15 px-5 py-3 text-sm font-semibold text-sky-100 transition duration-300 hover:scale-[1.02] hover:bg-sky-400/25 disabled:cursor-not-allowed disabled:opacity-70"
+                                class={`rounded-xl w-40 border-2  px-5 py-3 text-sm font-semibold transition duration-300 
+                                hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70 
+                                ${$dark ? "border-sky-300/40 bg-sky-400/15 text-sky-100 hover:bg-sky-400/25" : "border-[var(--accent)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:bg-[var(--active-bg)] hover:border-sky-300"}`}
                             >
                                 {isAssessing ? "Assess" : "Re-Assess"}
                             </button>
@@ -394,7 +412,8 @@
                     <div
                         data-sr
                         class={`hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out
-                         flex w-full place-items-center flex-col gap-4 rounded-[22px] border border-white bg-[#152A42]
+                         flex w-full place-items-center flex-col gap-4 rounded-[22px] border
+                          ${$dark ? "border-white bg-[#152A42]" : "border-[var(--accent)] bg-[var(--active-bg)] border-2"}
                         p-4 sm:p-5 max-w-sm`}
                     >
                         <div data-sr class="flex items-center justify-between">
@@ -404,7 +423,9 @@
                                     class="
                                 group-hover:scale-105 group-hover:translate-x-2
                          transition-all duration-300 ease-out
-                                text-2xl font-semibold text-white"
+                                text-2xl font-semibold {$dark
+                                        ? 'text-white'
+                                        : 'text-[var(--primary-text)]'}"
                                 >
                                     Today's Safety Label
                                 </p>
@@ -416,8 +437,8 @@
                             class="flex items-center place-items-center"
                         >
                             <div
-                                class={`flex items-center  rounded-[15px]
-                                 border px-4 py-3 w-full ${safetyMeta.border} ${safetyMeta.bg} 
+                                class={`flex items-center  rounded-[15px] 
+                                 border dark:border-none border-black px-4 py-3 w-full ${safetyMeta.border} ${safetyMeta.bg} 
                         hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out`}
                             >
                                 {#if safetyMeta.icon === "check"}
@@ -497,7 +518,9 @@
                                 <div
                                     class="flex flex-col text-center place-self-center"
                                 >
-                                    <p class={`text-lg text-white `}>
+                                    <p
+                                        class={`text-lg dark:text-white text-black `}
+                                    >
                                         {isAssessing && !heatIndexData?.assess
                                             ? "No Assessment Yet"
                                             : safetyMeta.title}
@@ -512,8 +535,13 @@
                         transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-y-3 group-hover:translate-x-3"
                         >
                             <div class="flex gap-20 justify-between">
-                                <p class="min-w-[4.75rem] text-slate-400">
-                                    Alert: <span class="text-slate-200">
+                                <p
+                                    class={`min-w-[4.75rem] 
+                                    ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                >
+                                    Alert: <span
+                                        class="dark:text-slate-200 text-slate-500"
+                                    >
                                         {isAssessing && !heatIndexData?.assess
                                             ? "Waiting for your inputs."
                                             : selectedHighlights.alert}
@@ -521,9 +549,11 @@
                                 </p>
                             </div>
                             <div class="flex gap-2 justify-between">
-                                <p class="min-w-[4.75rem] text-slate-400">
+                                <p
+                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                >
                                     Recommendation: <span
-                                        class="text-slate-200"
+                                        class="dark:text-slate-200 text-slate-500"
                                     >
                                         {isAssessing && !heatIndexData?.assess
                                             ? "Choose an age group and exertion level, then press Assess."
@@ -532,8 +562,11 @@
                                 </p>
                             </div>
                             <div class="flex gap-2 justify-between">
-                                <span class="min-w-[4.75rem] text-slate-400"
-                                    >Travel: <span class="text-slate-200">
+                                <span
+                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    >Travel: <span
+                                        class="dark:text-slate-200 text-slate-500"
+                                    >
                                         {isAssessing && !heatIndexData?.assess
                                             ? "Assessment will appear after you submit the inputs."
                                             : selectedHighlights.travel}
@@ -541,8 +574,12 @@
                                 >
                             </div>
                             <div class="flex gap-2 justify-between">
-                                <p class="min-w-[4.75rem] text-slate-400">
-                                    Health Tip: <span class="text-slate-200">
+                                <p
+                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                >
+                                    Health Tip: <span
+                                        class="dark:text-slate-200 text-slate-500"
+                                    >
                                         {isAssessing && !heatIndexData?.assess
                                             ? "Use the inputs above to calculate the current safety label."
                                             : selectedHighlights.tip}
@@ -557,7 +594,9 @@
             <div class="space-y-10">
                 <h1
                     data-sr
-                    class=" px-28 text-xl text-start font-semibold text-white sm:text-4xl"
+                    class=" px-28 text-xl text-start font-semibold sm:text-4xl {$dark
+                        ? 'text-white'
+                        : 'text-slate-900'}"
                 >
                     7-Hour Advanced Heat Index Forecast
                 </h1>
@@ -572,14 +611,18 @@
                                 class="group
                                 hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00]
                                  transition-all duration-500 ease-out
-                                flex place-items-center flex-col space-y-5 rounded-[18px] border border-white/80 bg-[#152A42]
-                                px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                                flex place-items-center flex-col space-y-5 rounded-[18px] border
+                                px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] {$dark
+                                    ? 'border-white/80 bg-[#152A42]'
+                                    : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                                 transition:fade
                             >
                                 <div class=" flex flex-col gap-1">
                                     <p
                                         data-sr
-                                        class="group-hover:scale-[1.18] transition-all duration-500 ease-out text-xl text-slate-200"
+                                        class="group-hover:scale-[1.18] transition-all duration-500 ease-out text-xl {$dark
+                                            ? 'text-slate-200'
+                                            : 'text-[var(--primary-text)]'}"
                                     >
                                         {selectedPreset.forecastLabels[index] ??
                                             selectedPreset.graphLabels[index] ??
@@ -619,9 +662,9 @@
                 <div
                     data-sr
                     class={`group hover:scale-105 hover:-translate-y-2 hover:-translate-x-5
-                     transition-all duration-300 hover:shadow-[0_0px_10px_#ffffff] ease-out
-                    flex flex-col space-y-8 rounded-[20px] border border-white
-                    bg-[#152A42]/50 shadow-[0_0px_0_rgba(0,0,0,0.25)] backdrop-blur-sm sm:p-7 sm:py-12 `}
+                     transition-all duration-300 ease-out
+                    flex flex-col space-y-8 rounded-[20px] border
+                    backdrop-blur-sm sm:p-7 sm:py-12 ${$dark ? "hover:shadow-[0_0px_10px_#ffffff] border-white bg-[#152A42]/50" : "hover:shadow-[0_0px_10px_#94a3b8] border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_40%,transparent)]"}`}
                 >
                     <div
                         data-sr
@@ -629,11 +672,17 @@
                     flex flex-col gap-1"
                     >
                         <p
-                            class="text-2xl font-semibold text-white sm:text-[2rem]"
+                            class="text-2xl font-semibold sm:text-[2rem] {$dark
+                                ? 'text-white'
+                                : 'text-[var(--primary-text)]'}"
                         >
                             {selectedPreset.location}
                         </p>
-                        <p class="text-sm text-slate-300 sm:text-base">
+                        <p
+                            class="text-sm sm:text-base {$dark
+                                ? 'text-slate-300'
+                                : 'text-slate-600'}"
+                        >
                             {selectedPreset.condition}
                         </p>
                     </div>
@@ -659,15 +708,19 @@
                             >
                                 <div class="flex items-center gap-3">
                                     <div class="flex flex-col gap-1">
-                                        <p class="text-xl text-white font-bold">
+                                        <p
+                                            class="text-xl font-bold {$dark
+                                                ? 'text-white'
+                                                : 'text-[var(--primary-text)]'}"
+                                        >
                                             Heat Index Level
                                         </p>
                                         <div class="flex items-center gap-5">
                                             <span
-                                                class="rounded-[8px] {heatCard.bg} w-full text-center px-10 py-1 text-xs
-                                                 font-semibold text-white border border-white"
-                                                >{heatTone.title}</span
+                                                class="rounded-[8px] {heatCard.bg} w-full text-center px-10 py-1 text-xs font-semibold text-white border border-white"
                                             >
+                                                {heatTone.title}
+                                            </span>
                                         </div>
                                     </div>
                                     <div
@@ -675,7 +728,9 @@
                                     >
                                         {#if heatCard.key === "safe"}
                                             <svg
-                                                class="transition-all duration-300"
+                                                class="text-xl font-semibold {$dark
+                                                    ? 'text-white'
+                                                    : 'text-[var(--primary-text)]'}"
                                                 width="65"
                                                 height="65"
                                                 viewBox="0 0 65 65"
@@ -754,8 +809,9 @@
                             class="transition-all duration-300 ease-out flex flex-col gap-3 lg:max-w-[18rem] place-self-center"
                         >
                             <div
-                                class="flex items-center justify-between border-b border-t
-                                 border-white/50 pb-2 pt-2 text-sm text-slate-300"
+                                class="flex items-center justify-between border-b border-t pb-2 pt-2 text-sm {$dark
+                                    ? 'border-white/50 text-slate-300'
+                                    : 'border-[black]/40 text-[var(--primary-text)]'}"
                             >
                                 <p class="items-center">Humidity</p>
                                 <p class="items-center">
@@ -764,7 +820,9 @@
                             </div>
 
                             <div
-                                class="space-x-40 flex items-center pb-2 border-b border-white/50 justify-between text-sm text-slate-300"
+                                class="space-x-40 flex items-center pb-2 border-b justify-between text-sm {$dark
+                                    ? 'border-white/50 text-slate-300'
+                                    : 'border-[black]/40 text-[var(--primary-text)]'}"
                             >
                                 <p class="items-center">Wind</p>
                                 <p class="items-center">
@@ -783,13 +841,17 @@
                 <div class="flex flex-col transition-all duration-300">
                     <div
                         data-sr
-                        class="hover:scale-105 hover:-translate-y-3 hover:translate-x-3 hover:shadow-[0_0_10px_#fb923c] transition-all duration-300 ease-in-out relative rounded-[24px] border border-white bg-[#152A42]/50 p-3"
+                        class="hover:scale-105 hover:-translate-y-3 hover:translate-x-3 hover:shadow-[0_0_10px_#fb923c] transition-all duration-300 ease-in-out relative rounded-[24px] border p-3 {$dark
+                            ? 'border-white bg-[#152A42]/50'
+                            : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_50%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                     >
                         <div
                             class="mb-3 mt-2 flex justify-center items-center px-1"
                         >
                             <p
-                                class="text-md text-center font-semibold tracking-[0.22em] text-white/90 uppercase"
+                                class="text-md text-center font-semibold tracking-[0.22em] uppercase {$dark
+                                    ? 'text-white/90'
+                                    : 'text-[var(--primary-text)]'}"
                             >
                                 Previous Heat Indexes
                             </p>
@@ -823,7 +885,9 @@
                                     <text
                                         x="2"
                                         y={tick.y + 3}
-                                        fill="rgba(226,232,240,0.68)"
+                                        fill={$dark
+                                            ? "rgba(226,232,240,0.68)"
+                                            : "rgba(0,0,0,0.80)"}
                                         font-size="8"
                                         text-anchor="start"
                                     >
@@ -971,7 +1035,9 @@
                                     class="transition-all duration-300 ease-in-out"
                                     x={point.x}
                                     y="142"
-                                    fill="rgba(226,232,240,0.72)"
+                                    fill={$dark
+                                        ? "rgba(226,232,240,0.72)"
+                                        : "rgba(0,0,0,0.82)"}
                                     font-size="8"
                                     text-anchor="middle">{point.label}</text
                                 >
@@ -982,29 +1048,39 @@
                 <div
                     data-sr
                     class="group hover:scale-105 hover:translate-y-3 hover:translate-x-3
-                    hover:shadow-[0_0_10px_#6FB8E7] transition-all duration-300 flex flex-col gap-3 rounded-[20px] border border-white bg-[#152A42]/50 p-4"
+                    hover:shadow-[0_0_10px_var(--accent)] transition-all duration-300 flex flex-col gap-3 rounded-[20px] border p-4 {$dark
+                        ? 'border-white bg-[#152A42]/50'
+                        : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_50%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                 >
                     <div
                         data-sr
-                        class="flex items-center gap-3 border-b border-[#888888] pb-2"
+                        class="flex items-center gap-3 border-b pb-2 {$dark
+                            ? 'border-[#888888]'
+                            : 'border-black'}"
                     >
                         <svg
                             width="40"
                             height="40"
                             viewBox="0 0 50 50"
                             fill="none"
+                            class="text-[var(--accent)]"
                             xmlns="http://www.w3.org/2000/svg"
                         >
                             <path
                                 d="M20.8334 18.75C20.8334 18.1975 21.0529 17.6676 21.4436 17.2769C21.8343 16.8862 22.3642 16.6667 22.9167 16.6667C23.4693 16.6667 23.9992 16.8862 24.3899 17.2769C24.7806 17.6676 25.0001 18.1975 25.0001 18.75V28.0625L27.5209 28.3333L37.8126 32.8958C38.9167 33.3958 39.5834 34.5 39.5834 35.7083V44.7917C39.5209 46.5 38.1667 47.8542 36.4584 47.9167H22.9167C22.1251 47.9167 21.3751 47.6042 20.8334 47.0208L10.6251 38.2708L12.1667 36.6667C12.5626 36.2292 13.1251 36 13.7084 36H14.1667L20.8334 39.5833V18.75ZM22.9167 10.4167C25.1269 10.4167 27.2465 11.2946 28.8093 12.8574C30.3721 14.4202 31.2501 16.5399 31.2501 18.75C31.2501 21.875 29.5834 24.5208 27.0834 25.9583V23.4167C28.3542 22.2708 29.1667 20.6042 29.1667 18.75C29.1667 17.0924 28.5083 15.5027 27.3362 14.3306C26.1641 13.1585 24.5744 12.5 22.9167 12.5C21.2591 12.5 19.6694 13.1585 18.4973 14.3306C17.3252 15.5027 16.6667 17.0924 16.6667 18.75C16.6667 20.6042 17.4792 22.2708 18.7501 23.4167V25.9583C16.2501 24.5208 14.5834 21.875 14.5834 18.75C14.5834 16.5399 15.4614 14.4202 17.0242 12.8574C18.587 11.2946 20.7066 10.4167 22.9167 10.4167ZM22.9167 6.25C26.232 6.25 29.4114 7.56696 31.7556 9.91117C34.0998 12.2554 35.4167 15.4348 35.4167 18.75C35.4167 22.2917 33.9376 25.4792 31.5834 27.7708L29.5001 26.8333C30.6971 25.8534 31.6618 24.62 32.3247 23.2222C32.9876 21.8244 33.3321 20.297 33.3334 18.75C33.3334 15.9873 32.2359 13.3378 30.2824 11.3843C28.3289 9.4308 25.6794 8.33333 22.9167 8.33333C20.1541 8.33333 17.5046 9.4308 15.5511 11.3843C13.5975 13.3378 12.5001 15.9873 12.5001 18.75C12.5001 23.0208 15.0626 26.6875 18.7501 28.2917V30.5417C13.8959 28.8125 10.4167 24.1875 10.4167 18.75C10.4167 15.4348 11.7337 12.2554 14.0779 9.91117C16.4221 7.56696 19.6015 6.25 22.9167 6.25Z"
-                                fill="#6FB8E7"
+                                fill="currentColor"
                             />
                         </svg>
 
                         <div
-                            class="transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-x-2 flex flex-col"
+                            class="transition-all duration-300 ease-out group-hover:scale-105
+                            group-hover:translate-x-2 flex flex-col"
                         >
-                            <p class="text-xl font-semibold text-white">
+                            <p
+                                class="text-xl font-semibold {$dark
+                                    ? 'text-white'
+                                    : 'text-[var(--primary-text)]'}"
+                            >
                                 Recommended Actions
                             </p>
                         </div>
@@ -1012,7 +1088,9 @@
 
                     <p
                         data-sr
-                        class="text-sm leading-6 text-slate-200 min-h-[3.25rem]"
+                        class="text-sm leading-6 min-h-[3.25rem] {$dark
+                            ? 'text-slate-200'
+                            : 'text-[var(--primary-text)]'}"
                     >
                         {selectedPreset.recommendation}
                     </p>

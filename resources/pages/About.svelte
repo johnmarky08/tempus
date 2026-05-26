@@ -2,6 +2,7 @@
     import Layout from "./components/layout.svelte";
     import * as items from "../js/items.js";
     import { fade, scale } from "svelte/transition";
+    import { dark } from "../js/theme.js";
 
     export let errors = null;
 
@@ -14,11 +15,11 @@
     {#if showDescription}
         <div
             transition:fade={{ duration: 160 }}
-            class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-md bg-black/50"
+            class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-md dark:bg-black/50 bg-white/50 transition-all duration-300 ease-out"
         >
             <div
                 transition:scale={{ duration: 180, start: 0.96 }}
-                class="relative w-11/12 max-w-6xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#6FB8E7] bg-[#061E29] p-8 shadow-2xl"
+                class="relative w-11/12 max-w-6xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#6FB8E7] dark:bg-[#061E29] bg-[var(--bg)] p-8 shadow-2xl"
             >
                 <button
                     on:click={() => (showDescription = false)}
@@ -30,7 +31,7 @@
                     <h2
                         data-sr
                         data-sr-delay="40"
-                        class="text-2xl font-bold text-center tracking-tight text-white"
+                        class="transition-all duration-300 ease-out text-2xl font-bold text-center tracking-tight dark:text-white text-black"
                     >
                         <span class="text-[#6FB8E7]">T</span>hermal and
                         <span class="text-[#6FB8E7]">E</span>nergy
@@ -44,7 +45,8 @@
                     <p
                         data-sr
                         data-sr-delay="120"
-                        class="text-base leading-7 text-slate-300 text-justify"
+                        class="text-base leading-7 dark:text-slate-300 text-gray-600
+                        transition-all duration-300 ease-out text-justify"
                     >
                         T.E.M.P.U.S. is a smart forecasting and decision-support
                         platform designed to help users manage two major
@@ -99,7 +101,7 @@
     <Layout isActive="About">
         <div class="scroll-smooth snap-y snap-mandatory">
             <div
-                class="flex w-full flex-col space-y-20 text-white font-jetbrainsMono"
+                class="flex w-full flex-col space-y-20 dark:text-white text-black font-jetbrainsMono transition-all duration-300 ease-out"
             >
                 <div class="space-y-12 snap-start">
                     <div class="text-center space-y-5">
@@ -108,13 +110,15 @@
                             data-sr-delay="400"
                             class="text-center text-5xl font-bold"
                         >
-                            About <span class="text-[#6FB8E7]">T.E.M.P.U.S</span
+                            About <span
+                                class="dark:text-[#6FB8E7] text-[var(--accent)] transition-colors duration-300 ease-out"
+                                >T.E.M.P.U.S</span
                             >
                         </h1>
                         <p
                             data-sr
                             data-sr-delay="500"
-                            class="text-center text-lg text-slate-300"
+                            class="text-center text-lg dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out"
                         >
                             Learn more about our mission and the team behind
                             T.E.M.P.U.S.
@@ -125,13 +129,15 @@
                         class="flex flex-col gap-8 lg:flex-row lg:items-stretch font-bold"
                     >
                         <div
-                            class="flex w-full flex-col rounded-3xl border border-[#6FB8E7] bg-[#061E29]/50 p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2"
+                            class="flex w-full flex-col rounded-3xl border dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50
+                            bg-[color-mix(in_srgb,var(--bg-secondary)_40%,_transparent)]
+                            p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2 transition-all duration-300 ease-out"
                         >
                             <div class="flex flex-col gap-5">
                                 <h2
                                     data-sr
                                     data-sr-delay="40"
-                                    class="text-3xl tracking-tight text-white"
+                                    class="text-3xl tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
                                 >
                                     System Overview
                                 </h2>
@@ -139,7 +145,7 @@
                                 <p
                                     data-sr
                                     data-sr-delay="120"
-                                    class="max-w-xl text-sm font-light leading-6 text-slate-300 sm:text-base"
+                                    class="max-w-xl text-sm font-light leading-6 dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out sm:text-base"
                                 >
                                     T.E.M.P.U.S. is a smart daily companion that
                                     helps users manage rising fuel prices
@@ -160,7 +166,16 @@
                                     <button
                                         on:click={() =>
                                             (showDescription = true)}
-                                        class="hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,2)] inline-flex items-center gap-3 rounded-lg border border-sky-400/40 bg-slate-950/40 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-900/70"
+                                        class="hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,2)]
+                                                inline-flex items-center gap-3 rounded-lg border dark:border
+                                              dark:border-sky-400/50 dark:bg-slate-950/40
+                                                bg-[color-mix(in_srgb,_var(--bg-secondary)_60%,transparent)]
+                                                px-5 py-3 text-sm
+                                                text-[var(--primary-text)] dark:text-sky-100
+                                                transition duration-300 ease-in-out
+                                                border-[var(--accent)]
+                                                hover:bg-[color-mix(in_srgb,_var(--hover)_100%,transparent)]
+                                              dark:hover:bg-slate-900/60"
                                     >
                                         <span>View Full Overview</span>
                                         <i class="ri-fullscreen-fill"></i>
@@ -169,29 +184,35 @@
                             </div>
                         </div>
 
-                        <div class="hidden w-px bg-white lg:block"></div>
+                        <div
+                            class="hidden w-px dark:bg-white bg-black lg:block transition-all duration-300 ease-out"
+                        ></div>
 
                         <div
-                            class="flex w-full flex-col rounded-3xl border border-[#6FB8E7] bg-[#061E29]/50 p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2"
+                            class="flex w-full flex-col rounded-3xl border dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50
+                            bg-[color-mix(in_srgb,var(--bg-secondary)_40%,_transparent)]
+                            p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2 transition-all duration-300 ease-out"
                         >
                             <div class="flex flex-col gap-5">
                                 <h2
                                     data-sr
-                                    class="text-3xl font-semibold tracking-tight text-white"
+                                    class="text-3xl font-semibold tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
                                 >
                                     Technologies/Tools Used
                                 </h2>
 
                                 <div
-                                    class="flex flex-col gap-4 pt-2 max-h-72 overflow-x-hidden px-8 py-4 overflow-y-scroll scroll-smooth"
+                                    class="cursor-default flex flex-col gap-4 pt-2 max-h-72 overflow-x-hidden px-8 py-4 overflow-y-scroll scroll-smooth"
                                 >
-                                    {#each items.techStacks as { img, name, description, alt, color, textColor }, i}
+                                    {#each items.techStacks as { img, name, description, alt, color, colorDark, textColor, textColorDark }, i}
                                         <div
                                             data-sr
-                                            class="group hover:scale-105 {color} flex items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/20 px-4 py-4 transition duration-300 ease-in-out"
+                                            class="group hover:scale-105 {$dark
+                                                ? colorDark
+                                                : color} flex items-center gap-4 rounded-2xl dark:border dark:border-white/10 border-[var(--active-border)] border-2 dark:bg-slate-950/20 bg-[color-mix(in_srgb,var(--accent)_20%,transparent)] px-4 py-4 transition duration-300 ease-in-out"
                                         >
                                             <div
-                                                class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-white/5 p-1 transition-all duration-300 group-hover:scale-125"
+                                                class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-white/5 p-1 transition-all duration-300 ease-out group-hover:scale-125"
                                             >
                                                 <img
                                                     data-sr
@@ -203,13 +224,15 @@
                                             <div class="flex flex-col gap-1">
                                                 <p
                                                     data-sr
-                                                    class="{textColor} group-hover:scale-110 group-hover:translate-x-4 transition-all duration-300 text-base font-semibold text-white"
+                                                    class="{$dark
+                                                        ? textColorDark
+                                                        : textColor} group-hover:scale-110 group-hover:translate-x-4 transition-all duration-300 text-base font-semibold dark:text-white text-black ease-out"
                                                 >
                                                     {name}
                                                 </p>
                                                 <p
                                                     data-sr
-                                                    class="font-jetbrainsMono text-sm text-slate-300"
+                                                    class="font-jetbrainsMono text-sm dark:text-slate-300 text-gray-500 transition-all duration-300 ease-out"
                                                 >
                                                     {description}
                                                 </p>
@@ -229,7 +252,10 @@
                             data-sr-delay="400"
                             class="text-center text-5xl font-bold"
                         >
-                            Meet the <span class="text-[#6FB8E7]">Devs!</span>
+                            Meet the <span
+                                class="dark:text-[#6FB8E7] text-[var(--accent)] transition-all duration-300 ease-out"
+                                >Devs!</span
+                            >
                         </h1>
                         <p data-sr data-sr-delay="400">
                             The team behind our innovative solutions
@@ -239,14 +265,16 @@
                     <div
                         class="flex items-center justify-center gap-6 py-1 lg:gap-8"
                     >
-                        <div class="hidden flex-1 bg-white/20 lg:block"></div>
+                        <div
+                            class="hidden flex-1 dark:bg-white/20 bg-black/20 transition-all duration-300 ease-out lg:block"
+                        ></div>
                         <div class="grid w-full gap-16 md:grid-cols-3">
                             {#each items.devs as { img, name, alt, description, socials }, i}
                                 <div class="relative group">
                                     <div
                                         class="place-self-center h-10 w-1/2 translate-y-10
-                                        border border-[#6FB8E7] bg-[#061E29] rounded-[15px] opacity-0
-                                        transition-all duration-300 group-hover:opacity-100 group-hover:-translate-y-5
+                                        border-2 dark:border-[#6FB8E7] border-[var(--active-border)] dark:bg-[#061E29] bg-[color-mix(in_srgb,var(--accent)_30%,transparent)] rounded-[15px] opacity-0
+                                        transition-all duration-300 ease-out group-hover:opacity-100 group-hover:-translate-y-5
                                         flex items-center justify-center text-center"
                                     >
                                         {description}
@@ -255,22 +283,20 @@
                                         data-sr
                                         data-sr-delay={i * 140}
                                         class="group relative flex flex-col items-center rounded-3xl border
-                                         border-[#6FB8E7]
-                             bg-[#061E29]/70 group-hover:bg-slate-800/70 px-6 py-8
-                              text-center shadow-[0_18px_50px_rgba(2,6,23,0.45)]
-                             group-hover:translate-y-6 group-hover:scale-105
-                              transition duration-300"
+                                         dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50 bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)]
+                                          shadow-[0_18px_50px_rgba(2,6,23,0.45)] px-6 py-8 text-center transition-all duration-300 ease-out
+                                          group-hover:translate-y-6 group-hover:scale-105 group-hover:bg-[color-mix(in_srgb,var(--accent)_30%,transparent)]"
                                     >
                                         <img
                                             data-sr
                                             data-sr-delay={i * 140 + 60}
                                             src={img}
                                             alt="{alt} avatar placeholder"
-                                            class="group-hover:scale-125 text-black h-20 w-20 rounded-full bg-white/95
-                                         object-cover transition-transform duration-300"
+                                            class="group-hover:scale-125 text-black h-20 w-20 rounded-full dark:bg-white/95 bg-black/95
+                                         object-cover transition-transform duration-300 ease-out"
                                         />
                                         <p
-                                            class="relative mt-8 text-lg font-medium text-white"
+                                            class="relative mt-8 text-lg font-medium dark:text-white text-black transition-all duration-300 ease-out"
                                         >
                                             <span
                                                 data-sr
@@ -284,7 +310,8 @@
                        after:-bottom-1
                        after:h-[2px]
                        after:w-0
-                       after:bg-[#6FB8E7]
+                       dark:after:bg-[#6FB8E7]
+                          after:bg-[var(--accent)]
                        after:transition-all
                        after:duration-300
                        group-hover:after:w-full"
@@ -301,7 +328,8 @@
                                                     data-sr
                                                     data-sr-delay={i * 140 +
                                                         j * 80}
-                                                    class="hover:-translate-y-3 flex h-10 w-10 items-center justify-center rounded-md border border-sky-400/40 bg-slate-950/35 transition hover:bg-slate-900/60"
+                                                    class="hover:-translate-y-3 flex h-10 w-10 items-center justify-center rounded-md
+                                                    border dark:border-sky-400/40 border-[--accent] dark:bg-slate-950/35 bg-gray-400/35 transition dark:hover:bg-slate-900/60 hover:bg-gray-350/60"
                                                 >
                                                     <a
                                                         href={link}

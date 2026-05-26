@@ -16,7 +16,7 @@ const HEAT_INDEX_STATE_META = {
         accent: "#33FF2F",
         bg: "bg-[#33FF2F]/50",
         border: "border-[#33FF2F]",
-        text: "text-[#33FF2F]",
+        text: "dark:text-[#33FF2F] text-black",
         icon: "check",
     },
     moderate: {
@@ -60,7 +60,7 @@ const SAFETY_LABEL_META = {
         accent: "#94a3b8",
         bg: "bg-slate-500/15",
         border: "border-slate-400/50",
-        text: "text-slate-200",
+        text: "text-slate-200 ",
         icon: "pulse",
     },
     safe: {
