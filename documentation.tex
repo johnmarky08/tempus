@@ -25,7 +25,7 @@
 
 \WarningFilter{latex}{Command \showhyphens has changed.}
 
-\geometry{a4paper, top=1in, bottom=1in, left=1.25in, right=1.25in}
+\geometry{a4paper, top=1in, bottom=1in, left=1in, right=1in}
 
 \setlength{\headheight}{14.5pt}
 \addtolength{\topmargin}{-0.5pt}
@@ -42,35 +42,6 @@
   comment=[l]{\#},
   commentstyle=\color{codeGray}\ttfamily,
   sensitive=false
-}
-
-\lstdefinelanguage{PHP}{
-  morekeywords={echo,if,else,elseif,while,foreach,function,class,public,private,
-    protected,return,namespace,use,try,catch,finally,throw,new},
-  morekeywords=[2]{true,false,null,TRUE,FALSE,NULL},
-  comment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  sensitive=true,
-  morestring=[b]"
-}
-
-\lstdefinelanguage{Python}{
-  morekeywords={def,return,if,else,elif,while,for,in,import,from,as,class,try,
-    except,with,lambda,yield,pass,raise,assert},
-  morekeywords=[2]{True,False,None},
-  comment=[l]{\#},
-  sensitive=true,
-  morestring=[b]'
-}
-
-\lstdefinelanguage{JavaScript}{
-  morekeywords={function,return,var,let,const,if,else,for,while,switch,case,
-    break,continue,class,new,this,import,export,default,await,async},
-  morekeywords=[2]{true,false,null,undefined},
-  comment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  sensitive=true,
-  morestring=[b]"
 }
 
 \lstdefinelanguage{Pseudocode}{
@@ -127,7 +98,7 @@
 \begin{titlepage}
     \centering
 
-    \vspace*{0.5cm}
+    \vspace*{0.25cm}
 
     {\Large \textbf{ALGORITHM-BASED INTELLIGENT SYSTEM APPLICATION}}\\[0.5cm]
     {\large \textbf{Thermal and Energy Metrics: Predictive Utility and Safety (T.E.M.P.U.S.)}}\\[2cm]
@@ -352,9 +323,9 @@ The machine learning layer is intentionally separated from the web application l
 
 \noindent\textbf{Training and Preprocessing.}
 \begin{itemize}
-    \item Data source: historical fuel prices from the \texttt{fuel\_prices} table (seeded from \texttt{datasets/}).
-    \item Preprocessing steps: time\-index alignment, missing\-value handling (forward or backward fill or interpolation), differencing or detrending to achieve stationarity when required, and optional inclusion of exogenous variables (e.g., fuel tax changes, regional price indices).
-    \item Training: performed offline or in development using \texttt{ml\-algorithms/arimax.py}. Model orders \texttt{(p,d,q)} (and seasonal terms) are selected using information criteria (AIC/BIC) or grid search.
+    \item Data source: historical fuel prices from the \texttt{fuel\_prices} table (seeded from \texttt{datasets}).
+    \item Preprocessing steps: time-index alignment, missing-value handling (forward or backward fill or interpolation), differencing or detrending to achieve stationarity when required, and optional inclusion of exogenous variables (e.g., fuel tax changes, regional price indices).
+    \item Training: performed offline or in development using \texttt{ml-algorithms/arimax.py}. Model orders \texttt{(p,d,q)} (and seasonal terms) are selected using information criteria (AIC/BIC) or grid search.
 \end{itemize}
 
 \noindent\textbf{Prediction Generation and Interaction.}
@@ -395,7 +366,7 @@ The machine learning layer is intentionally separated from the web application l
     \item Operational decision: tune $t$ and $d$ to balance accuracy and inference latency (each extra tree increases prediction time linearly).
 \end{itemize}
 
-\noindent\textit{Implementation Notes:} See \texttt{ml-algorithms/random-forest-regressor.py} and \texttt{ml-algorithms/db\_utils.py}.
+\noindent\textit{Implementation Notes:} See \texttt{random-forest-regressor.py} and \texttt{db\_utils.py}.
 
 \subsection{Random Forest Classifier (Safety Assessment)}
 
@@ -403,7 +374,7 @@ The machine learning layer is intentionally separated from the web application l
 
 \noindent\textbf{Training and Preprocessing.}
 \begin{itemize}
-    \item Data source: labeled safety-assessment records seeded via \texttt{Safety Assessment Seeder} and augmented with environmental observations.
+    \item Data source: labeled safety-assessment records seeded via Safety Assessment Seeder and augmented with environmental observations.
     \item Preprocessing steps: label encoding for categorical survey inputs, handling class imbalance (SMOTE or class weights), feature selection, and train/test splits preserving temporal context where applicable.
     \item Training: implemented in \texttt{ml-algorithms/random-forest-classifier.py}. Hyperparameters are tuned using cross-validation; class-weighting or resampling mitigates imbalance.
 \end{itemize}
@@ -579,7 +550,7 @@ This phase presents the overall structure and design of the T.E.M.P.U.S. system.
 \medskip
 \noindent\textbf{User Interface (UI) / User Experience (UX) Design.}
 \begin{itemize}
-    \item The UI is implemented as a Svelte single-page application with page-level components under \texttt{resources/pages/} such as \texttt{Home.svelte}, \texttt{FuelPrice.svelte}, \texttt{HeatIndex.svelte}, and \texttt{History.svelte}.
+    \item The UI is implemented as a Svelte single-page application with page-level components under \texttt{resources/pages/} such as \texttt{Home}, \texttt{FuelPrice}, \texttt{HeatIndex}, and \texttt{History}.
     \item The UX is organized around simple navigation, dashboard-style data cards, forecast charts, recommendation panels, and responsive layouts for desktop and mobile devices.
     \item Visual prototypes and layout planning are created in Figma before implementation so that page structure, navigation flow, and chart placement can be validated early.
 \end{itemize}
@@ -587,6 +558,7 @@ This phase presents the overall structure and design of the T.E.M.P.U.S. system.
 \medskip
 \noindent\textbf{System Architecture.} The system follows a three-layer structure. The frontend handles the user interface, the backend manages data and routes, and the Python ML layer generates forecasts and classifications. The flow below summarizes the main repository structure and the interaction between components:
 
+\newpage
 \begin{verbatim}
 User Browser
     |
@@ -753,7 +725,7 @@ By continuously coordinating, testing, and improving the system throughout devel
 \section{Results and Discussion}
 % ─────────────────────────────────────────────────────────────────────────────
 
-The results were verified from the frontend pages of the system, mainly \texttt{FuelPrice.svelte}, \texttt{HeatIndex.svelte}, and \texttt{History.svelte}. These pages show the actual user-facing outputs of the backend and machine-learning modules, including forecast cards, heat-safety labels, charts, and searchable history tables. The system behaves as expected when the input data is complete and the frontend receives valid JSON from the Laravel controllers and Python bridge.
+The results were verified from the frontend pages of the system, mainly \texttt{FuelPrice}, \texttt{HeatIndex}, and \texttt{History}. These pages show the actual user-facing outputs of the backend and machine-learning modules, including forecast cards, heat-safety labels, charts, and searchable history tables. The system behaves as expected when the input data is complete and the frontend receives valid JSON from the Laravel controllers and Python bridge.
  
 \begingroup
 \small
@@ -785,7 +757,7 @@ Heat Index Assessment
 \hline
 History Search and Sort
 & Searching for a fuel name or filtering rows should reduce the table to matching records and keep the visible rows sorted.
-& The History page filters rows through \texttt{searchHistory\-Rows}, then sorts them through \texttt{sortHistory\-Rows}, and only the matching entries remain visible in the table.
+& The History page filters rows through searchHistory rows, then sorts them through sortHistory rows, and only the matching entries remain visible in the table.
 & This shows that the table controls are working from the frontend and that the client-side search and sort logic handles user input without breaking the layout.
 \\
 \hline
