@@ -399,10 +399,10 @@
 
                             {#if isSubmitting}
                                 <div
-                                    class="flex items-center gap-2 text-sm text-sky-100"
+                                    class="flex items-center gap-2 text-sm dark:text-sky-100 text-black"
                                 >
                                     <span
-                                        class="h-4 w-4 animate-spin rounded-full border-2 border-sky-200/30 border-t-sky-100"
+                                        class="h-4 w-4 animate-spin rounded-full border-2 dark:border-sky-200/30 border-[var(--accent)] dark:border-t-sky-100 border-t-black"
                                     ></span>
                                     <span>Processing...</span>
                                 </div>

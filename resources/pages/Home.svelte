@@ -55,7 +55,7 @@
                         >
                             <span>Live monitoring</span>
                             <span
-                                class="transition-all duration-300  ease-out  h-1 w-1 rounded-full dark:bg-sky-300 bg-[var(--primary-text)]"
+                                class="transition-all duration-300 ease-out h-1 w-1 rounded-full dark:bg-sky-300 bg-[var(--primary-text)]"
                             ></span>
                             <span>Updated now</span>
                         </div>
@@ -64,13 +64,13 @@
                             <h1
                                 data-sr
                                 data-sr-delay="100"
-                                class="transition-all duration-300  ease-out max-w-xl text-4xl font-bold leading-tight tracking-tight {$dark
+                                class="transition-all duration-300 ease-out max-w-xl text-4xl font-bold leading-tight tracking-tight {$dark
                                     ? 'text-white'
                                     : 'text-[var(--primary-text)]'} sm:text-5xl lg:text-5xl"
                             >
                                 Monitor
                                 <span
-                                    class="transition-all duration-300 ease-out  dark:text-sky-300 text-[var(--accent)]"
+                                    class="transition-all duration-300 ease-out dark:text-sky-300 text-[var(--accent)]"
                                     >Fuel Price</span
                                 >
                                 and
@@ -164,7 +164,7 @@
                         <div
                             class="relative flex w-full max-w-2xl items-end justify-end overflow-hidden rounded-3xl border p-6 backdrop-blur-sm sm:p-8 lg:min-h-[28rem] lg:p-10 floating floating-border {$dark
                                 ? 'border-white bg-slate-800/75'
-                                : 'border-[var(--border-color)] bg-[var(--panel-bg)]/75'}"
+                                : 'border-[var(--accent)] border-2 bg-gradient-to-r from-[color-mix(in_srgb,var(--accent)_40%,transparent)] to-[color-mix(in_srgb,var(--bg-secondary)_40%,transparent)]'}"
                         >
                             <img
                                 data-sr

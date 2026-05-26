@@ -298,7 +298,6 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-
 {#if open}
     <div
         bind:this={panelEl}
