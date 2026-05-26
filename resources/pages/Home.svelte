@@ -164,7 +164,7 @@
                         <div
                             class="relative flex w-full max-w-2xl items-end justify-end overflow-hidden rounded-3xl border p-6 backdrop-blur-sm sm:p-8 lg:min-h-[28rem] lg:p-10 floating floating-border {$dark
                                 ? 'border-white bg-slate-800/75'
-                                : 'border-[var(--border-color)] bg-[var(--panel-bg)]/75'}"
+                                : 'border-[var(--accent)] border-2 bg-gradient-to-r from-[color-mix(in_srgb,var(--accent)_40%,transparent)] to-[color-mix(in_srgb,var(--bg-secondary)_40%,transparent)]'}"
                         >
                             <img
                                 data-sr
