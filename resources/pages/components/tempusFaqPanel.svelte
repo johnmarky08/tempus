@@ -15,7 +15,6 @@
     const ANCHOR_HEIGHT = 48;
     const TOP_ANCHOR_SIZE = 0;
     const SIDE_GAP = 10;
-    const CHAT_STATE_STORAGE_KEY = "tempest-chat-state-v1";
 
     let viewportWidth = 0;
     let viewportHeight = 0;
@@ -42,6 +41,8 @@
         updatePanelHeight();
     }
 
+    $: spaceAbove = Math.max(0, anchorY - SIDE_GAP);
+    $: spaceBelow = Math.max(0, viewportHeight - anchorY - SIDE_GAP);
     $: useLeftSide =
         viewportWidth > 0 &&
         anchorX + ANCHOR_WIDTH + SIDE_GAP + PANEL_W > viewportWidth;
@@ -49,11 +50,17 @@
         ? Math.max(SIDE_GAP, anchorX - PANEL_W - SIDE_GAP)
         : anchorX + ANCHOR_WIDTH + SIDE_GAP;
 
-    $: useTopSide = viewportHeight > 0 && anchorY - effectivePanelHeight < 64;
+    $: useTopSide =
+        viewportHeight > 0 &&
+        (spaceBelow >= PANEL_H || spaceBelow >= spaceAbove);
     $: panelBottom = viewportHeight - (anchorY + ANCHOR_HEIGHT);
     $: panelTop = useTopSide
         ? anchorY + TOP_ANCHOR_SIZE
         : anchorY - effectivePanelHeight + TOP_ANCHOR_SIZE;
+    $: panelMaxHeight = Math.max(
+        MIN_PANEL_HEIGHT,
+        Math.min(PANEL_H, useTopSide ? spaceBelow : spaceAbove),
+    );
 
     let minimized = false;
     function toggleMinimize() {
@@ -71,63 +78,6 @@
     let messagesEl;
     let typingHandles = [];
     let isTyping = false;
-
-    function saveChatState() {
-        const serializableMessages = messages.map((message) => ({
-            role: message.role,
-            text: message.text,
-            typing: false,
-        }));
-
-        localStorage.setItem(
-            CHAT_STATE_STORAGE_KEY,
-            JSON.stringify({
-                messages: serializableMessages,
-                welcomed,
-                activeTopicIdx,
-                minimized,
-            }),
-        );
-    }
-
-    function loadChatState() {
-        const raw = localStorage.getItem(CHAT_STATE_STORAGE_KEY);
-        if (!raw) return;
-
-        try {
-            const parsed = JSON.parse(raw);
-
-            if (
-                Array.isArray(parsed.messages) &&
-                parsed.messages.every(
-                    (message) =>
-                        typeof message?.role === "string" &&
-                        typeof message?.text === "string",
-                )
-            ) {
-                messages = parsed.messages;
-            }
-
-            if (typeof parsed.welcomed === "boolean") {
-                welcomed = parsed.welcomed;
-            }
-
-            if (
-                typeof parsed.activeTopicIdx === "number" &&
-                parsed.activeTopicIdx >= 0 &&
-                parsed.activeTopicIdx < topicLabels.length
-            ) {
-                activeTopicIdx = parsed.activeTopicIdx;
-                prevTopicIdx = parsed.activeTopicIdx;
-            }
-
-            if (typeof parsed.minimized === "boolean") {
-                minimized = parsed.minimized;
-            }
-        } catch {
-            localStorage.removeItem(CHAT_STATE_STORAGE_KEY);
-        }
-    }
 
     async function scrollBottom() {
         await tick();
@@ -162,8 +112,6 @@
                 await sleep(speed);
             }
         }
-
-        saveChatState();
     }
 
     async function ask(question, answer) {
@@ -189,7 +137,6 @@
                 text: "Hey there! I'm Tempest, your FAQ assistant. Pick a topic below, then tap any question to get an answer.",
             },
         ];
-        saveChatState();
     }
 
     const topicLabels = [
@@ -309,7 +256,6 @@
     $: if (activeTopicIdx !== prevTopicIdx) {
         prevTopicIdx = activeTopicIdx;
         questionCarousel.reset();
-        saveChatState();
     }
 
     $: topicItems = [...topicLabels, ...topicLabels, ...topicLabels];
@@ -320,7 +266,6 @@
     ];
 
     onMount(() => {
-        loadChatState();
         updateViewport();
         updatePanelHeight();
         heightObserver = new ResizeObserver(updatePanelHeight);
@@ -352,6 +297,7 @@
 </script>
 
 <svelte:window on:keydown={onKeydown} />
+
 
 {#if open}
     <div

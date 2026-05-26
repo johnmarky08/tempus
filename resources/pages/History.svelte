@@ -168,6 +168,7 @@
                 on:click|stopPropagation
             >
                 <form
+                    name="searchForm"
                     class="flex flex-col gap-3 lg:flex-row"
                     on:submit|preventDefault={submitSearch}
                 >

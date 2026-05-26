@@ -1,0 +1,851 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{ragged2e}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{mdframed}
+\usepackage{silence}
+\usepackage{caption}
+\usepackage{hyperref}
+
+\definecolor{codeBlue}{HTML}{0B6FA6}   % keywords
+\definecolor{codeGray}{HTML}{6C757D}   % comments / meta
+
+\WarningFilter{latex}{Command \showhyphens has changed.}
+
+\geometry{a4paper, top=1in, bottom=1in, left=1in, right=1in}
+
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-0.5pt}
+
+% ── Listings (monochrome) ───────────────────────────────────────────────────
+\lstset{
+  frame=single,
+  columns=flexible,
+  basicstyle=\small\ttfamily,
+  stringstyle=\ttfamily,
+  breaklines=true,
+  breakatwhitespace=true,
+  keywordstyle=\color{codeBlue}\bfseries,
+  comment=[l]{\#},
+  commentstyle=\color{codeGray}\ttfamily,
+  sensitive=false
+}
+
+\lstdefinelanguage{Pseudocode}{
+  morekeywords={function,return,if,else,for,from,to,swap,partition},
+  comment=[l]{\#},
+  sensitive=false
+}
+
+% ── Header / Footer ────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{\small\textit{T.E.M.P.U.S.}}
+\fancyhead[R]{\small\textit{Algorithm-Based Intelligent System Application}}
+\fancyfoot[C]{\thepage}
+
+% ── Section Styling ─────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\normalfont\large\bfseries\uppercase}
+  {\thesection.}{0.6em}{}[\vspace{2pt}\hrule\vspace{2pt}]
+\titlespacing{\section}{0pt}{18pt}{9pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}
+  {\thesubsection.}{0.5em}{}
+\titlespacing{\subsection}{0pt}{12pt}{5pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\itshape\bfseries}
+  {\thesubsubsection.}{0.5em}{}
+\titlespacing{\subsubsection}{0pt}{9pt}{4pt}
+
+% ── Paragraph and Line Spacing ──────────────────────────────────────────────
+\setlength{\parskip}{0.4em}
+\setlength{\parindent}{1.5em}
+\onehalfspacing
+
+% ── List Styling ────────────────────────────────────────────────────────────
+\setlist[itemize]{topsep=3pt, itemsep=1pt, leftmargin=1.75em, label={--}}
+\setlist[enumerate]{topsep=3pt, itemsep=1pt, leftmargin=1.75em}
+
+% ── Hyperref (monochrome, no colored boxes) ─────────────────────────────────
+\hypersetup{colorlinks=false, pdfborder={0 0 0}}
+
+% ── Caption styling ─────────────────────────────────────────────────────────
+\captionsetup{font=small, labelfont=bf, labelsep=period}
+
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  TITLE PAGE  (unchanged)
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{titlepage}
+    \centering
+
+    \vspace*{0.25cm}
+
+    {\Large \textbf{ALGORITHM-BASED INTELLIGENT SYSTEM APPLICATION}}\\[0.5cm]
+    {\large \textbf{Thermal and Energy Metrics: Predictive Utility and Safety (T.E.M.P.U.S.)}}\\[2cm]
+
+    \textbf{A Final Project Submitted to the Faculty of}\\
+    \textbf{College of Computer Studies}\\
+    \textbf{Laguna State Polytechnic University - San Pablo City Campus}\\[1.5cm]
+
+    \textbf{In Partial Fulfillment of the Requirements for the Courses:}\\
+    CMSC 204 - Algorithm \& Complexity\\
+    CSEL 302-- Introduction to Intelligent Systems\\
+    ITEC 106 -- Software Development and Emerging Technologies\\[2cm]
+
+    \textbf{Submitted by:}\\[0.3cm]
+    Joshua L. Bartolome\\
+    Nico Gabriel A. Domingo\\
+    John Marky A. Natividad\\[2cm]
+
+    \textbf{Submitted to:}\\[0.3cm]
+    Ms. Dorothy Mei Cabuyao\\[2cm]
+
+    \textbf{Date of Submission:}\\
+    05/29/2026
+
+    \vfill
+
+\end{titlepage}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  BODY
+% ══════════════════════════════════════════════════════════════════════════════
+\newpage
+\setcounter{page}{2}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+% ─────────────────────────────────────────────────────────────────────────────
+
+Rising temperatures and volatile fuel prices increasingly shape people's daily choices, particularly in transportation, budgeting, and outdoor activities. In many regions, consumers struggle to identify the best time to purchase fuel due to shifting market trends, while those exposed to extreme heat face heightened risks of dehydration, heat exhaustion, and reduced productivity. Although weather forecasts and fuel price data are publicly available, the information is often fragmented across multiple platforms and presented in ways that are difficult for the average user to interpret quickly. This highlights the need for a centralized, intelligent system capable of transforming complex environmental and economic data into clear, practical guidance that supports safer and more cost-effective decision-making.
+
+To address this challenge, students developed \textbf{Thermal and Energy Metrics: Predictive Utility and Safety (T.E.M.P.U.S.)}, a web-based application designed to help users make timely decisions about fuel purchases and outdoor activities during periods of high heat. The system provides accessible historical data, short-term forecasts, and actionable recommendations through a user-friendly interface. T.E.M.P.U.S. is built around two core modules: the \textbf{Fuel Price module}, which analyzes past fuel prices and predicts future trends to advise whether users should purchase fuel immediately or wait for lower prices, and the \textbf{Heat Index module}, which evaluates environmental conditions alongside personal risk factors to deliver tailored heat safety recommendations.
+
+The system integrates intelligent components and predictive algorithms to analyze patterns within collected datasets and generate meaningful forecasts. Fuel price projections and hourly heat index values are estimated using forecasting algorithms, while the recommendation engine interprets these predictions in combination with user inputs to produce personalized advice. By combining data analytics, forecasting techniques, and web application technology, T.E.M.P.U.S. functions as a practical decision-support tool that enhances financial efficiency, promotes health awareness, and improves user safety in real-world contexts.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Problem Definition}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The proposed system addresses the problem of difficulty in making timely and informed decisions regarding fuel purchases and outdoor activities during periods of high temperatures and changing environmental conditions. Many individuals rely on scattered information sources such as weather applications, fuel price updates, and health advisories, which often require manual interpretation and comparison. As a result, users may purchase fuel at unfavorable prices or expose themselves to unsafe heat conditions without proper preparation. The lack of a centralized platform that combines forecasting, environmental analysis, and actionable recommendations creates a need for a system that can simplify decision-making and provide practical guidance in real time.
+
+T.E.M.P.U.S. is designed to solve this problem by collecting and analyzing historical and current datasets related to fuel prices and weather conditions. The system accepts inputs such as historical fuel price records, current weather data, temperature, humidity, wind speed, solar exposure, and user-provided survey responses related to age range, hydration level, and planned physical activity. Using these inputs, the system generates outputs that include next week fuel price forecast, hourly heat index predictions, safety assessments, and personalized recommendations. Examples of outputs include suggestions such as \textit{``Buy fuel now,''} \textit{``Wait for prices to decrease,''} \textit{``Drink more water,''} or \textit{``Avoid outdoor exertion for the next few hours.''}
+
+Several constraints and assumptions are considered in the development of the system. The accuracy of forecasts depends on the quality and availability of the collected datasets and external data sources. The recommendations generated by the system are intended to assist users in decision-making but should not replace official medical or emergency advice. The system also assumes that users provide accurate personal information in the survey checklist to produce reliable heat safety assessments. Additionally, internet connectivity is required for accessing updated forecasts and system features through the web application.
+
+The significance of this problem lies in its direct impact on daily living, financial planning, and personal health. Rising fuel costs affect transportation expenses and household budgeting, while extreme heat conditions increase the risk of heat-related illnesses and reduced productivity. By providing clear forecasts and actionable recommendations in a single platform, T.E.M.P.U.S. can help users reduce unnecessary fuel expenses, improve heat safety awareness, and make informed decisions efficiently. The system may be applied in communities, schools, workplaces, and households where individuals regularly monitor fuel costs and environmental conditions to plan activities and ensure safety.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{System Architecture}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The T.E.M.P.U.S. application is implemented as a three-tier web system that separates concerns between the frontend UI, the application backend, and the machine-learning (ML) layer. The production and development layout used in the repository is summarized below.
+
+\begin{itemize}
+    \item \textbf{Frontend (Presentation).} A Svelte single-page interface built with Vite and Tailwind CSS. The UI components live under \texttt{resources/pages/} and are served through Inertia with a Blade wrapper (\texttt{resources/views/app.blade.php}). Pages include \texttt{Home.svelte}, \texttt{FuelPrice.svelte}, \texttt{HeatIndex.svelte}, and history pages.
+
+    \item \textbf{Backend (Application).} A Laravel (PHP) application that handles routing, controllers, persistent storage, caching, and the JSON API surface used by the frontend. Key controllers include \texttt{Fuel Prices Controller}, \texttt{Heat Index Controller}, and \texttt{History Controller}. The backend also exposes helper methods (for example \texttt{use\_ml()} via \texttt{ml-algorithms/bridge.php}) that call the ML layer and return parsed JSON responses to the frontend.
+
+    \item \textbf{ML Layer (Model \& Scripts).} Python scripts live in \texttt{ml-algorithms/} and perform training and inference. These scripts load data directly from the MySQL database (via \texttt{db\_utils.py}), produce JSON output, and are invoked by the PHP bridge when the application requires forecasts or classifications.
+\end{itemize}
+
+\noindent\textbf{Communication Between Components.}
+\begin{itemize}
+    \item The frontend requests pages and JSON endpoints from the Laravel app (Inertia + AJAX). Controller actions either render Svelte pages or return precomputed JSON for charts and recommendation cards.
+    \item When ML predictions are required, the Laravel controller calls the PHP-Python bridge (\texttt{ml-algorithms/bridge.php}), which runs the appropriate Python script as a subprocess and returns parsed JSON. Outputs are cached on the backend to reduce repeated compute-heavy ML calls.
+    \item Persistent data (historical records, forecast archives) are stored in a MySQL database using Laravel's Eloquent models and migrations.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Algorithm Description}
+% ─────────────────────────────────────────────────────────────────────────────
+
+This section provides a focused, course-oriented description of the algorithms used in T.E.M.P.U.S. Each algorithm is identified, motivated, explained step-by-step, and accompanied by representative pseudocode. Where applicable, the text indicates how input is transformed into output and where the algorithm is implemented in the repository. The algorithmic foundations draw on the standard reference for algorithm analysis and design (Cormen et al., 2022).
+
+\subsection{Quick Sort}
+
+\noindent\textbf{Type and Purpose.} Quick Sort is a divide-and-conquer comparison sort used to order arrays of numeric records (for example, timestamped measurements) prior to windowing or nearest-neighbour lookups. A fast in-place Quick Sort is appropriate when average-case performance and low auxiliary memory are desired.
+
+\noindent\textbf{Justification.} Quick Sort offers average-case $O(n\log n)$ time and works in place. Alternatives such as Merge Sort guarantee $O(n\log n)$ worst-case time but require additional memory; built-in language sort methods are used where available, but an explicit Quick Sort is documented and available for cases where deterministic in-place behaviour is required for teaching or auditing purposes (Cormen et al., 2022).
+
+\noindent\textbf{Step-by-Step Explanation.}
+\begin{enumerate}
+    \item Choose a pivot element from the array (commonly the middle or a random element).
+    \item Partition the array so elements less than the pivot move before it and elements greater move after it.
+    \item Recursively apply Quick Sort to the two partitions until subarrays have zero or one element.
+\end{enumerate}
+
+\noindent\textbf{Pseudocode (In-Place Quick Sort):}
+\begin{lstlisting}[language=Pseudocode, caption={In-place Quick Sort algorithm}]
+function quickSort(arr, lo, hi):
+    if lo >= hi: return
+    pivotIndex = partition(arr, lo, hi)
+    quickSort(arr, lo, pivotIndex - 1)
+    quickSort(arr, pivotIndex + 1, hi)
+
+function partition(arr, lo, hi):
+    pivot = arr[hi]
+    i = lo
+    for j from lo to hi-1:
+        if arr[j] <= pivot:
+            swap(arr[i], arr[j])
+            i = i + 1
+    swap(arr[i], arr[hi])
+    return i
+\end{lstlisting}
+
+\noindent\textbf{Input / Output.} Input is an unsorted array of comparable records (for example, numeric values or objects keyed by timestamp). Output is the same array sorted in ascending order. When sorting timestamped records, the key used is the timestamp number.
+
+\noindent\textbf{Implementation Notes.} Sorting occurs in both backend and frontend code paths. Backend preparation for ML or UI rendering may rely on PHP array sorting or a custom implementation in controller helpers; a PHP-side implementation can be placed in \texttt{app/Utils/} and frontend helper sorting lives under \texttt{resources/js/utils/} for client-side operations.
+
+\subsection{Binary Search (Nearest-Timestamp Lookup)}
+
+\noindent\textbf{Type and Purpose.} Binary Search is a logarithmic-time search algorithm used to find an index in a sorted array. In T.E.M.P.U.S. it is primarily used for nearest-timestamp lookups: given a sorted list of timestamps, quickly locate the index corresponding to a requested time or the closest entry.
+
+\noindent\textbf{Justification.} A linear scan is $O(n)$ and becomes expensive for large datasets. Binary Search provides $O(\log n)$ lookup and is therefore the correct choice for frequent timestamp queries. Hash-based lookup cannot be used directly for nearest-neighbour (continuous) queries (Cormen et al., 2022).
+
+\noindent\textbf{Step-by-Step Explanation (Find Nearest Index).}
+\begin{enumerate}
+    \item Maintain two pointers, \texttt{lo} and \texttt{hi}, spanning the search range.
+    \item Repeatedly compute \texttt{mid = floor((lo+hi)/2)} and compare the mid timestamp to the target timestamp.
+    \item Narrow the search range until \texttt{lo} $>$ \texttt{hi}; then choose the closest of the remaining candidates (\texttt{lo} or \texttt{hi}).
+\end{enumerate}
+
+\noindent\textbf{Pseudocode (Find Nearest):}
+\begin{lstlisting}[language=Pseudocode, caption={Binary Search for nearest timestamp}]
+function binarySearchNearest(arr, target):
+    lo = 0
+    hi = length(arr) - 1
+    while lo <= hi:
+        mid = floor((lo + hi) / 2)
+        if arr[mid] == target:
+            return mid
+        else if arr[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    # lo is insertion point; choose closest between hi and lo
+    if lo >= length(arr): return hi
+    if hi < 0: return lo
+    if abs(arr[lo] - target) < abs(arr[hi] - target): return lo
+    else: return hi
+\end{lstlisting}
+
+\noindent\textbf{Input / Output.} Input is a sorted array of timestamps (or keys) and a target timestamp. Output is an index into the array corresponding to the exact or nearest timestamp.
+
+\noindent\textbf{Implementation Notes.} Binary Search helper functions appear in both client and server helpers. Server-side nearest-timestamp search is commonly implemented in controller utilities or \texttt{app/Utils/HeatIndex.php} when mapping forecasts to observations; frontend versions live under \texttt{resources/js/utils/} and provide instant UI lookups for charts and tooltips.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Complexity Analysis}
+% ─────────────────────────────────────────────────────────────────────────────
+
+This section provides a complete complexity analysis for the principal algorithms used in T.E.M.P.U.S. For each algorithm, time and space complexities are stated using Big-O notation, best/average/worst cases are described where applicable, and the effect of complexity on system performance for larger inputs is explained. Analysis follows the standard treatment in Cormen et al.\ (2022).
+
+\subsection{Quick Sort}
+
+\noindent\textbf{Time Complexity.}
+\begin{itemize}
+    \item \textbf{Best / average case:} $O(n\log n)$ --- when partitioning produces roughly balanced subproblems.
+    \item \textbf{Worst case:} $O(n^2)$ --- when pivot choices lead to highly unbalanced partitions (for example, already-sorted input with a poor pivot strategy).
+\end{itemize}
+
+\noindent\textbf{Space Complexity.}
+\begin{itemize}
+    \item \textbf{In-place variant:} $O(\log n)$ auxiliary space for the recursion stack on average (height of recursion). Worst-case stack depth is $O(n)$ if partitions are maximally unbalanced.
+\end{itemize}
+
+\noindent\textbf{Discussion and Justification.}
+\begin{itemize}
+    \item Quick Sort is chosen because its average-case performance is excellent and it operates in place, reducing memory pressure when sorting large time-series arrays.
+    \item The worst-case $O(n^2)$ can be avoided practically by using strategies such as randomized pivot selection or median-of-three pivoting; production code should use robust pivoting or fall back to IntroSort/Merge Sort when deep recursion is detected (Cormen et al., 2022).
+\end{itemize}
+
+\noindent\textbf{Effect on System Performance.}
+\begin{itemize}
+    \item Sorting is performed when preparing datasets for ML input or rendering UI charts; for typical dataset sizes in this project (thousands to tens of thousands of records), Quick Sort with a good pivot performs well.
+    \item When input sizes grow (e.g., archival datasets with millions of rows), the $O(n\log n)$ cost becomes significant and sorting should be batched, precomputed, or delegated to database-level indices to avoid runtime stalls.
+\end{itemize}
+
+\subsection{Binary Search}
+
+\noindent\textbf{Time Complexity.}
+\begin{itemize}
+    \item \textbf{Best case:} $O(1)$ --- target equals the middle element at first comparison.
+    \item \textbf{Worst / average case:} $O(\log n)$ --- number of comparisons grows logarithmically with input size.
+\end{itemize}
+
+\noindent\textbf{Space Complexity.}
+\begin{itemize}
+    \item $O(1)$ auxiliary space for iterative implementations; $O(\log n)$ if a recursive variant is used (due to recursion depth).
+\end{itemize}
+
+\noindent\textbf{Discussion and Justification.}
+\begin{itemize}
+    \item Binary Search is the natural choice for nearest-timestamp and membership queries on sorted arrays because it guarantees $O(\log n)$ lookup.
+    \item It is more efficient than linear scanning ($O(n)$) whenever multiple lookups are required or the dataset is large (Cormen et al., 2022).
+\end{itemize}
+
+\noindent\textbf{Effect on System Performance.}
+\begin{itemize}
+    \item Binary Search keeps interactive UI lookups and backend joins fast even when datasets scale to large sizes. Doubling the data size adds only one extra comparison on average, so lookup latency remains small.
+    \item Use cases that require many nearest-neighbour queries over streaming data may still need further optimization (e.g., indexed DB queries, time-series trees), but Binary Search is the simplest, lowest-overhead approach for single-dimensional timestamped arrays.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Machine Learning Component}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The machine learning layer is intentionally separated from the web application logic to keep model code independent, testable, and language-appropriate. The project contains three primary ML components: ARIMAX for time-series forecasting, a Random Forest Regressor for heat-index regression, and a Random Forest Classifier for safety-assessment classification. The Python scripts live under \texttt{ml-algorithms/} and are invoked by the PHP bridge \texttt{ml-algorithms/bridge.php}, which executes subprocesses and returns JSON to controllers. Training data is stored in MySQL and seeded from \texttt{datasets/} XLSX files via Laravel seeders.
+
+\subsection{ARIMAX (Time-Series Forecasting)}
+
+\noindent\textbf{Role in System.} ARIMAX produces short-horizon fuel-price forecasts used by the Fuel Price module to generate trend charts and buy/wait recommendations. The application of autoregressive integrated moving-average models to fuel price data is well established in the forecasting literature, with prior work demonstrating reliable short-term accuracy for energy commodities (Abdullahi et al., 2022; Almutairi et al., 2024).
+
+\noindent\textbf{Training and Preprocessing.}
+\begin{itemize}
+    \item Data source: historical fuel prices from the \texttt{fuel\_prices} table (seeded from \texttt{datasets}).
+    \item Preprocessing steps: time-index alignment, missing-value handling (forward or backward fill or interpolation), differencing or detrending to achieve stationarity when required, and optional inclusion of exogenous variables (e.g., fuel tax changes, regional price indices).
+    \item Training: performed offline or in development using \texttt{ml-algorithms/arimax.py}. Model orders \texttt{(p,d,q)} (and seasonal terms) are selected using information criteria (AIC/BIC) or grid search.
+\end{itemize}
+
+\noindent\textbf{Prediction Generation and Interaction.}
+\begin{itemize}
+    \item The ARIMAX script loads recent history, applies the fitted model, and produces point forecasts plus confidence intervals for the requested horizon.
+    \item Output: normalized JSON containing timestamps, predicted values, and uncertainty bounds --- consumed by \texttt{FuelPricesController} via the PHP bridge and cached for frontend charts.
+\end{itemize}
+
+\noindent\textbf{Evaluation Metrics and Interpretation.}
+\begin{itemize}
+    \item Typical metrics: Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and Mean Absolute Percentage Error (MAPE) measured on a held-out time window or via time-series cross-validation.
+    \item Interpretation: low MAE/RMSE relative to mean price indicates reliable short-term forecasts. Large forecast uncertainty or high MAPE reduces confidence in buy/wait recommendations; the system surfaces uncertainty in the UI.
+\end{itemize}
+
+\noindent\textit{Implementation Notes:} See \texttt{arimax.py} and \texttt{db\_utils.py}.
+
+\subsection{Random Forest Regressor (Heat-Index Forecast)}
+
+\noindent\textbf{Role in System.} The regressor produces hourly heat-index predictions from recent temperature, humidity, wind, and temporal features; used to populate the Heat Index page and forecast charts. Random Forest models have demonstrated strong performance in predicting local-scale heat index values from meteorological inputs (Gad \& Hosahalli, 2022; Saad et al., 2024).
+
+\noindent\textbf{Training and Preprocessing.}
+\begin{itemize}
+    \item Data source: historical hourly weather and heat-index records from the \texttt{heat\_index} table (seeded via \texttt{HeatIndexSeeder}).
+    \item Preprocessing steps: feature extraction (hour-of-day, day-of-week), handling missing sensor readings, optional smoothing, and feature encoding/scaling where required. A train/validation split or time-based cross-validation is used to preserve temporal ordering.
+    \item Training: implemented in \texttt{ml-algorithms/random-forest-regressor.py}; hyperparameters (number of trees $t$, max depth $d$) are tuned via grid search or randomized search with cross-validation.
+\end{itemize}
+
+\noindent\textbf{Prediction Generation and Interaction.}
+\begin{itemize}
+    \item The regressor predicts numeric heat-index values for future hours.
+    \item Outputs include point estimates and optionally ensemble-based intervals (percentiles across trees) to approximate uncertainty. JSON responses are returned to the PHP bridge and cached for UI rendering.
+\end{itemize}
+
+\noindent\textbf{Evaluation Metrics and Interpretation.}
+\begin{itemize}
+    \item Common metrics: RMSE and MAE for regression; $R^2$ provides an explanation of variance captured.
+    \item Interpretation: lower RMSE/MAE indicates closer agreement with observed heat-index values; $R^2$ near 1 indicates a strong model fit.
+    \item Operational decision: tune $t$ and $d$ to balance accuracy and inference latency (each extra tree increases prediction time linearly).
+\end{itemize}
+
+\noindent\textit{Implementation Notes:} See \texttt{random-forest-regressor.py} and \texttt{db\_utils.py}.
+
+\subsection{Random Forest Classifier (Safety Assessment)}
+
+\noindent\textbf{Role in System.} The classifier categorizes safety risk (e.g., Low/Moderate/High) by combining environmental features with anonymized user inputs (age range, exertion level) to generate recommendation cards. Random Forest classifiers have been applied successfully in health-risk assessment tasks involving meteorological and physiological inputs (Li et al., 2024).
+
+\noindent\textbf{Training and Preprocessing.}
+\begin{itemize}
+    \item Data source: labeled safety-assessment records seeded via Safety Assessment Seeder and augmented with environmental observations.
+    \item Preprocessing steps: label encoding for categorical survey inputs, handling class imbalance (SMOTE or class weights), feature selection, and train/test splits preserving temporal context where applicable.
+    \item Training: implemented in \texttt{ml-algorithms/random-forest-classifier.py}. Hyperparameters are tuned using cross-validation; class-weighting or resampling mitigates imbalance.
+\end{itemize}
+
+\noindent\textbf{Prediction Generation and Interaction.}
+\begin{itemize}
+    \item The classifier produces a predicted label and class probabilities for a given input vector (environmental features + survey answers).
+    \item Controller logic maps predicted classes to UI recommendation cards and textual advice; probabilities are used to show confidence and to surface conservative guidance when confidence is low.
+\end{itemize}
+
+\noindent\textbf{Evaluation Metrics and Interpretation.}
+\begin{itemize}
+    \item Metrics: accuracy, precision, recall, F1-score, confusion matrix, and ROC-AUC (for binary or one-vs-rest setups).
+    \item Interpretation: F1 and recall are especially important for safety (reducing false negatives where risky situations are misclassified as safe). High precision reduces false alarms. Thresholds are selected to prioritize user safety.
+\end{itemize}
+
+\noindent\textbf{Implementation Notes and Operational Flow.}
+\begin{itemize}
+    \item All ML scripts return normalized JSON (predictions, probabilities, timestamps, and metadata). The PHP bridge (\texttt{ml-algorithms/bridge.php}) invokes the scripts, captures output, and controllers cache results.
+    \item Training occurs offline or in development; production inference uses serialized models loaded by the Python scripts to avoid retraining at request time.
+\end{itemize}
+
+\noindent\textbf{Example Evaluation Workflow.}
+\begin{itemize}
+    \item Reserve a recent time window as a holdout set for ARIMAX forecasts and use time-series aware cross-validation for model selection.
+    \item For Random Forest models, use stratified cross-validation, record RMSE / MAE / $R^2$ for regressors and precision/recall/F1 for classifiers, and choose hyperparameters that deliver acceptable accuracy while respecting inference latency constraints.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Software Development and System Implementation}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The development of T.E.M.P.U.S. followed the \textbf{Agile Software Development Life Cycle (SDLC) Model}. Agile was chosen because it allows continuous improvement, flexibility, and frequent testing throughout the development process (Schwaber \& Sutherland, 2020). Since the system involves multiple modules such as fuel price forecasting, heat index prediction, and historical analysis, the Agile model enabled the developers to divide the project into smaller and manageable phases called iterations or sprints. Each sprint focused on developing, testing, and improving specific features of the system based on feedback and evaluation results.
+
+The Agile model was appropriate for the development of T.E.M.P.U.S. because the requirements of the system evolved during the project. As new ideas, interface improvements, and recommendation features were identified, the developers were able to modify and refine the system without restarting the entire development process. Through continuous collaboration, testing, and revision, the system became more accurate, user-friendly, and responsive to user needs. The iterative nature of Agile also helped ensure that problems were identified early and corrected immediately during development.
+
+\subsection{Planning Phase}
+
+\subsubsection{Problem Statement}
+
+Many individuals experience difficulty in making informed decisions regarding fuel purchases and outdoor activities during periods of high temperatures and changing environmental conditions. Fuel prices frequently fluctuate, making it difficult for consumers to determine the best time to buy fuel and minimize expenses. At the same time, increasing heat index levels pose health risks such as dehydration, heat exhaustion, and heat stroke, especially for individuals engaging in outdoor activities. The heat index as a quantitative measure of apparent temperature has been formally characterized by Rothfusz and remains the standard reference for safety classification thresholds.
+
+Although weather forecasts and fuel price updates are accessible online, the information is often distributed across different platforms and presented in a way that requires manual interpretation. Users may struggle to analyze trends, predict future conditions, or determine what actions should be taken. As a result, there is a need for an intelligent and centralized system that can analyze environmental and fuel-related data, generate forecasts, and provide practical recommendations that users can easily understand and apply in real-life situations.
+
+T.E.M.P.U.S. was developed to address this problem by combining fuel price forecasting, heat index prediction, and intelligent recommendation features into a single web-based platform that supports timely and practical decision-making.
+
+\subsubsection{Objectives of the System}
+
+The main objective of T.E.M.P.U.S. is to develop a web-based intelligent decision-support system that provides users with fuel price forecasts, heat index predictions, and actionable recommendations to help improve financial efficiency, health awareness, and safety during hot weather conditions.
+
+\noindent\textbf{Specific objectives of T.E.M.P.U.S. include:}
+\begin{itemize}
+    \item To display historical fuel price data and generate fuel price forecasts.
+    \item To provide clear recommendations on whether users should buy fuel immediately or wait for possible price decreases.
+    \item To monitor current heat index conditions using environmental factors such as temperature, humidity, wind speed, and heat index.
+    \item To generate hourly heat index predictions for upcoming hours.
+    \item To provide personalized heat safety assessments and recommendations based on user survey responses and forecasted conditions.
+    \item To develop a user-friendly web interface that allows users to quickly understand forecasts and recommendations.
+    \item To implement predictive algorithms and intelligent system components capable of analyzing collected datasets and generating practical outputs.
+\end{itemize}
+
+\subsubsection{Scope and Limitations}
+
+T.E.M.P.U.S. is a web-based application designed to provide users with forecasts and recommendations related to fuel prices and heat index conditions. The system focuses on two major modules: the \textbf{Fuel Price module} and the \textbf{Heat Index module}.
+
+\medskip
+\noindent The \textbf{Fuel Price module} allows users to:
+\begin{itemize}
+    \item View historical fuel price trends through interactive charts;
+    \item Access fuel price forecasts;
+    \item Receive recommendations regarding fuel purchasing decisions.
+\end{itemize}
+
+\noindent The \textbf{Heat Index module} allows users to:
+\begin{itemize}
+    \item View current heat index conditions and contributing environmental factors;
+    \item Access hourly heat index forecasts;
+    \item Answer an anonymous checklist regarding personal conditions and activity levels;
+    \item Receive personalized heat safety recommendations and precautionary advice.
+\end{itemize}
+
+The system uses collected datasets, forecasting algorithms, and intelligent recommendation logic to generate outputs through a web application interface accessible through internet-connected devices.
+
+\medskip
+\noindent\textbf{Limitations of the System:}
+\begin{enumerate}
+    \item The accuracy of forecasts depends on the availability, reliability, and quality of the datasets used by the system.
+    \item The system only provides short-term forecasting and does not guarantee exact future fuel prices or weather conditions.
+    \item Recommendations presented by the system are intended only as decision-support guidance and should not replace official medical, weather, or emergency advisories.
+    \item The personalized heat safety assessment depends on the accuracy of the user's responses in the checklist section, and the dataset for heat assessment.
+    \item The system requires internet connectivity to access updated data and fully utilize its features.
+    \item T.E.M.P.U.S. focuses only on fuel price monitoring, and heat index monitoring and assessment, and does not include additional environmental or economic forecasting services outside the defined modules.
+\end{enumerate}
+
+\subsection{Requirements Analysis}
+
+\noindent\textbf{Functional Requirements}
+
+\medskip
+\noindent\textit{Fuel Price Module}
+\begin{enumerate}
+    \item The system shall display historical fuel price data through interactive line charts.
+    \item The system shall generate and display fuel price forecasts.
+    \item The system shall provide recommendations on whether users should buy fuel immediately or wait for possible price decreases.
+\end{enumerate}
+
+\noindent\textit{Heat Index Module}
+\begin{enumerate}
+    \item The system shall display the current heat index value.
+    \item The system shall show contributing environmental factors such as humidity and wind speed.
+    \item The system shall generate hourly heat index forecasts for upcoming hours.
+    \item The system shall allow users to answer an anonymous checklist regarding personal conditions such as age range and exertion level.
+    \item The system shall analyze user responses together with the current heat index to generate personalized safety assessments.
+    \item The system shall provide actionable recommendations such as hydration reminders, activity limitations, and heat safety precautions.
+\end{enumerate}
+
+\noindent\textit{General System Functions}
+\begin{enumerate}
+    \item The system shall provide a web-based interface accessible through internet-connected devices.
+    \item The system shall present information in a clear and user-friendly format.
+    \item The system shall update forecasts and data whenever new data becomes available.
+    \item The system shall process datasets and forecasting algorithms to generate predictive outputs.
+\end{enumerate}
+
+\bigskip
+\noindent\textbf{Non-Functional Requirements}
+
+\medskip
+\noindent\textit{Performance}
+\begin{enumerate}
+    \item The system should load data, charts, and recommendations within an acceptable response time.
+    \item The system should efficiently process forecasting algorithms and display outputs without significant delays.
+    \item The system should support multiple users accessing the web application simultaneously.
+\end{enumerate}
+
+\noindent\textit{Usability}
+\begin{enumerate}
+    \item The system should provide a simple, organized, and user-friendly interface.
+    \item The system should present recommendations in clear and understandable language.
+    \item The system should allow users to easily navigate between modules and system features.
+\end{enumerate}
+
+\noindent\textit{Reliability}
+\begin{enumerate}
+    \item The system should consistently generate forecasts and recommendations based on available datasets.
+    \item The system should minimize system errors and maintain stable operation during usage.
+    \item The system should properly handle missing or incomplete data inputs whenever possible.
+\end{enumerate}
+
+\noindent\textit{Security}
+\begin{enumerate}
+    \item The system should protect user interactions and prevent unauthorized access to system functions.
+    \item The system should ensure that anonymous checklist responses are not linked to personally identifiable information.
+    \item The system should securely manage and store collected datasets used by the application.
+\end{enumerate}
+
+\noindent\textit{Maintainability}
+\begin{enumerate}
+    \item The system should be designed in a modular manner to allow easier updates and improvements.
+    \item The system should support future enhancement of forecasting models and additional recommendation features.
+\end{enumerate}
+
+\noindent\textit{Accessibility and Compatibility}
+\begin{enumerate}
+    \item The system should be accessible through commonly used web browsers and devices.
+    \item The system should maintain responsive interface behavior across desktop and mobile platforms.
+\end{enumerate}
+
+\subsection{System Design}
+
+This phase presents the overall structure and design of the T.E.M.P.U.S. system. The design follows the actual repository layout and separates the application into a presentation layer, a backend layer, and a machine-learning layer.
+
+\medskip
+\noindent\textbf{User Interface (UI) / User Experience (UX) Design.}
+\begin{itemize}
+    \item The UI is implemented as a Svelte single-page application with page-level components under \texttt{resources/pages/} such as \texttt{Home}, \texttt{FuelPrice}, \texttt{HeatIndex}, and \texttt{History}.
+    \item The UX is organized around simple navigation, dashboard-style data cards, forecast charts, recommendation panels, and responsive layouts for desktop and mobile devices.
+    \item Visual prototypes and layout planning are created in Figma before implementation so that page structure, navigation flow, and chart placement can be validated early.
+\end{itemize}
+
+\medskip
+\noindent\textbf{System Architecture.} The system follows a three-layer structure. The frontend handles the user interface, the backend manages data and routes, and the Python ML layer generates forecasts and classifications. The flow below summarizes the main repository structure and the interaction between components:
+
+\newpage
+\begin{verbatim}
+User Browser
+    |
+    v
+resources/pages/  -->  Inertia / Blade view layer
+    |
+    v
+routes/web.php -> app/Http/Controllers/
+    |
+    +--> app/Models/ and database/
+    |
+    +--> ml-algorithms/bridge.php
+            |
+            +--> ml-algorithms/arimax.py
+            +--> ml-algorithms/random-forest-regressor.py
+            +--> ml-algorithms/random-forest-classifier.py
+            +--> ml-algorithms/db_utils.py
+    |
+    v
+JSON response / charts / recommendation cards
+\end{verbatim}
+
+\medskip
+\noindent\textbf{Tools and Technologies.}
+\begin{itemize}
+    \item Programming languages: PHP, Svelte, JavaScript, Python, and CSS.
+    \item Backend framework and runtime: Laravel with PHP.
+    \item Frontend tooling: Svelte, Vite, Tailwind CSS, and Vite-based asset bundling.
+    \item Development tools: VS Code, Figma, Google Colab, and Git/GitHub.
+    \item Data and ML support: Python scripts, MySQL database access, and the PHP-Python bridge in \texttt{ml-algorithms/bridge.php}.
+\end{itemize}
+
+\subsection{Development (Implementation)}
+
+This phase explains how the system is developed in the repository. The project uses PHP for the Laravel backend, Svelte and JavaScript for the user interface, Python for forecasting and classification scripts, and CSS for styling.
+
+\medskip
+\noindent\textbf{Programming Languages.}
+\begin{itemize}
+    \item PHP is used for controllers, routes, models, and the ML bridge.
+    \item Svelte and JavaScript are used for interactive pages, charts, and client-side behavior.
+    \item Python is used for ARIMAX, Random Forest regression, and Random Forest classification.
+    \item CSS is used through the frontend styling pipeline to control layout and presentation.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Development Tools.}
+\begin{itemize}
+    \item VS Code is used as the main IDE for editing PHP, Svelte, JavaScript, Python, and LaTeX files.
+    \item Figma is used for wireframes and UI prototypes before implementation.
+    \item Google Colab is used when experimenting with model training and validating Python-based machine learning workflows.
+    \item Git/GitHub is used for version control, collaboration, and tracking changes across the repository.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Core Features Implementation.}
+\begin{itemize}
+    \item The Fuel Price module is implemented through frontend Svelte pages and backend controllers that request forecasts from \texttt{ml-algorithms/arimax.py}.
+    \item The Heat Index module is implemented by combining environmental data, the heat-index utility layer, and the Python regression/classification scripts for hourly predictions and safety assessments.
+    \item Historical data display, charts, and recommendation cards are built from the repository's frontend pages and backend API responses.
+    \item The ML bridge script \texttt{ml-algorithms/bridge.php} connects PHP controllers to Python scripts, captures JSON output, and returns parsed results to the Laravel application.
+    \item Shared helpers in \texttt{app/Utils/} and \texttt{resources/js/utils/} support sorting, search, formatting, and UI-level data handling.
+\end{itemize}
+
+\subsection{Testing Phase}
+
+This phase ensures that the system functions correctly and meets the specified requirements. Testing is carried out across the backend, frontend, and ML layers to confirm that the repository works as a complete web application.
+
+\medskip
+\noindent\textbf{Types of Testing.}
+\begin{itemize}
+    \item \textbf{System Testing.} The full flow is validated by loading the frontend, requesting backend routes, running the ML bridge, and checking that the returned JSON matches what the UI expects.
+    \item \textbf{User Acceptance Testing (UAT).} Interface behavior, forecast readability, recommendation clarity, and page responsiveness are reviewed against the expected user workflow in the Fuel Price and Heat Index modules.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Error Detection and Handling.}
+\begin{itemize}
+    \item PHP controllers and the bridge layer should validate inputs before calling Python scripts, and return fallback messages when data is missing or a subprocess fails.
+    \item Python scripts should handle malformed datasets, empty inputs, and conversion errors so that the ML pipeline does not crash the web request.
+    \item Frontend components should display loading states or fallback cards when chart data or recommendation data is unavailable.
+    \item During development, bugs are identified through browser checks, backend request testing, model output inspection, and Git history review.
+\end{itemize}
+
+\subsection{Deployment and Maintenance (Theoretical Discussion)}
+
+\noindent\textbf{Deployment.}
+
+T.E.M.P.U.S. would be deployed as a web-based application accessible through internet-connected devices such as desktop computers, laptops, tablets, and smartphones. The system would be hosted on a cloud-based web server to ensure accessibility, scalability, and continuous availability for users. A database server would also be integrated to store historical fuel price records, weather-related datasets, and forecasting results needed by the application.
+
+The target users of the system would include commuters, drivers, workers, students, outdoor laborers, and individuals who regularly monitor fuel costs and environmental conditions for daily planning and safety purposes. Government agencies, schools, and local communities may also benefit from the system by using it as a decision-support tool for monitoring heat-related risks and fuel price trends.
+
+In a real-world deployment environment, T.E.M.P.U.S. would retrieve updated fuel price and weather data from trusted external data providers or APIs. Forecasting algorithms and intelligent recommendation components would process the collected data and generate outputs that are displayed through the web interface. Users would interact with the system by selecting regions, viewing forecasts, and answering the anonymous heat assessment checklist to receive personalized recommendations.
+
+\medskip
+\noindent The deployment process would theoretically involve:
+\begin{enumerate}
+    \item Setting up the web hosting environment and database server;
+    \item Configuring system security and internet accessibility;
+    \item Integrating forecasting models and external data sources;
+    \item Testing compatibility across different browsers and devices;
+    \item Releasing the application for public or organizational use.
+\end{enumerate}
+
+\bigskip
+\noindent\textbf{Maintenance.}
+
+The maintenance phase of T.E.M.P.U.S. would focus on ensuring that the system continues to operate efficiently, accurately, and securely over time. Since environmental conditions and fuel price trends constantly change, regular updates to datasets and forecasting models would be necessary to maintain the reliability of the generated predictions and recommendations.
+
+\medskip
+\noindent Future maintenance activities would include:
+\begin{enumerate}
+    \item Updating and improving forecasting algorithms to increase prediction accuracy;
+    \item Monitoring system performance and correcting software errors or bugs;
+    \item Updating datasets and external API connections used by the system;
+    \item Enhancing the user interface to improve usability and accessibility;
+    \item Strengthening system security measures to protect stored data and user interactions;
+    \item Adding new features or modules based on user feedback and future requirements.
+\end{enumerate}
+
+The modular structure of the system, developed through the Agile SDLC model, would make future improvements and modifications easier to implement. Individual components such as the Fuel Price module or Heat Index module could be updated independently without significantly affecting the overall system.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Methodology}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{System Development Process}
+
+The development process began with identifying real-world problems that significantly affect people in the country. The group observed the continuous increase in fuel prices caused by economic instability and global conflicts such as ongoing international wars, as well as the recurring issue of extreme heat index conditions experienced every year. These problems directly affect transportation expenses, daily planning, productivity, and public health. From this observation, the idea for T.E.M.P.U.S. was conceptualized as a single web-based system that could help users stay updated on current fuel price trends and heat index conditions while also providing practical recommendations for decision-making.
+
+After identifying the problem, the group conducted brainstorming sessions to determine the features and capabilities the system should contain. The developers proposed integrating forecasting functions, intelligent recommendations, and user-friendly data visualization into one platform. Once the core idea was finalized, the group researched suitable algorithms and machine learning techniques that could effectively support the objectives of the system.
+
+For the algorithmic component of the system, \textbf{Quick Sort} and \textbf{Binary Search} algorithms were selected. Quick Sort was used for efficiently organizing and processing large datasets such as fuel price records and environmental data, while Binary Search was utilized to improve the speed and efficiency of searching and retrieving specific information from sorted datasets (Cormen et al., 2022).
+
+For the intelligent and predictive component of the system, several machine learning algorithms were implemented. \textbf{ARIMAX} was used for time-series forecasting of fuel prices and environmental trends because of its ability to analyze historical patterns together with external influencing variables (Abdullahi et al., 2022; Almutairi et al., 2024). \textbf{Random Forest Regressor} was utilized to predict numerical outputs such as future heat index values and fuel price estimates, while \textbf{Random Forest Classifier} was applied in generating classification-based recommendations and personalized safety assessments for users (Gad \& Hosahalli, 2022; Li et al., 2024).
+
+Once the algorithms and machine learning models were selected, the group proceeded with the system design phase. The prototype and user interface layout were first designed using \textbf{Figma} to visualize the structure, appearance, and navigation flow of the application. This allowed the developers to plan how users would interact with the system and identify possible improvements before actual coding began.
+
+After finalizing the prototype design, the developers started the implementation phase by separately developing the frontend and backend components of the system. The frontend focused on creating the graphical interface, charts, recommendation cards, and user interaction features, while the backend handled data processing, forecasting operations, algorithm execution, and database management. Finally, the backend and frontend components were integrated to complete the development of the T.E.M.P.U.S. web application.
+
+\subsection{Algorithm Design, Testing, and Improvement}
+
+The algorithms and machine learning models used in T.E.M.P.U.S. were carefully selected and improved throughout the development process to ensure accuracy, efficiency, and reliability. During the planning stage, the group analyzed different algorithmic approaches that could effectively process large datasets, generate forecasts, and produce meaningful recommendations for users.
+
+The Quick Sort algorithm was designed to efficiently organize historical and environmental datasets before analysis. This improved the speed of data processing and allowed the system to handle large amounts of information more effectively. Binary Search was integrated after sorting operations to allow faster searching and retrieval of specific records within the system.
+
+For forecasting and intelligent recommendation generation, the developers experimented with different machine learning models before selecting ARIMAX, Random Forest Regressor, and Random Forest Classifier. ARIMAX was chosen because it is highly suitable for time-series forecasting where historical trends and external variables influence future outcomes. Random Forest Regressor was implemented to improve prediction accuracy for numerical values such as fuel prices and heat index forecasts, while Random Forest Classifier was used to classify risk levels and generate personalized recommendations based on user inputs and forecast results.
+
+The algorithms and models were tested repeatedly using collected datasets to evaluate prediction accuracy, processing efficiency, and consistency of outputs. During testing, the group analyzed whether the generated forecasts and recommendations matched expected trends and practical real-world conditions. Errors and inconsistencies encountered during development were corrected by adjusting data handling methods, refining algorithm parameters, and improving system logic.
+
+The Agile SDLC model played an important role in improving the algorithms because it allowed continuous revisions and testing throughout development. Each iteration provided opportunities to evaluate system performance, identify weaknesses, and apply improvements before moving to the next stage. Through continuous testing and refinement, the developers improved the reliability and responsiveness of the forecasting and recommendation features of T.E.M.P.U.S.
+
+\subsection{Decision-Making and Challenges Encountered}
+
+Throughout the development of T.E.M.P.U.S., decisions were made through thorough brainstorming sessions, regular meetings, and collaborative discussions among group members. Every major decision regarding system features, algorithms, interface design, and implementation strategies was carefully evaluated before being finalized. The group considered factors such as system efficiency, practicality, usability, and alignment with the project objectives when making decisions.
+
+The Agile SDLC model greatly supported the group's decision-making process because it provided flexibility and allowed the team to make adjustments whenever improvements or new ideas were identified. Instead of following a rigid development structure, the group was able to continuously revise features, redesign components, and improve functionalities based on testing results and collaborative feedback.
+
+Several challenges were encountered during the development process, particularly in selecting appropriate algorithms, managing datasets, integrating machine learning models, and connecting the frontend and backend components of the system. Some forecasting outputs initially produced inconsistent results, while certain interface features required multiple revisions before functioning properly. The group addressed these challenges by maintaining clear communication, staying focused on the main objectives of the system, and solving problems collaboratively as a team.
+
+By continuously coordinating, testing, and improving the system throughout development, the group successfully completed T.E.M.P.U.S. as an intelligent web-based application capable of providing fuel price forecasts, heat index predictions, and practical recommendations for users.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Results and Discussion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The results were verified from the frontend pages of the system, mainly \texttt{FuelPrice}, \texttt{HeatIndex}, and \texttt{History}. These pages show the actual user-facing outputs of the backend and machine-learning modules, including forecast cards, heat-safety labels, charts, and searchable history tables. The system behaves as expected when the input data is complete and the frontend receives valid JSON from the Laravel controllers and Python bridge.
+ 
+\begingroup
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|>{\RaggedRight\arraybackslash}p{2.0cm}|>{\RaggedRight\arraybackslash}p{3.3cm}|>{\RaggedRight\arraybackslash}p{3.8cm}|>{\RaggedRight\arraybackslash}p{3.3cm}|}
+\caption{Sample frontend test cases and observed outputs in T.E.M.P.U.S.}\\
+\hline
+\multicolumn{1}{|c|}{\textbf{Test Case}} & \multicolumn{1}{c|}{\textbf{Expected Output}} & \multicolumn{1}{c|}{\textbf{Actual Output}} & \multicolumn{1}{c|}{\textbf{Explanation}} \\
+\hline
+\endfirsthead
+\hline
+\multicolumn{1}{|c|}{\textbf{Test Case}} & \multicolumn{1}{c|}{\textbf{Expected Output}} & \multicolumn{1}{c|}{\textbf{Actual Output}} & \multicolumn{1}{c|}{\textbf{Explanation}} \\
+\hline
+\endhead
+\hline
+\endfoot
+Fuel Price Forecast
+& The Fuel Price page should show a historical chart and a forecast card based on the ARIMAX model.
+& The chart is rendered together with a prediction card labeled \textit{Prediction}, subtitled \textit{Using ARIMAX Model}, and the forecast panel shows \textit{T.E.M.P.U.S.\ Forecast: Prediction} with the message \textit{Estimated using the ARIMAX forecasting model from recent weekly fuel price trends.}
+& The frontend successfully combines historical series data with the forecast output returned by the backend, so the user can compare past and predicted fuel price movement.
+\\
+\hline
+Heat Index Assessment
+& After selecting an age range and exertion level, the Heat Index page should update the safety result and display the corresponding recommendation state.
+& The page updates the assessment card using the returned JSON state and displays a label such as \textit{Safe}, \textit{Caution}, or \textit{Extreme}; when no assessment is submitted yet, the page shows \textit{ASSESSING\ldots}
+& The Svelte page rerenders from \texttt{heatIndexData} after the form submission, which confirms that the assessment flow, state mapping, and recommendation UI work correctly from the frontend.
+\\
+\hline
+History Search and Sort
+& Searching for a fuel name or filtering rows should reduce the table to matching records and keep the visible rows sorted.
+& The History page filters rows through searchHistory rows, then sorts them through sortHistory rows, and only the matching entries remain visible in the table.
+& This shows that the table controls are working from the frontend and that the client-side search and sort logic handles user input without breaking the layout.
+\\
+\hline
+Empty or Missing Data State
+& If a forecast or history response is missing, the page should show a safe fallback instead of crashing.
+& The frontend shows loading or fallback content, and the heat-index page may display a data notice when the latest-hour sync is unavailable.
+& The UI is resilient to incomplete data, which is important because the backend and ML bridge may return empty or delayed results during development or data sync gaps.
+\\
+\hline
+\end{longtable}
+\endgroup
+ 
+The table shows that the main modules behave consistently with the intended design. The Fuel Price module correctly displays the ARIMAX-based forecast output, the Heat Index module updates the safety assessment state based on the submitted survey and weather inputs, and the History module responds to search and sort actions in real time.
+ 
+The results also show that the system behaves differently depending on the input scenario. When the fuel dataset is well structured, the prediction card appears immediately and the forecast is easy to interpret. When the heat index and user checklist indicate more risk, the interface shifts from an assessing state to a more cautious or extreme warning state. When the history list is large, the frontend filtering still keeps the table responsive because only the matching rows are rendered.
+ 
+From the algorithm perspective, Quick Sort and Binary Search support the frontend flows by keeping list ordering and row lookup efficient. Quick Sort is effective for preparing and sorting the table data, but its worst-case behavior can slow down if the input is already ordered poorly or the pivot choice is unfavorable. Binary Search remains stable for sorted lookups and does not show the same slowdown pattern. For the ML layer, ARIMAX performs best when the fuel-price history follows a visible trend and enough recent data is available, while the Random Forest models respond better to mixed environmental inputs because they can combine multiple features without relying on a single linear pattern. In practice, this means the system is most reliable when the frontend receives complete historical data, current weather values, and a valid survey response from the user.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Performance Evaluation}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The system was evaluated using the frontend behavior of the Fuel Price, Heat Index, and History pages because these pages represent the end-user result of the complete Laravel, Svelte, and Python pipeline. The main performance metrics considered were responsiveness of the interface, correctness of the rendered output, stability of state changes after user actions, and the ability to handle missing or incomplete data without breaking the page.
+
+For the Fuel Price module, the most important indicator of performance is how quickly the page combines historical fuel prices with the ARIMAX forecast and renders the prediction card. The page shows the chart together with a prediction panel labeled \textit{Prediction} and the subtitle \textit{Using ARIMAX Model}, which indicates that the forecast output is being integrated correctly. This reflects efficient data flow from the backend to the frontend because the user sees the forecast in the same interface as the historical trend. The presence of \textit{T.E.M.P.U.S. Forecast: Prediction} also shows that the frontend is correctly mapping the model output to a readable card.
+
+For the Heat Index module, the key performance measure is whether the safety state updates immediately after the user submits the checklist. The implementation in \texttt{resources/js/heatIndexData.js} uses age-risk mapping and exertion scoring to produce the states \textit{Safe}, \textit{Moderate}, \textit{High}, and \textit{Extreme}. This means the system is not simply displaying static text; it is recalculating the safety result based on the current input. The result indicates that the model and UI are working efficiently enough for interactive decision support, because the user gets a clear state update instead of waiting for a separate page load.
+
+The History page shows another performance improvement. Search and sort are handled through \texttt{searchHistoryRows} and \texttt{sortHistoryRows}, and the table only renders the filtered rows. This is important because it reduces the visible data set during interaction and keeps the table usable even when the history list is long. The visible row limit and row filtering also help maintain responsiveness while the user is browsing older records.
+
+The observed results indicate that the system behaves efficiently for the typical input sizes expected in the project. The frontend updates are consistent, the prediction cards are generated in the correct order, and the heat safety states are displayed in a way that matches the user input. The most noticeable improvements seen during testing were the clear separation of historical and predicted fuel price values, the dynamic heat-risk response, and the responsive filtering of history records. These improvements reduce user effort and make the system easier to interpret during real use.
+
+In summary, the performance of the system is strong enough for the intended scope of T.E.M.P.U.S. The frontend behavior confirms that the algorithmic and machine-learning outputs are being used effectively, while the reactive Svelte implementation helps the interface remain responsive and understandable.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Limitations}
+% ─────────────────────────────────────────────────────────────────────────────
+
+The system and its algorithms are effective for the scope of the project, but they also have important limitations. These limitations are visible both in the repository design and in the way the frontend consumes backend results.
+
+ARIMAX is limited by the quality and length of the fuel price history. The Fuel Price page depends on weekly historical trends, so if the input series is short, noisy, or missing recent values, the forecast card becomes less reliable. ARIMAX is also strongest when the data follows a stable time-series pattern; abrupt market changes, external policy changes, or unusual price spikes can reduce forecast accuracy. This means the model may not perform well when the future does not resemble the recent past (Abdullahi et al., 2022).
+
+The Random Forest Regressor and Random Forest Classifier also have data limitations. The heat-index models depend on structured environmental values and reliable labels from the dataset. If the weather inputs are incomplete or the labeled safety data is imbalanced, the resulting predictions may become less accurate or biased toward the dominant class. The classifier is useful for risk categorization, but it cannot replace human judgment or official health advisories, especially in extreme weather situations (Li et al., 2024).
+
+The frontend implementation introduces additional constraints. The pages are designed to consume JSON from the backend, so any failure in the Laravel or Python bridge layer can lead to fallback content, a data notice, or missing charts. The History page also depends on client-side search and sort logic, which means the experience is tied to the currently loaded rows rather than a full database-level search. This is efficient for the current scope, but it is less suitable for very large archives without pagination or server-side query optimization.
+
+There are also development constraints in the current project structure. The system uses separate frontend and ML components, which is clean and modular, but it adds subprocess overhead when the PHP bridge calls Python scripts. Caching helps reduce repeated work, yet the architecture still depends on successful inter-process communication. In addition, the project appears to rely heavily on manual frontend verification for these flows, so automated end-to-end tests are still limited compared with the breadth of the user interface.
+
+Overall, the main limitation is that the system works best when it receives complete, well-structured, and current data. When the inputs are sparse, unbalanced, or outdated, the algorithms can still run, but the outputs become less certain and should be interpreted more cautiously.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+T.E.M.P.U.S. addresses the problem of making timely decisions about fuel purchases and heat safety by combining forecasting, classification, and interactive web-based presentation in one system. The project shows that the chosen algorithms serve distinct but connected roles: Quick Sort and Binary Search support efficient data handling, ARIMAX provides fuel-price forecasts, the Random Forest Regressor produces heat-index predictions, and the Random Forest Classifier converts environmental and survey inputs into practical safety categories (Cormen et al., 2022; Abdullahi et al., 2022; Gad \& Hosahalli, 2022).
+
+The results in the frontend confirm that these algorithms are not isolated implementations but part of a working decision-support workflow. Fuel prices can be viewed alongside forecasts, the heat-index page responds to user input with a risk state, and the history page allows quick filtering and sorting of records. This means the system is solving the target problem in a way that is usable to the end user, not only correct at the algorithm level.
+
+The project also shows what was learned during development. A modular design made it easier to separate the frontend, backend, and ML responsibilities, but it also highlighted the need for consistent data formats and reliable bridge communication. The work also demonstrated that algorithm performance depends not only on theoretical complexity but also on how the data is prepared, displayed, and maintained throughout the system.
+
+For future improvement, the system could benefit from stronger automated tests, server-side pagination for the history view, more complete evaluation metrics captured from real runs, and better handling of edge cases in the ML bridge. The forecasting models could also be retrained with larger and more diverse datasets to improve robustness. Even with those limitations, T.E.M.P.U.S. successfully demonstrates how algorithmic thinking and machine learning can be combined in a practical web application for daily decision support.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\newpage
+\section{References}
+% ─────────────────────────────────────────────────────────────────────────────
+\begingroup
+\setlength{\parindent}{-2em}
+\setlength{\leftskip}{2em}
+\setlength{\parskip}{6pt}
+\onehalfspacing
+
+Abdullahi, I., Aliero, M. S., Musa, U., \& Aliyu, F. (2022). Forecasting fuel prices using autoregressive integrated moving average models. \textit{Journal of Energy Research and Reviews, 12}(3), 1--10. \url{https://doi.org/10.9734/jenrr/2022/v12i330283}
+
+Almutairi, K., Mostafa, S., Alqahtani, A., Alrowais, F., \& Al-Hartomy, O. A. (2024). Forecasting gasoline retail prices using predictive analytics. \textit{Energy Reports, 11}, 4721--4733. \url{https://doi.org/10.1016/j.egyr.2024.04.026}
+
+Cormen, T. H., Leiserson, C. E., Rivest, R. L., \& Stein, C. (2022). \textit{Introduction to algorithms} (4th ed.). MIT Press.
+
+Gad, I., \& Hosahalli, D. (2022). A comparative study of weather forecasting models using machine learning and deep learning techniques. \textit{International Journal of Intelligent Systems and Applications, 14}(2), 47--60. \url{https://doi.org/10.5815/ijisa.2022.02.04}
+
+Irmanda, H., Ermatita, E., bin Awang, M., \& Adrezo, M. (2024). Enhancing weather prediction models through the application of random forest method and chi-square feature selection. \textit{JOIV: International Journal on Informatics Visualization, 8}(3), 1524--1534. \url{https://doi.org/10.30630/joiv.8.3.2356}
+
+Li, C., Zhang, Z., Zhou, X., Gao, Y., \& Wang, L. (2024). Machine learning-based analysis and prediction of meteorological factors and urban heatstroke diseases. \textit{Frontiers in Public Health, 12}, Article 1394010. \url{https://doi.org/10.3389/fpubh.2024.1394010}
+
+Saad, A. K., Hamdan, M., Barakat, R., \& Obeidat, M. (2024). Machine learning-based prediction of heat index in selected U.S. cities. \textit{Urban Climate, 55}, Article 101913. \url{https://doi.org/10.1016/j.uclim.2024.101913}
+
+Schwaber, K., \& Sutherland, J. (2020, November). \textit{The 2020 Scrum guide}. Scrum.org. \url{https://scrumguides.org/scrum-guide.html}
+
+\endgroup
+
+\end{document}

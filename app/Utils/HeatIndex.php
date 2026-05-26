@@ -4,6 +4,7 @@ namespace App\Utils;
 
 class HeatIndex
 {
+    // Rothfusz Regression Equation
     public static function fromCelsius(float $temperatureC, float $humidity): float
     {
         $temperatureF = self::toFahrenheit($temperatureC);

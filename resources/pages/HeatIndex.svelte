@@ -253,6 +253,7 @@
                 </p>
 
                 <form
+                    name="assessForm"
                     class="flex flex-col gap-5 xl:flex-row"
                     method="POST"
                     action="/heat-index"
@@ -283,7 +284,7 @@
                                         ? 'text-slate-500'
                                         : 'text-[var(--primary-text)]'}"
                                 >
-                                    Single select
+                                    Select One
                                 </p>
                             </div>
 
