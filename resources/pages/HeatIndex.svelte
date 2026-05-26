@@ -223,14 +223,16 @@
         {#if syncStatus?.error}
             <div
                 data-sr
-                class="mx-28 rounded-[20px] -mb-24 border border-amber-400/60 bg-amber-400/10 px-5 py-4 text-sm text-amber-100 shadow-[0_0_30px_rgba(251,191,36,0.12)]"
+                class={`mx-28 rounded-[20px] -mb-24 border px-5 py-4 text-sm shadow-[0_0_30px_rgba(251,191,36,0.12)] ${$dark ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-amber-800/80 bg-amber-50/60 text-amber-800"}`}
             >
                 <span
-                    class="font-semibold uppercase tracking-[0.22em] text-amber-200"
+                    class={`font-semibold uppercase tracking-[0.22em] ${$dark ? "text-amber-200" : "text-amber-700"}`}
                 >
                     Data Notice
                 </span>
-                <p class="mt-2 leading-relaxed text-amber-50/90">
+                <p
+                    class={`mt-2 leading-relaxed ${$dark ? "text-amber-50/90" : "text-amber-900/90"}`}
+                >
                     {archiveSyncMessage}
                 </p>
             </div>
