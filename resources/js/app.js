@@ -1,14 +1,28 @@
 import { createInertiaApp } from "@inertiajs/svelte";
 import { router } from "@inertiajs/svelte";
 import initScrollReveal from "./scrollReveal";
-import { beginGlobalLoad, endGlobalLoad, resetGlobalLoad } from "./loaderState";
+import {
+    beginGlobalLoad,
+    endGlobalLoad,
+    resetGlobalLoad,
+    setGlobalLoaderSubtitle,
+} from "./loaderState";
+import { defaultLoaderSubtitle, getNavItemByPath } from "./nav.js";
 
-router.on("start", () => {
+router.on("start", ({ detail }) => {
+    const targetPath = detail?.visit?.url?.pathname ?? "/";
+    const targetNavItem = getNavItemByPath(targetPath);
+
     beginGlobalLoad();
+    setGlobalLoaderSubtitle(
+        targetNavItem?.loaderDescription ?? defaultLoaderSubtitle,
+    );
 });
 
 router.on("finish", () => {
-    endGlobalLoad();
+    if (endGlobalLoad() === 0) {
+        setGlobalLoaderSubtitle(defaultLoaderSubtitle);
+    }
 });
 
 router.on("invalid", () => {

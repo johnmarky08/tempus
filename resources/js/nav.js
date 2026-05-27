@@ -13,11 +13,13 @@ export const nav = [
         name: "Fuel Prices",
         link: "/fuel-prices",
         description: "View current fuel prices",
+        loaderDescription: "Preparing updated data and model outputs.",
     },
     {
         name: "Heat Index",
         link: "/heat-index",
         description: "View heat index information",
+        loaderDescription: "Preparing updated data and model outputs.",
     },
     {
         name: "History",
@@ -37,3 +39,31 @@ export const nav = [
         ],
     },
 ];
+
+export const defaultLoaderSubtitle = "Waiting for the page to load.";
+
+export function getNavItemByPath(pathname) {
+    const normalizedPath = pathname.replace(/\/$/, "") || "/";
+
+    for (const item of nav) {
+        const itemPath = item.link.replace(/\/$/, "") || "/";
+
+        if (itemPath === normalizedPath) {
+            return item;
+        }
+
+        if (item.subMenu) {
+            const subItem = item.subMenu.find((entry) => {
+                const subPath = entry.link.replace(/\/$/, "") || "/";
+
+                return subPath === normalizedPath;
+            });
+
+            if (subItem) {
+                return subItem;
+            }
+        }
+    }
+
+    return null;
+}

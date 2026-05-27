@@ -5,7 +5,10 @@
     import Loader from "./loader.svelte";
     import { onMount } from "svelte";
     import { dark } from "../../js/theme.js";
-    import { globalLoaderActive } from "../../js/loaderState";
+    import {
+        globalLoaderActive,
+        globalLoaderSubtitle,
+    } from "../../js/loaderState";
 
     export let isActive = "";
     export let isActiveSub = "";
@@ -204,7 +207,7 @@
     <Loader
         show={$globalLoaderActive}
         text="Loading"
-        subtitle="Waiting for the page to load."
+        subtitle={$globalLoaderSubtitle}
     />
 
     <Navbar {isActive} {isActiveSub} />
