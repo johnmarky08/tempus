@@ -22,6 +22,11 @@
     let heightObserver;
     let sizeTransitioning = false;
 
+    let el;
+    let isTop = false;
+    $: isTop = useTopSide;
+    $: panelTranslateClass = isTop ? "translate-y-10" : "-translate-y-10";
+
     const MIN_PANEL_HEIGHT = 54;
 
     function updateViewport() {
@@ -73,6 +78,7 @@
         sizeTransitioning = false;
         updatePanelHeight();
     }
+    // isTop is derived reactively from `useTopSide` above
 
     let messages = [];
     let messagesEl;
@@ -306,10 +312,11 @@
         role="dialog"
         aria-modal="true"
         aria-label="Chat with Tempest"
-        class="font-jetbrainsMono fixed z-[9999] flex flex-col rounded-2xl overflow-hidden
+        class="{panelTranslateClass} scale-[.90] sm:scale-100 font-jetbrainsMono fixed z-[9999] flex flex-col rounded-2xl overflow-hidden
            border shadow-[0_0_20px_var(--accent)]
             border-white text-white bg-[#061E29] transition-all duration-300
-            dark:border-sky-200 dark:text-slate-900 dark:bg-[var(--bg)] dark:shadow-[0_0px_20px_rgba(59,130,246,1)] dark:transition-all dark:duration-300"
+            dark:border-sky-200 dark:text-slate-900
+             dark:bg-[var(--bg)] dark:shadow-[0_0px_20px_rgba(59,130,246,1)] dark:transition-all dark:duration-300"
         style={`
             left: ${panelLeft}px;
             ${useTopSide ? `top: ${panelTop}px;` : `bottom: ${panelBottom}px;`}

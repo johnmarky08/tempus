@@ -474,7 +474,7 @@
         class={`flex flex-col gap-8 ${$dark ? "text-slate-100" : "text-[var(--primary-text)]"} font-jetbrainsMono transition-all duration-300 ${
             fitScreen
                 ? "scale-[1] -translate-y-0 -mb-0"
-                : "scale-[0.80] -translate-y-24 -mb-44"
+                : "scale-[0.98] sm:scale-[0.94] lg:scale-[0.80] lg:-translate-y-24 lg:-mb-44"
         }`}
     >
         <div
@@ -491,9 +491,9 @@
                         data-sr
                         data-sr-delay="80"
                         data-sr-duration="1600"
-                        class="text-4xl font-semibold font-jetbrainsMono tracking-tight {$dark
+                        class="text-3xl font-semibold font-jetbrainsMono tracking-tight {$dark
                             ? 'text-white'
-                            : 'text-[var(--primary-text)]'} sm:text-5xl transition-all duration-300"
+                            : 'text-[var(--primary-text)]'} sm:text-4xl lg:text-5xl transition-all duration-300"
                     >
                         Fuel Price
                         <span

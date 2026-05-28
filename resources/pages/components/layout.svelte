@@ -212,7 +212,7 @@
 
     <Navbar {isActive} {isActiveSub} />
 
-    <main class="flex-1 min-h-screen px-20 py-14 mt-20">
+    <main class="flex-1 min-h-screen md:px-20 md:py-14 px-10 py-14 mt-20">
         <slot />
 
         <div

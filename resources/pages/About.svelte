@@ -15,23 +15,23 @@
     {#if showDescription}
         <div
             transition:fade={{ duration: 160 }}
-            class="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-md dark:bg-black/50 bg-white/50 transition-all duration-300 ease-out"
+            class="fixed inset-0 z-[9999] flex items-center justify-center p-4 backdrop-blur-md dark:bg-black/50 bg-white/50 transition-all duration-300 ease-out"
         >
             <div
                 transition:scale={{ duration: 180, start: 0.96 }}
-                class="relative w-11/12 max-w-6xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#6FB8E7] dark:bg-[#061E29] bg-[var(--bg)] p-8 shadow-2xl"
+                class="relative w-full max-w-xs sm:max-w-xl md:max-w-3xl lg:max-w-6xl max-h-[85vh] lg:max-h-[90vh] overflow-y-auto rounded-2xl lg:rounded-3xl border border-[#6FB8E7] dark:bg-[#061E29] bg-[var(--bg)] p-5 sm:p-6 lg:p-8 shadow-2xl"
             >
                 <button
                     on:click={() => (showDescription = false)}
-                    class="absolute top-4 right-4 flex items-center justify-center w-10 h-10 rounded-full bg-slate-950/40 border border-sky-400/40 text-white transition hover:bg-slate-900/70 hover:scale-105 hover:shadow-[0_0_20px_rgba(59,130,246,2)]"
+                    class="absolute top-3 right-3 lg:top-4 lg:right-4 flex items-center justify-center w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-slate-950/40 border border-sky-400/40 text-white transition hover:bg-slate-900/70 hover:scale-105 hover:shadow-[0_0_20px_rgba(59,130,246,2)]"
                 >
-                    <i class="ri-fullscreen-exit-fill text-lg"></i>
+                    <i class="ri-fullscreen-exit-fill text-sm lg:text-lg"></i>
                 </button>
-                <div class="flex flex-col gap-5 pr-6">
+                <div class="flex flex-col gap-3 lg:gap-5 pr-2 lg:pr-6">
                     <h2
                         data-sr
                         data-sr-delay="40"
-                        class="transition-all duration-300 ease-out text-2xl font-bold text-center tracking-tight dark:text-white text-black"
+                        class="transition-all duration-300 ease-out text-base sm:text-xl lg:text-2xl font-bold text-center tracking-tight dark:text-white text-black"
                     >
                         <span class="text-[#6FB8E7]">T</span>hermal and
                         <span class="text-[#6FB8E7]">E</span>nergy
@@ -45,7 +45,7 @@
                     <p
                         data-sr
                         data-sr-delay="120"
-                        class="text-base leading-7 dark:text-slate-300 text-gray-600
+                        class="text-xs sm:text-sm lg:text-base leading-5 sm:leading-6 lg:leading-7 dark:text-slate-300 text-gray-600
                         transition-all duration-300 ease-out text-justify"
                     >
                         T.E.M.P.U.S. is a smart forecasting and decision-support
@@ -99,16 +99,22 @@
         </div>
     {/if}
     <Layout isActive="About">
-        <div class="scroll-smooth snap-y snap-mandatory">
+        <div
+            class="scroll-smooth snap-y snap-mandatory px-4 sm:px-6 md:px-8 lg:px-0"
+        >
             <div
-                class="flex w-full flex-col space-y-20 dark:text-white text-black font-jetbrainsMono transition-all duration-300 ease-out"
+                class="flex w-full flex-col space-y-10 sm:space-y-14 md:space-y-16 lg:space-y-20 dark:text-white text-black font-jetbrainsMono transition-all duration-300 ease-out"
             >
-                <div class="space-y-12 snap-start">
-                    <div class="text-center space-y-5">
+                <div
+                    class="space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 snap-start"
+                >
+                    <div
+                        class="text-center space-y-2 sm:space-y-3 lg:space-y-5"
+                    >
                         <h1
                             data-sr
                             data-sr-delay="400"
-                            class="text-center text-5xl font-bold"
+                            class="text-center text-3xl sm:text-4xl lg:text-5xl font-bold"
                         >
                             About <span
                                 class="dark:text-[#6FB8E7] text-[var(--accent)] transition-colors duration-300 ease-out"
@@ -118,26 +124,26 @@
                         <p
                             data-sr
                             data-sr-delay="500"
-                            class="text-center text-lg dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out"
-                        >
+                            class="text-center text-xs sm:text-sm lg:text-lg dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out"
+                        >   
                             Learn more about our mission and the team behind
                             T.E.M.P.U.S.
                         </p>
                     </div>
 
                     <div
-                        class="flex flex-col gap-8 lg:flex-row lg:items-stretch font-bold"
+                        class="flex flex-col gap-6 md:gap-8 lg:flex-row lg:items-stretch font-bold"
                     >
                         <div
-                            class="flex w-full flex-col rounded-3xl border dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50
+                            class="flex w-full flex-col rounded-2xl lg:rounded-3xl border dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50
                             bg-[color-mix(in_srgb,var(--bg-secondary)_40%,_transparent)]
-                            p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2 transition-all duration-300 ease-out"
+                            p-5 sm:p-6 lg:p-8 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm lg:w-1/2 transition-all duration-300 ease-out"
                         >
-                            <div class="flex flex-col gap-5">
+                            <div class="flex flex-col gap-3 sm:gap-4 lg:gap-5">
                                 <h2
                                     data-sr
                                     data-sr-delay="40"
-                                    class="text-3xl tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
+                                    class="text-xl  sm:text-2xl lg:text-3xl tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
                                 >
                                     System Overview
                                 </h2>
@@ -145,7 +151,17 @@
                                 <p
                                     data-sr
                                     data-sr-delay="120"
-                                    class="max-w-xl text-sm font-light leading-6 dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out sm:text-base"
+                                    class=" sm:hidden block max-w-xl text-xs sm:text-sm font-light leading-5 sm:leading-6 dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out lg:text-base"
+                                >
+                                    T.E.M.P.U.S. is a smart daily companion that
+                                    helps users manage rising fuel prices
+                                    alongside dangerous heat conditions...
+                                </p>
+
+                                <p
+                                    data-sr
+                                    data-sr-delay="120"
+                                    class="hidden sm:block max-w-xl text-xs sm:text-sm font-light leading-5 sm:leading-6 dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out lg:text-base"
                                 >
                                     T.E.M.P.U.S. is a smart daily companion that
                                     helps users manage rising fuel prices
@@ -157,20 +173,22 @@
                                     recommendations such as when to refuel, when
                                     to avoid outdoor activities, and how to save
                                     money during high-risk days. Its objective
-                                    is to make daily life safer, more
-                                    affordable, and easier to manage through
-                                    simple, actionable insights.
+                                    to make daily life safer, more affordable,
+                                    and easier to manage through simple,
+                                    actionable insights.
                                 </p>
+
+
 
                                 <div class="flex items-center pt-1">
                                     <button
                                         on:click={() =>
                                             (showDescription = true)}
                                         class="hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,2)]
-                                                inline-flex items-center gap-3 rounded-lg border dark:border
+                                                inline-flex items-center gap-2 sm:gap-3 rounded-lg border dark:border
                                               dark:border-sky-400/50 dark:bg-slate-950/40
                                                 bg-[color-mix(in_srgb,_var(--bg-secondary)_60%,transparent)]
-                                                px-5 py-3 text-sm
+                                                px-4 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm
                                                 text-[var(--primary-text)] dark:text-sky-100
                                                 transition duration-300 ease-in-out
                                                 border-[var(--accent)]
@@ -189,50 +207,58 @@
                         ></div>
 
                         <div
-                            class="flex w-full flex-col rounded-3xl border dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50
+                            class="flex w-full flex-col rounded-2xl lg:rounded-3xl border dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50
                             bg-[color-mix(in_srgb,var(--bg-secondary)_40%,_transparent)]
-                            p-6 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm sm:p-8 lg:w-1/2 transition-all duration-300 ease-out"
+                            p-5 sm:p-6 lg:p-8 shadow-[0_18px_50px_rgba(2,6,23,0.45)] backdrop-blur-sm lg:w-1/2 transition-all duration-300 ease-out"
                         >
-                            <div class="flex flex-col gap-5">
+                            <div class="flex flex-col gap-3 sm:gap-4 lg:gap-5">
                                 <h2
                                     data-sr
-                                    class="text-3xl font-semibold tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
+                                    class="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
                                 >
                                     Technologies/Tools Used
                                 </h2>
 
                                 <div
-                                    class="cursor-default flex flex-col gap-4 pt-6 max-h-72 overflow-x-hidden px-8 py-4 overflow-y-scroll scroll-smooth"
+                                    class="cursor-default flex flex-col gap-3 sm:gap-4 pt-3 sm:pt-4 max-h-60 sm:max-h-64 lg:max-h-72 overflow-x-hidden px-2 sm:px-4 lg:px-8 py-2 lg:py-4 overflow-y-scroll scroll-smooth"
                                 >
                                     {#each items.techStacks as { img, name, description, alt, color, colorDark, textColor, textColorDark }, i}
                                         <div
                                             data-sr
-                                            class="group hover:scale-105 {$dark
+                                            class="group hover:scale-[1.02] lg:hover:scale-105 {$dark
                                                 ? colorDark
-                                                : color} flex items-center gap-4 rounded-2xl dark:border dark:border-white/10 border-[var(--active-border)] border-2 dark:bg-slate-950/20 bg-[color-mix(in_srgb,var(--accent)_20%,transparent)] px-4 py-4 transition duration-300 ease-in-out"
+                                                : color} flex items-center gap-3 sm:gap-4 rounded-xl lg:rounded-2xl dark:border dark:border-white/10 border-[var(--active-border)] border-2 dark:bg-slate-950/20 bg-[color-mix(in_srgb,var(--accent)_20%,transparent)] px-3 py-3 sm:px-4 sm:py-4 transition duration-300 ease-in-out"
                                         >
                                             <div
-                                                class="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-white/5 p-1 transition-all duration-300 ease-out group-hover:scale-125"
+                                                class="h-10 w-10 sm:h-11 sm:w-11 lg:h-12
+                                                 lg:w-12 shrink-0 overflow-hidden rounded-full bg-white/5 p-1
+                                                  transition-all duration-300 ease-out group-hover:scale-125"
                                             >
                                                 <img
                                                     data-sr
                                                     src={img}
                                                     {alt}
-                                                    class="h-full w-full object-contain p-1"
+                                                    class="h-full w-full object-contain p-0.5"
                                                 />
                                             </div>
-                                            <div class="flex flex-col gap-1">
+                                            <div
+                                                class="flex flex-col gap-0.5 sm:gap-1"
+                                            >
                                                 <p
                                                     data-sr
                                                     class="{$dark
                                                         ? textColorDark
-                                                        : textColor} group-hover:scale-110 group-hover:translate-x-4 transition-all duration-300 text-base font-semibold dark:text-white text-black ease-out"
+                                                        : textColor}  group-hover:scale-110 group-hover:translate-x-1 lg:group-hover:translate-x-4
+                                                         transition-all duration-300 text-sm sm:text-base
+                                                         font-semibold dark:text-white text-black ease-out"
                                                 >
                                                     {name}
                                                 </p>
                                                 <p
                                                     data-sr
-                                                    class="font-jetbrainsMono text-sm dark:text-slate-300 text-gray-500 transition-all duration-300 ease-out"
+                                                    class="font-jetbrainsMono text-xs
+                                                    sm:text-sm dark:text-slate-300 text-gray-500 transition-all
+                                                    duration-300 ease-out"
                                                 >
                                                     {description}
                                                 </p>
@@ -245,58 +271,79 @@
                     </div>
                 </div>
 
-                <div class="space-y-16 snap-start">
-                    <div class="text-center space-y-5">
+                <div
+                    class="space-y-10 sm:space-y-12 md:space-y-14 lg:space-y-16 snap-start"
+                >
+                    <div
+                        class="text-center space-y-2 sm:space-y-3 lg:space-y-5"
+                    >
                         <h1
                             data-sr
                             data-sr-delay="400"
-                            class="text-center text-5xl font-bold"
+                            class="text-center text-3xl sm:text-4xl lg:text-5xl font-bold"
                         >
                             Meet the <span
                                 class="dark:text-[#6FB8E7] text-[var(--accent)] transition-all duration-300 ease-out"
                                 >Devs!</span
                             >
                         </h1>
-                        <p data-sr data-sr-delay="400">
+                        <p
+                            data-sr
+                            data-sr-delay="400"
+                            class="text-xs sm:text-sm lg:text-base"
+                        >
                             The team behind our innovative solutions
                         </p>
                     </div>
 
                     <div
-                        class="flex items-center justify-center gap-6 py-1 lg:gap-8"
+                        class="flex items-center justify-center gap-4 lg:gap-8 py-1"
                     >
                         <div
                             class="hidden flex-1 dark:bg-white/20 bg-black/20 transition-all duration-300 ease-out lg:block"
                         ></div>
-                        <div class="grid w-full gap-16 md:grid-cols-3">
+
+                        <!-- Grid scales flawlessly from 1 col (base) to 2 cols (sm/md) to 3 cols (lg) -->
+                        <div
+                            class="grid w-full gap-8 sm:gap-10 md:grid-cols-2 lg:grid-cols-3 max-w-sm sm:max-w-2xl lg:max-w-none mx-auto"
+                        >
                             {#each items.devs as { img, name, alt, description, socials }, i}
-                                <div class="relative group">
+                                <!-- Added focus-within to make keyboard navigation trigger it too -->
+                                <div
+                                    class="relative group flex flex-col justify-end focus-within:outline-none"
+                                >
+                                    <!-- Role Tooltip Indicator: Now visible on group-hover/group-focus across ALL screens -->
                                     <div
-                                        class="place-self-center h-10 w-1/2 translate-y-10
-                                        border-2 dark:border-[#6FB8E7] border-[var(--active-border)] bg-[color-mix(in_srgb,var(--accent)_30%,transparent)] rounded-[15px] opacity-0
-                                        transition-all duration-300 ease-out group-hover:opacity-100 group-hover:-translate-y-5
-                                        flex items-center justify-center text-center"
+                                        class="place-self-center h-8 sm:h-9 lg:h-10 w-2/3 lg:w-1/2 translate-y-6 sm:translate-y-6 lg:translate-y-10
+                                             border-2 dark:border-[#6FB8E7] border-[var(--active-border)] bg-[color-mix(in_srgb,var(--accent)_30%,transparent)] rounded-[12px] lg:rounded-[15px]
+                                             opacity-0 pointer-events-none transition-all duration-300 ease-out
+                                             group-hover:opacity-100 lg:group-hover:-translate-y-5 group-hover:-translate-y-1 group-focus-within:opacity-100 group-focus-within:-translate-y-5
+                                             flex items-center justify-center text-center text-xs sm:text-sm font-medium z-10"
                                     >
                                         {description}
                                     </div>
+
+                                    <!-- Main Profile Card -->
                                     <div
                                         data-sr
                                         data-sr-delay={i * 140}
-                                        class="group relative flex flex-col items-center rounded-3xl border
-                                         dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29]/50 bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)]
-                                          shadow-[0_18px_50px_rgba(2,6,23,0.45)] px-6 py-8 text-center transition-all duration-300 ease-out
-                                          group-hover:translate-y-6 group-hover:scale-105 group-hover:bg-[color-mix(in_srgb,var(--accent)_30%,transparent)]"
+                                        class="group relative flex flex-col items-center rounded-2xl lg:rounded-3xl border
+                 dark:border-[#6FB8E7] border-[var(--accent)] dark:bg-[#061E29] bg-[color-mix(in_srgb,var(--bg-secondary)_90%,transparent)]
+                 shadow-[0_18px_50px_rgba(2,6,23,0.45)] px-4 py-6 sm:px-6 sm:py-8 text-center transition-all duration-300 ease-out
+                group-hover:translate-y-6 group-hover:scale-105 group-hover:bg-[color-mix(in_srgb,var(--accent)_30%,transparent)]
+                 group-focus-within:translate-y-6 group-focus-within:scale-105"
                                     >
                                         <img
                                             data-sr
                                             data-sr-delay={i * 140 + 60}
                                             src={img}
                                             alt="{alt} avatar placeholder"
-                                            class="group-hover:scale-125 text-black h-20 w-20 rounded-full dark:bg-white/95 bg-black/95
-                                         object-cover transition-transform duration-300 ease-out"
+                                            class="group-hover:scale-125 group-focus-within:scale-125 text-black h-16 w-16 sm:h-18 sm:w-18 lg:h-20 lg:w-20 rounded-full dark:bg-white/95 bg-black/95
+                                                object-cover transition-transform duration-300 ease-out"
                                         />
                                         <p
-                                            class="relative mt-8 text-lg font-medium dark:text-white text-black transition-all duration-300 ease-out"
+                                            class="relative mt-5 sm:mt-6 lg:mt-8 text-base sm:text-lg
+                                            font-medium dark:text-white text-black transition-all duration-300 ease-out"
                                         >
                                             <span
                                                 data-sr
@@ -311,17 +358,20 @@
                        after:h-[2px]
                        after:w-0
                        dark:after:bg-[#6FB8E7]
-                          after:bg-[var(--accent)]
+                       after:bg-[var(--accent)]
                        after:transition-all
                        after:duration-300
-                       group-hover:after:w-full"
+                       group-hover:after:w-full
+                       group-focus-within:after:w-full"
                                             >
                                                 {name}
                                             </span>
                                         </p>
 
+                                        <!-- Hidden mobile text removed since hover/tap state works universally now -->
+
                                         <div
-                                            class="flex mt-8 items-center justify-center gap-4"
+                                            class="flex mt-5 sm:mt-6 lg:mt-8 items-center justify-center gap-3 sm:gap-4"
                                         >
                                             {#each socials as { icon, link }, j}
                                                 <div
@@ -348,14 +398,14 @@
                                                                 ?.click();
                                                         }
                                                     }}
-                                                    class="hover:-translate-y-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-md
-                                                    border dark:border-sky-400/40 border-[--accent] dark:bg-slate-950/35 bg-gray-400/35 transition dark:hover:bg-slate-900/60 hover:bg-gray-350/60"
+                                                    class="hover:-translate-y-3 focus-within:-translate-y-3 flex h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 cursor-pointer items-center justify-center rounded-md
+                            border dark:border-sky-400/40 border-[--accent] dark:bg-slate-950/35 bg-gray-400/35 transition dark:hover:bg-slate-900/60 hover:bg-gray-350/60"
                                                 >
                                                     <a
                                                         href={link}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        class=""
+                                                        class="text-xs sm:text-sm lg:text-base"
                                                     >
                                                         <i class={icon}></i>
                                                     </a>

@@ -216,14 +216,14 @@
 
 <Layout isActive="Heat Index">
     <div
-        class="smooth-scroll flex flex-col space-y-36 -mt-8 font-jetbrainsMono scale-[0.95] {$dark
+        class="smooth-scroll mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 pb-10 pt-4 font-jetbrainsMono sm:px-6 lg:px-8 lg:pt-6 {$dark
             ? 'text-slate-100'
             : 'text-[var(--primary-text)]'}"
     >
         {#if syncStatus?.error}
             <div
                 data-sr
-                class={`mx-28 rounded-[20px] -mb-24 border px-5 py-4 text-sm shadow-[0_0_30px_rgba(251,191,36,0.12)] ${$dark ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-amber-800/80 bg-amber-50/60 text-amber-800"}`}
+                class={`rounded-[20px] border px-4 py-4 text-sm shadow-[0_0_30px_rgba(251,191,36,0.12)] ${$dark ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-amber-800/80 bg-amber-50/60 text-amber-800"}`}
             >
                 <span
                     class={`font-semibold uppercase tracking-[0.22em] ${$dark ? "text-amber-200" : "text-amber-700"}`}
@@ -238,10 +238,10 @@
             </div>
         {/if}
 
-        <section class="flex flex-col space-y-16 -mb-12">
+        <section class="flex flex-col gap-8">
             <div
                 data-sr
-                class="mx-28 flex flex-col space-y-10 border rounded-[24px] p-8 justify-center items-center {$dark
+                class="flex w-full flex-col gap-8 rounded-[24px] border p-4 sm:p-6 lg:p-8 {$dark
                     ? 'bg-[#152A42]/50 border-white shadow-[0_16px_40px_rgba(0,0,0,0.22)]'
                     : 'bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] border-2 border-[var(--accent)] shadow-[0_16px_40px_rgba(15,23,42,0.10)]'}"
             >
@@ -256,7 +256,7 @@
 
                 <form
                     name="assessForm"
-                    class="flex flex-col gap-5 xl:flex-row"
+                    class="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
                     method="POST"
                     action="/heat-index"
                     on:submit={handleAssessSubmit}
@@ -265,10 +265,9 @@
                     <div class="space-y-5">
                         <div
                             data-sr
-                            class="flex flex-wrap flex-col gap-4 rounded-[22px] border p-4 sm:p-5 max-w-lg transition-all duration-300 ease-out
-                            hover:shadow-[0px_0px_10px_rgba(56,189,248,2)] {$dark
+                            class="flex flex-col gap-4 rounded-[22px] border p-4 transition-all duration-300 ease-out hover:shadow-[0px_0px_10px_rgba(56,189,248,2)] sm:p-5 {$dark
                                 ? 'border-white bg-[#152A42]'
-                                : 'border-[var(--accent)] bg-[var(--active-bg)] border-2   shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
+                                : 'border-[var(--accent)] bg-[var(--active-bg)] border-2 shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                         >
                             <div
                                 data-sr
@@ -313,9 +312,9 @@
                         </div>
                         <div
                             data-sr
-                            class="transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] flex flex-col gap-3 rounded-[20px] border p-5 {$dark
+                            class="flex flex-col gap-3 rounded-[20px] border p-4 transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] sm:p-5 {$dark
                                 ? 'border-white bg-[#152A42]'
-                                : 'border-2  border-[var(--accent)] bg-[var(--active-bg)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
+                                : 'border-2 border-[var(--accent)] bg-[var(--active-bg)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                             style={`--exertion-shadow: ${exertionShadowColor};`}
                         >
                             <div
@@ -414,19 +413,13 @@
 
                     <div
                         data-sr
-                        class={`hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out
-                         flex w-full place-items-center flex-col gap-4 rounded-[22px] border
-                          ${$dark ? "border-white bg-[#152A42]" : "border-[var(--accent)] bg-[var(--active-bg)] border-2"}
-                        p-4 sm:p-5 max-w-sm`}
+                        class={`flex w-full flex-col gap-3 rounded-[22px] border p-3 transition-all duration-300 ease-out hover:shadow-[0_0_10px_${safetyMeta.accent}] sm:p-5 ${$dark ? "border-white bg-[#152A42]" : "border-[var(--accent)] bg-[var(--active-bg)] border-2"}`}
                     >
                         <div data-sr class="flex items-center justify-between">
                             <div class="flex flex-col gap-1">
                                 <p
                                     data-sr
-                                    class="
-                                group-hover:scale-105 group-hover:translate-x-2
-                         transition-all duration-300 ease-out
-                                text-2xl font-semibold {$dark
+                                    class="text-xl font-semibold sm:text-2xl {$dark
                                         ? 'text-white'
                                         : 'text-[var(--primary-text)]'}"
                                 >
@@ -435,18 +428,16 @@
                             </div>
                         </div>
 
-                        <div
-                            data-sr
-                            class="flex items-center place-items-center"
-                        >
+                        <div data-sr class="flex items-center">
                             <div
-                                class={`flex items-center  rounded-[15px] 
-                                 border border-none px-4 py-3 w-full ${safetyMeta.border} ${$dark ? safetyMeta.bg : "bg-white/50"} 
-                        hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out`}
+                                class={`flex w-full items-center rounded-[15px] border-none px-4 py-3 
+                                max-sm:px-3 ${safetyMeta.border} ${$dark ? safetyMeta.bg : "bg-white/50"}
+                                 transition-all duration-300 ease-out hover:shadow-[0_0_10px_${safetyMeta.accent}]`}
                             >
                                 {#if safetyMeta.icon === "check"}
                                     <svg
-                                        class="animate-[pulse_8s_ease-in-out_infinite] transition-all duration-300"
+                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px]
+                                         animate-[pulse_8s_ease-in-out_infinite] transition-all duration-300"
                                         width="65"
                                         height="65"
                                         viewBox="0 0 65 65"
@@ -464,7 +455,7 @@
                                     </svg>
                                 {:else if safetyMeta.icon === "shield"}
                                     <svg
-                                        class="animate-[pulse_5s_ease-in-out_infinite] transition-all duration-300"
+                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px] animate-[pulse_5s_ease-in-out_infinite] transition-all duration-300"
                                         width="65"
                                         height="65"
                                         viewBox="0 0 65 65"
@@ -478,7 +469,7 @@
                                     </svg>
                                 {:else if safetyMeta.icon === "warning"}
                                     <svg
-                                        class="animate-[pulse_3s_ease-in-out_infinite] transition-all duration-300"
+                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px] animate-[pulse_3s_ease-in-out_infinite] transition-all duration-300"
                                         width="65"
                                         height="65"
                                         viewBox="0 0 65 65"
@@ -492,7 +483,7 @@
                                     </svg>
                                 {:else}
                                     <svg
-                                        class="transition-all duration-300 animate-[pulse_1s_ease-in-out_infinite]"
+                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px] animate-[pulse_1s_ease-in-out_infinite] transition-all duration-300"
                                         width="65"
                                         height="65"
                                         viewBox="0 0 65 65"
@@ -522,7 +513,7 @@
                                     class="flex flex-col text-center place-self-center"
                                 >
                                     <p
-                                        class={`text-lg dark:text-white text-black `}
+                                        class={`text-lg max-sm:text-base dark:text-white text-black`}
                                     >
                                         {isAssessing && !heatIndexData?.assess
                                             ? "No Assessment Yet"
@@ -533,60 +524,70 @@
                         </div>
 
                         <div
-                            data-sr
-                            class="flex flex-col text-sm leading-6 px-5
-                        transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-y-3 group-hover:translate-x-3"
+                            class="flex flex-col gap-2 text-sm leading-5 sm:gap-3"
                         >
-                            <div class="flex gap-20 justify-between">
+                            <div
+                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3 sm:pb-0"
+                            >
                                 <p
-                                    class={`min-w-[4.75rem] 
-                                    ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
-                                    Alert: <span
-                                        class="dark:text-slate-200 text-slate-500"
-                                    >
-                                        {isAssessing && !heatIndexData?.assess
-                                            ? "Waiting for your inputs."
-                                            : selectedHighlights.alert}
-                                    </span>
+                                    Alert:
+                                </p>
+                                <p
+                                    class="break-words text-slate-500 dark:text-slate-200"
+                                >
+                                    {isAssessing && !heatIndexData?.assess
+                                        ? "Waiting for your inputs."
+                                        : selectedHighlights.alert}
                                 </p>
                             </div>
-                            <div class="flex gap-2 justify-between">
+                            <div
+                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3 sm:pb-0"
+                            >
                                 <p
-                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
-                                    Recommendation: <span
-                                        class="dark:text-slate-200 text-slate-500"
-                                    >
-                                        {isAssessing && !heatIndexData?.assess
-                                            ? "Choose an age group and exertion level, then press Assess."
-                                            : selectedHighlights.recommendation}
-                                    </span>
+                                    Recommendation:
+                                </p>
+                                <p
+                                    class="break-words text-slate-500 dark:text-slate-200"
+                                >
+                                    {isAssessing && !heatIndexData?.assess
+                                        ? "Choose an age group and exertion level, then press Assess."
+                                        : selectedHighlights.recommendation}
                                 </p>
                             </div>
-                            <div class="flex gap-2 justify-between">
-                                <span
-                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
-                                    >Travel: <span
-                                        class="dark:text-slate-200 text-slate-500"
-                                    >
-                                        {isAssessing && !heatIndexData?.assess
-                                            ? "Assessment will appear after you submit the inputs."
-                                            : selectedHighlights.travel}
-                                    </span></span
-                                >
-                            </div>
-                            <div class="flex gap-2 justify-between">
+                            <div
+                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3 sm:pb-0"
+                            >
                                 <p
-                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
-                                    Health Tip: <span
-                                        class="dark:text-slate-200 text-slate-500"
-                                    >
-                                        {isAssessing && !heatIndexData?.assess
-                                            ? "Use the inputs above to calculate the current safety label."
-                                            : selectedHighlights.tip}
-                                    </span>
+                                    Travel:
+                                </p>
+                                <p
+                                    class="break-words text-slate-500 dark:text-slate-200"
+                                >
+                                    {isAssessing && !heatIndexData?.assess
+                                        ? "Assessment will appear after you submit the inputs."
+                                        : selectedHighlights.travel}
+                                </p>
+                            </div>
+                            <div
+                                class="grid gap-1 rounded-[14px] sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3"
+                            >
+                                <p
+                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                >
+                                    Health Tip:
+                                </p>
+                                <p
+                                    class="break-words text-slate-500 dark:text-slate-200"
+                                >
+                                    {isAssessing && !heatIndexData?.assess
+                                        ? "Use the inputs above to calculate the current safety label."
+                                        : selectedHighlights.tip}
                                 </p>
                             </div>
                         </div>
@@ -597,42 +598,39 @@
             <div class="space-y-10">
                 <h1
                     data-sr
-                    class=" px-28 text-xl text-start font-semibold sm:text-4xl {$dark
+                    class="px-0 text-xl font-semibold text-start sm:px-4 md:px-8 lg:px-0 sm:text-4xl {$dark
                         ? 'text-white'
                         : 'text-slate-900'}"
                 >
                     7-Hour Advanced Heat Index Forecast
                 </h1>
-                <div class="flex flex-col space-y-10 scale-[0.93]">
+                <div class="flex flex-col gap-6">
                     <div
-                        class="flex gap-3 overflow-visible pb-1 justify-center"
+                        class="grid grid-cols-2 gap-3 pb-2 sm:grid-cols-3 lg:flex lg:justify-center lg:gap-3"
                     >
                         {#each selectedPreset.forecast as forecastTemp, index (index)}
                             <div
                                 data-sr
                                 data-sr-delay={index * 120}
-                                class="group
-                                hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00]
-                                 transition-all duration-500 ease-out
-                                flex place-items-center flex-col space-y-5 rounded-[18px] border
-                                px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] {$dark
+                                class={`group flex min-w-0 flex-col items-center gap-4 rounded-[18px] border px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-500 ease-out max-sm:px-4 max-sm:py-5 sm:gap-5 lg:min-w-[9.75rem] 
+                                hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00] ${$dark
                                     ? 'border-white/80 bg-[#152A42]'
-                                    : 'border-[var(--accent)] hover:border-none bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
+                                    : 'border-[var(--accent)] hover:border-none bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}`}
                                 transition:fade
                             >
-                                <div class=" flex flex-col gap-1">
+                                <div class="flex flex-col gap-1">
                                     <p
                                         data-sr
-                                        class="group-hover:scale-[1.18] transition-all duration-500 ease-out text-xl {$dark
+                                        class={`text-xl transition-all duration-500 ease-out group-hover:scale-[1.08] max-sm:text-lg ${$dark
                                             ? 'text-slate-200'
-                                            : 'text-[var(--primary-text)]'}"
+                                            : 'text-[var(--primary-text)]'}`}
                                     >
                                         {selectedPreset.forecastLabels[index] ??
                                             selectedPreset.graphLabels[index] ??
                                             `Hour ${index + 1}`}
                                     </p>
                                     <svg
-                                        class="group-hover:drop-shadow-[0_0_8px_#FFA629] animate-[spin_10s_linear_infinite] group-hover:animate-[spin_3s_linear_infinite] transition-all duration-300"
+                                        class="h-[60px] w-[60px] max-sm:h-[52px] max-sm:w-[52px] animate-[spin_10s_linear_infinite] transition-all duration-300 group-hover:drop-shadow-[0_0_8px_#FFA629] group-hover:animate-[spin_3s_linear_infinite]"
                                         width="60"
                                         height="60"
                                         viewBox="0 0 70 70"
@@ -647,7 +645,7 @@
                                 </div>
                                 <p
                                     data-sr
-                                    class="text-xl text-[#FF7B00] group-hover:[text-shadow:0_0_10px_#FF7B00] transition-all duration-300"
+                                    class="text-xl text-[#FF7B00] transition-all duration-300 group-hover:[text-shadow:0_0_10px_#FF7B00] max-sm:text-lg"
                                 >
                                     {Number(forecastTemp).toFixed(2)}°C
                                 </p>
@@ -659,20 +657,21 @@
         </section>
 
         <section
-            class="flex flex-col gap-6 xl:flex-row justify-center scale-[1.10]"
+            class="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]"
         >
             <div class="flex flex-col gap-6">
                 <div
                     data-sr
-                    class={`group hover:scale-105 hover:-translate-y-2 hover:-translate-x-5
-                     transition-all duration-300 ease-out
-                    flex flex-col space-y-8 rounded-[20px] border
-                    backdrop-blur-sm sm:p-7 sm:py-12 ${$dark ? "hover:shadow-[0_0px_10px_#ffffff] border-white bg-[#152A42]/50" : "hover:shadow-[0_0px_10px_#94a3b8] border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_40%,transparent)]"}`}
+                    class={`group flex flex-col gap-6 rounded-[20px] 
+                    border backdrop-blur-sm p-4 transition-all duration-300 ease-out
+                     sm:p-6 lg:p-7 lg:hover:scale-105 lg:hover:-translate-x-5 
+                     lg:hover:-translate-y-2 lg:hover:shadow-[0_0px_10px_#94a3b8] 
+                     ${$dark ? "border-white bg-[#152A42]/50 lg:hover:shadow-[0_0px_10px_#ffffff]" : 
+                     "border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_40%,transparent)]"}`}
                 >
                     <div
                         data-sr
-                        class="transition-all duration-300 ease-out
-                    flex flex-col gap-1"
+                        class="flex flex-col gap-1 transition-all duration-300 ease-out"
                     >
                         <p
                             class="text-2xl font-semibold sm:text-[2rem] {$dark
@@ -690,13 +689,15 @@
                         </p>
                     </div>
 
-                    <div class=" gap-4 lg:flex-row space-y-10">
-                        <div class="flex items-center gap-4">
+                    <div
+                        class="grid gap-5 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)] lg:items-center"
+                    >
+                        <div
+                            class="flex flex-col gap-4 sm:flex-row sm:items-center"
+                        >
                             <p
                                 data-sr
-                                class=" 
-                                 transition-all duration-300 ease-out
-                                text-[2rem] font-semibold leading-none sm:text-[3rem] {heatTone.text}"
+                                class="text-[2.5rem] font-semibold leading-none transition-all duration-300 ease-out sm:text-[3.25rem] {heatTone.text}"
                             >
                                 {formatTemperature(
                                     selectedPreset.heatIndexValue,
@@ -705,12 +706,10 @@
 
                             <div
                                 data-sr
-                                class={`transition-all duration-300 ease-out 
-                                flex h-full flex-col justify-end gap-3 rounded-[15px] border
-                                ${heatCard.border}  ${heatCard.bg} px-4 py-5 shadow-[0_0_30px_rgba(245,158,11,0.16)]`}
+                                class={`flex w-full flex-1 flex-col justify-end gap-3 rounded-[15px] border px-4 py-5 shadow-[0_0_30px_rgba(245,158,11,0.16)] transition-all duration-300 ease-out sm:w-auto ${heatCard.border} ${heatCard.bg}`}
                             >
                                 <div class="flex items-center gap-3">
-                                    <div class="flex flex-col gap-1">
+                                    <div class="flex min-w-0 flex-col gap-1">
                                         <p
                                             class="text-xl font-bold {$dark
                                                 ? 'text-white'
@@ -720,7 +719,7 @@
                                         </p>
                                         <div class="flex items-center gap-5">
                                             <span
-                                                class="rounded-[8px] {heatCard.bg} w-full text-center px-10 py-1 text-xs font-semibold text-white border border-white"
+                                                class="w-full rounded-[8px] border border-white px-5 py-1 text-center text-xs font-semibold text-white sm:px-10 {heatCard.bg}"
                                             >
                                                 {heatTone.title}
                                             </span>
@@ -809,7 +808,7 @@
                             </div>
                         </div>
                         <div
-                            class="transition-all duration-300 ease-out flex flex-col gap-3 lg:max-w-[18rem] place-self-center"
+                            class="flex flex-col gap-3 transition-all duration-300 ease-out lg:max-w-[18rem] lg:place-self-center"
                         >
                             <div
                                 class="flex items-center justify-between border-b border-t pb-2 pt-2 text-sm {$dark
@@ -823,7 +822,7 @@
                             </div>
 
                             <div
-                                class="space-x-40 flex items-center pb-2 border-b justify-between text-sm {$dark
+                                class="flex items-center justify-between gap-4 border-b pb-2 text-sm {$dark
                                     ? 'border-white/50 text-slate-300'
                                     : 'border-[black]/40 text-[var(--primary-text)]'}"
                             >
@@ -844,15 +843,16 @@
                 <div class="flex flex-col transition-all duration-300">
                     <div
                         data-sr
-                        class="hover:scale-105 hover:-translate-y-3 hover:translate-x-3 hover:shadow-[0_0_10px_#fb923c] transition-all duration-300 ease-in-out relative rounded-[24px] border p-3 {$dark
+                        class="relative rounded-[24px] border p-3 transition-all duration-300 ease-in-out
+                         hover:scale-105 sm:hover:translate-y-3 sm:hover:translate-x-3 hover:translate-x-3 hover:shadow-[0_0_10px_#fb923c] {$dark
                             ? 'border-white bg-[#152A42]/50'
                             : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_50%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                     >
                         <div
-                            class="mb-3 mt-2 flex justify-center items-center px-1"
+                            class="mb-3 mt-2 flex items-center justify-center px-1"
                         >
                             <p
-                                class="text-md text-center font-semibold tracking-[0.22em] uppercase {$dark
+                                class="text-center text-sm font-semibold uppercase tracking-[0.12em] sm:text-md sm:tracking-[0.22em] {$dark
                                     ? 'text-white/90'
                                     : 'text-[var(--primary-text)]'}"
                             >
@@ -1058,8 +1058,8 @@
                 </div>
                 <div
                     data-sr
-                    class="group hover:scale-105 hover:translate-y-3 hover:translate-x-3
-                    hover:shadow-[0_0_10px_var(--accent)] transition-all duration-300 flex flex-col gap-3 rounded-[20px] border p-4 {$dark
+                    class="group flex flex-col gap-3 rounded-[20px] border p-4 transition-all duration-300
+                     hover:shadow-[0_0_10px_var(--accent)] hover:scale-105 sm:hover:translate-y-3 sm:hover:translate-x-3 hover:translate-x-3 {$dark
                         ? 'border-white bg-[#152A42]/50'
                         : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_50%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                 >
@@ -1084,8 +1084,7 @@
                         </svg>
 
                         <div
-                            class="transition-all duration-300 ease-out group-hover:scale-105
-                            group-hover:translate-x-2 flex flex-col"
+                            class="flex flex-col transition-all duration-300 ease-out lg:group-hover:scale-105 lg:group-hover:translate-x-2"
                         >
                             <p
                                 class="text-xl font-semibold {$dark

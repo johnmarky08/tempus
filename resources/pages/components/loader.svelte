@@ -110,7 +110,7 @@
 
 {#if show}
     <div
-        class={`loader-shell ${fullscreen ? "loader-fullscreen" : "loader-inline"}`}
+        class={`scale-[.90] sm:scale-100 loader-shell ${fullscreen ? "loader-fullscreen" : "loader-inline"}`}
     >
         <div
             class={`loader-card ${compact ? "loader-card-compact" : ""} ${$dark ? "loader-card-dark" : "loader-card-light"}`}
