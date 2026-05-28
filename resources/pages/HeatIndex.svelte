@@ -265,7 +265,7 @@
                     <div class="space-y-5">
                         <div
                             data-sr
-                            class="flex flex-col gap-4 rounded-[22px] border p-4 transition-all duration-300 ease-out hover:shadow-[0px_0px_10px_rgba(56,189,248,2)] sm:p-5 {$dark
+                            class="flex flex-col justify-self-center max-w-lg gap-4 rounded-[22px] border p-4 transition-all duration-300 ease-out hover:shadow-[0px_0px_10px_rgba(56,189,248,2)] sm:p-5 {$dark
                                 ? 'border-white bg-[#152A42]'
                                 : 'border-[var(--accent)] bg-[var(--active-bg)] border-2 shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                         >
@@ -413,7 +413,7 @@
 
                     <div
                         data-sr
-                        class={`flex w-full flex-col gap-3 rounded-[22px] border p-3 transition-all duration-300 ease-out hover:shadow-[0_0_10px_${safetyMeta.accent}] sm:p-5 ${$dark ? "border-white bg-[#152A42]" : "border-[var(--accent)] bg-[var(--active-bg)] border-2"}`}
+                        class={`flex w-full flex-col place-items-center gap-3 rounded-[22px] border p-3 transition-all duration-300 ease-out hover:shadow-[0_0_10px_${safetyMeta.accent}] sm:p-5 ${$dark ? "border-white bg-[#152A42]" : "border-[var(--accent)] bg-[var(--active-bg)] border-2"}`}
                     >
                         <div data-sr class="flex items-center justify-between">
                             <div class="flex flex-col gap-1">
@@ -527,7 +527,7 @@
                             class="flex flex-col gap-2 text-sm leading-5 sm:gap-3"
                         >
                             <div
-                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3 sm:pb-0"
+                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12 sm:pb-0"
                             >
                                 <p
                                     class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
@@ -543,7 +543,7 @@
                                 </p>
                             </div>
                             <div
-                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3 sm:pb-0"
+                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12 sm:pb-0"
                             >
                                 <p
                                     class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
@@ -559,7 +559,7 @@
                                 </p>
                             </div>
                             <div
-                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3 sm:pb-0"
+                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12 sm:pb-0"
                             >
                                 <p
                                     class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
@@ -575,7 +575,7 @@
                                 </p>
                             </div>
                             <div
-                                class="grid gap-1 rounded-[14px] sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-3"
+                                class="grid gap-1 rounded-[14px] sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12"
                             >
                                 <p
                                     class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
@@ -595,7 +595,7 @@
                 </form>
             </div>
 
-            <div class="space-y-10">
+            <div class="space-y-10 mt-10">
                 <h1
                     data-sr
                     class="px-0 text-xl font-semibold text-start sm:px-4 md:px-8 lg:px-0 sm:text-4xl {$dark
@@ -613,17 +613,21 @@
                                 data-sr
                                 data-sr-delay={index * 120}
                                 class={`group flex min-w-0 flex-col items-center gap-4 rounded-[18px] border px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-500 ease-out max-sm:px-4 max-sm:py-5 sm:gap-5 lg:min-w-[9.75rem] 
-                                hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00] ${$dark
-                                    ? 'border-white/80 bg-[#152A42]'
-                                    : 'border-[var(--accent)] hover:border-none bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}`}
+                                hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00] ${
+                                    $dark
+                                        ? "border-white/80 bg-[#152A42]"
+                                        : "border-[var(--accent)] hover:border-none bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]"
+                                }`}
                                 transition:fade
                             >
                                 <div class="flex flex-col gap-1">
                                     <p
                                         data-sr
-                                        class={`text-xl transition-all duration-500 ease-out group-hover:scale-[1.08] max-sm:text-lg ${$dark
-                                            ? 'text-slate-200'
-                                            : 'text-[var(--primary-text)]'}`}
+                                        class={`text-xl transition-all duration-500 ease-out group-hover:scale-[1.08] max-sm:text-lg ${
+                                            $dark
+                                                ? "text-slate-200"
+                                                : "text-[var(--primary-text)]"
+                                        }`}
                                     >
                                         {selectedPreset.forecastLabels[index] ??
                                             selectedPreset.graphLabels[index] ??
@@ -657,17 +661,20 @@
         </section>
 
         <section
-            class="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]"
+            class="flex flex-col gap-6 xl:flex-row justify-center scale-[1.10] mt-10"
         >
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col">
                 <div
                     data-sr
                     class={`group flex flex-col gap-6 rounded-[20px] 
                     border backdrop-blur-sm p-4 transition-all duration-300 ease-out
                      sm:p-6 lg:p-7 lg:hover:scale-105 lg:hover:-translate-x-5 
                      lg:hover:-translate-y-2 lg:hover:shadow-[0_0px_10px_#94a3b8] 
-                     ${$dark ? "border-white bg-[#152A42]/50 lg:hover:shadow-[0_0px_10px_#ffffff]" : 
-                     "border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_40%,transparent)]"}`}
+                     ${
+                         $dark
+                             ? "border-white bg-[#152A42]/50 lg:hover:shadow-[0_0px_10px_#ffffff]"
+                             : "border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_40%,transparent)]"
+                     }`}
                 >
                     <div
                         data-sr
@@ -690,7 +697,7 @@
                     </div>
 
                     <div
-                        class="grid gap-5 lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)] lg:items-center"
+                        class="gap-4 lg:flex-row space-y-10 justify-items-center"
                     >
                         <div
                             class="flex flex-col gap-4 sm:flex-row sm:items-center"
@@ -706,7 +713,7 @@
 
                             <div
                                 data-sr
-                                class={`flex w-full flex-1 flex-col justify-end gap-3 rounded-[15px] border px-4 py-5 shadow-[0_0_30px_rgba(245,158,11,0.16)] transition-all duration-300 ease-out sm:w-auto ${heatCard.border} ${heatCard.bg}`}
+                                class={`flex flex-col justify-end gap-3 rounded-[15px] border px-4 py-5 shadow-[0_0_30px_rgba(245,158,11,0.16)] transition-all duration-300 ease-out sm:w-auto ${heatCard.border} ${heatCard.bg}`}
                             >
                                 <div class="flex items-center gap-3">
                                     <div class="flex min-w-0 flex-col gap-1">
@@ -808,7 +815,7 @@
                             </div>
                         </div>
                         <div
-                            class="flex flex-col gap-3 transition-all duration-300 ease-out lg:max-w-[18rem] lg:place-self-center"
+                            class="flex flex-col gap-3 transition-all duration-300 ease-out w-60 lg:place-self-center"
                         >
                             <div
                                 class="flex items-center justify-between border-b border-t pb-2 pt-2 text-sm {$dark
@@ -822,7 +829,7 @@
                             </div>
 
                             <div
-                                class="flex items-center justify-between gap-4 border-b pb-2 text-sm {$dark
+                                class="flex items-center justify-between border-b pb-2 text-sm {$dark
                                     ? 'border-white/50 text-slate-300'
                                     : 'border-[black]/40 text-[var(--primary-text)]'}"
                             >
