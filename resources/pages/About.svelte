@@ -15,7 +15,7 @@
     {#if showDescription}
         <div
             transition:fade={{ duration: 160 }}
-            class="fixed inset-0 z-[9999] flex items-center justify-center p-4 backdrop-blur-md dark:bg-black/50 bg-white/50 transition-all duration-300 ease-out"
+            class="fixed inset-0 z-[99999] flex items-center justify-center p-4 backdrop-blur-md dark:bg-black/50 bg-white/50 transition-all duration-300 ease-out"
         >
             <div
                 transition:scale={{ duration: 180, start: 0.96 }}
@@ -125,7 +125,7 @@
                             data-sr
                             data-sr-delay="500"
                             class="text-center text-xs sm:text-sm lg:text-lg dark:text-slate-300 text-gray-700 transition-all duration-300 ease-out"
-                        >   
+                        >
                             Learn more about our mission and the team behind
                             T.E.M.P.U.S.
                         </p>
@@ -143,7 +143,7 @@
                                 <h2
                                     data-sr
                                     data-sr-delay="40"
-                                    class="text-xl  sm:text-2xl lg:text-3xl tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
+                                    class="text-xl sm:text-2xl lg:text-3xl tracking-tight dark:text-white text-black transition-all duration-300 ease-out"
                                 >
                                     System Overview
                                 </h2>
@@ -177,8 +177,6 @@
                                     and easier to manage through simple,
                                     actionable insights.
                                 </p>
-
-
 
                                 <div class="flex items-center pt-1">
                                     <button
@@ -238,7 +236,7 @@
                                                     data-sr
                                                     src={img}
                                                     {alt}
-                                                    class="h-full w-full object-contain p-0.5"
+                                                    class="h-full w-full object-contain p-1"
                                                 />
                                             </div>
                                             <div

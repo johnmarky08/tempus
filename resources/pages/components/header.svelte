@@ -30,7 +30,7 @@
 
 <nav
     class="h-20 flex justify-between items-center pl-4 pr-5 sm:px-6 lg:px-20 border-b-2
-    fixed w-full top-0 z-50 backdrop-blur-sm transition-colors duration-300
+    fixed w-full top-0 z-[9999] backdrop-blur-sm transition-colors duration-300
     {$dark
         ? 'bg-gradient-to-r from-[#091532]/90 to-[#050a15]/90 border-b-white/10 text-white'
         : 'bg-gradient-to-r border-b-black/10 from-[color-mix(in_srgb,var(--accent)_20%,transparent)] to-[color-mix(in_srgb,var(--bg)_90%,transparent)] text-[var(--primary-text)]'}"

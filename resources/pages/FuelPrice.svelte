@@ -26,11 +26,15 @@
     let selectedYear = "";
     let selectedMonth = "";
     let fitScreen = false;
+    let innerWidth = 1280;
     let hoveredPoint = null;
+    let selectedPoint = null;
     let optionCooldownLocked = false;
     let optionCooldownTimer = null;
     let dashboard;
     let briefingWrapper;
+
+    $: isCompactViewport = innerWidth < 1024;
 
     $: dashboard = buildTrackPriceDashboard(
         fuelPrices,
@@ -183,6 +187,7 @@
         }, OPTION_COOLDOWN_MS);
 
         selectedFuel = value;
+        selectedPoint = null;
         hoveredPoint = null;
     }
 
@@ -198,6 +203,7 @@
         }, OPTION_COOLDOWN_MS);
 
         selectedMonth = value;
+        selectedPoint = null;
         hoveredPoint = null;
     }
 
@@ -214,6 +220,7 @@
 
         selectedYear = value;
         selectedMonth = "";
+        selectedPoint = null;
         hoveredPoint = null;
     }
 
@@ -324,10 +331,9 @@
             });
     }
 
-    async function setHoveredPoint(point, event = null) {
+    async function setHoveredPoint(point, event = null, persist = false) {
         const hoverGroup = dashboard.chart.hoverGroups.get(point.dateIso) ?? {};
-
-        hoveredPoint = {
+        const nextPoint = {
             ...hoverGroup,
             ...point,
             left: Math.max(18, Math.min(82, (point.x / 1000) * 100)),
@@ -336,12 +342,58 @@
             anchorClientY: event?.clientY ?? null,
         };
 
+        if (
+            !persist &&
+            selectedPoint &&
+            (selectedPoint.dateIso !== nextPoint.dateIso ||
+                selectedPoint.fuelSlug !== nextPoint.fuelSlug)
+        ) {
+            selectedPoint = null;
+        }
+
+        hoveredPoint = nextPoint;
+
+        if (persist) {
+            selectedPoint = nextPoint;
+        }
+
         await tick();
         updateTooltipLayout();
     }
 
-    function clearHoveredPoint() {
+    function pinHoveredPoint(point, event = null) {
+        setHoveredPoint(point, event, true);
+    }
+
+    function clearHoveredPoint(point = null, clearSelection = false) {
+        if (clearSelection) {
+            hoveredPoint = null;
+            selectedPoint = null;
+            return;
+        }
+
+        if (
+            point &&
+            hoveredPoint &&
+            (hoveredPoint.dateIso !== point.dateIso ||
+                hoveredPoint.fuelSlug !== point.fuelSlug)
+        ) {
+            return;
+        }
+
+        if (
+            selectedPoint &&
+            hoveredPoint &&
+            hoveredPoint.dateIso === selectedPoint.dateIso &&
+            hoveredPoint.fuelSlug === selectedPoint.fuelSlug
+        ) {
+            hoveredPoint = { ...selectedPoint };
+            updateTooltipLayout();
+            return;
+        }
+
         hoveredPoint = null;
+        selectedPoint = null;
     }
 
     function clamp(value, min, max) {
@@ -469,12 +521,14 @@
     });
 </script>
 
+<svelte:window bind:innerWidth />
+
 <Layout isActive="Fuel Prices">
     <div
         class={`flex flex-col gap-8 ${$dark ? "text-slate-100" : "text-[var(--primary-text)]"} font-jetbrainsMono transition-all duration-300 ${
             fitScreen
                 ? "scale-[1] -translate-y-0 -mb-0"
-                : "scale-[0.98] sm:scale-[0.94] lg:scale-[0.80] lg:-translate-y-24 lg:-mb-44"
+                : "scale-[1] lg:scale-[0.80] lg:-translate-y-24 lg:-mb-44"
         }`}
     >
         <div
@@ -505,16 +559,16 @@
             </div>
 
             <div
-                class="flex flex-wrap gap-3 lg:justify-end transition-all duration-300"
+                class="flex flex-wrap gap-3 justify-center lg:justify-end transition-all duration-300"
             >
                 <button
                     type="button"
                     on:click={toggleFitScreen}
                     aria-pressed={fitScreen}
-                    class={`group inline-flex items-center gap-2 rounded-xl border px-5 py-3 text-sm font-jetbrainsMono transition-all duration-300  hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(111,184,231,0.28)] ${
+                    class={`group hidden lg:inline-flex items-center gap-2 rounded-xl border px-5 py-3 text-sm font-jetbrainsMono transition-all duration-300  hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(111,184,231,0.28)] ${
                         fitScreen
                             ? $dark
-                                ? "border-[var(--accent)] bg-[var(--active-bg)] text-white"
+                                ? "border-[var(--accent)] bg-[var(--accent)] text-white"
                                 : "border-[var(--active-border)] bg-[var(--active-bg)] text-[var(--primary-text)] shadow-[0_0_0_1px_rgba(125,179,231,0.22)]"
                             : $dark
                               ? "border-white/70 bg-white/10 text-slate-100 hover:border-white/90 hover:bg-white/15"
@@ -546,7 +600,7 @@
                                 : $dark
                                   ? "border-white/70 bg-transparent text-slate-100 hover:border-white/90 hover:bg-white/10"
                                   : "border-[var(--border-color)] bg-[var(--panel-bg)] text-[var(--primary-text)]  hover:bg-[var(--active-bg)]"
-                        }  `}
+                        }`}
                     >
                         {option.label}
                     </button>
@@ -586,7 +640,7 @@
                                     : $dark
                                       ? "bg-white/10 text-slate-200 hover:bg-white/20"
                                       : "bg-[var(--panel-bg)] border-2 border-[var(--accent)] text-[var(--primary-text)] hover:bg-[var(--active-bg)] "
-                            }`}
+                            } ${isCompactViewport ? "min-w-[4.5rem] px-3 py-2 text-sm sm:min-w-[5rem] sm:px-4 sm:py-2.5" : "lg:min-w-[5.75rem] lg:px-5 lg:py-2.5 lg:text-base"}`}
                         >
                             {year.label}
                         </button>
@@ -613,7 +667,7 @@
                                     : $dark
                                       ? "bg-white/10 text-slate-200 hover:bg-white/20"
                                       : "bg-[var(--panel-bg)] border-2 border-[var(--accent)] text-[var(--primary-text)] hover:bg-[var(--active-bg)] hover:text-[var(--primary-text)]"
-                            }`}
+                            } ${isCompactViewport ? "px-3 py-1.5 text-[0.72rem] sm:px-4 sm:py-2 sm:text-sm" : "lg:px-4 lg:py-2 lg:text-sm"}`}
                         >
                             {month.label}
                         </button>
@@ -626,7 +680,7 @@
                     class="mt-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between place-self-center transition-all duration-300"
                 >
                     <div
-                        class="flex flex-wrap items-center gap-3 transition-all duration-300"
+                        class="flex flex-wrap justify-center items-center gap-3 transition-all duration-300"
                     >
                         {#each dashboard.chart.series as series, seriesIndex (series.fuelSlug)}
                             <div
@@ -707,9 +761,9 @@
                     bind:this={parentEl}
                     data-sr
                     data-sr-delay="220"
-                    class={`relative mt-5 flex min-h-[32rem] flex-col overflow-hidden rounded-[26px] 
+                    class={`relative mt-5 flex min-h-[28rem] flex-col overflow-hidden rounded-[26px] 
                     border p-4 transition-all duration-300  
-                    ${$dark ? "border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.14),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(99,102,241,0.14),_transparent_28%),linear-gradient(180deg,rgba(15,23,42,0.95),rgba(15,23,42,0.72))]" : "border-2 border-[var(--active-border)] bg-[radial-gradient(circle_at_bottom_left,_rgba(125,211,252,.55),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(99,102,241,0.30),_transparent_26%),linear-gradient(180deg,rgba(248,252,255,0.98),rgba(232,244,253,0.92))]"} `}
+                    ${$dark ? "border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.14),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(99,102,241,0.14),_transparent_28%),linear-gradient(180deg,rgba(15,23,42,0.95),rgba(15,23,42,0.72))]" : "border-2 border-[var(--active-border)] bg-[radial-gradient(circle_at_bottom_left,_rgba(125,211,252,.55),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(99,102,241,0.30),_transparent_26%),linear-gradient(180deg,rgba(248,252,255,0.98),rgba(232,244,253,0.92))]"} ${isCompactViewport ? "sm:min-h-[30rem] lg:min-h-[32rem]" : "lg:min-h-[32rem]"}`}
                     role="region"
                     aria-label="Interactive fuel price chart"
                     on:mouseleave={clearHoveredPoint}
@@ -717,8 +771,7 @@
                     {#if hoveredPoint}
                         <div
                             bind:this={hoverEl}
-                            class={`${fitScreen ? "scale-[1]" : "scale-[1.13]"}  transition-all duration-300  pointer-events-none absolute
-                                z-30 w-[23rem] max-w-[calc(100%-1rem)] rounded-[18px] border p-3 backdrop-blur-sm ${$dark ? "border-white bg-[#2B2B2B]/80 text-slate-100 shadow-[0_18px_38px_rgba(0,0,0,0.38)]" : "border-2 border-[var(--active-border)] bg-[var(--bg)] text-[var(--primary-text)] shadow-[0_18px_38px_rgba(59,130,246,0.14)]"}`}
+                            class={`transition-all duration-300 pointer-events-none absolute z-30 max-w-[calc(100%-1rem)] rounded-[18px] border p-3 backdrop-blur-sm ${isCompactViewport ? "w-[18rem] sm:w-[20rem] scale-[0.94] sm:scale-[1]" : "w-[23rem] scale-[1.13]"} ${$dark ? "border-white bg-[#2B2B2B]/80 text-slate-100 shadow-[0_18px_38px_rgba(0,0,0,0.38)]" : "border-2 border-[var(--active-border)] bg-[var(--bg)] text-[var(--primary-text)] shadow-[0_18px_38px_rgba(59,130,246,0.14)]"}`}
                             style={tooltipStyle(hoveredPoint)}
                             transition:fade={{ duration: 300 }}
                         >
@@ -726,12 +779,12 @@
                                 class="flex flex-col gap-1 transition-all duration-300"
                             >
                                 <p
-                                    class={`text-[1.15rem] font-semibold leading-none transition-all duration-300 ${$dark ? "text-white" : "text-[var(--primary-text)]"}`}
+                                    class={`font-semibold leading-none transition-all duration-300 ${isCompactViewport ? "text-[0.98rem] sm:text-[1.05rem]" : "text-[1.15rem]"} ${$dark ? "text-white" : "text-[var(--primary-text)]"}`}
                                 >
                                     {hoveredPoint.title}
                                 </p>
                                 <p
-                                    class={`text-xs tracking-wide transition-all duration-300 ${$dark ? "text-slate-400" : "text-[var(--secondary-text)]"}`}
+                                    class={`tracking-wide transition-all duration-300 ${isCompactViewport ? "text-[0.65rem] sm:text-xs" : "text-xs"} ${$dark ? "text-slate-400" : "text-[var(--secondary-text)]"}`}
                                 >
                                     {hoveredPoint.subtitle}
                                 </p>
@@ -748,11 +801,11 @@
                                             class="flex items-center gap-2.5 transition-all duration-300"
                                         >
                                             <span
-                                                class="h-3 w-3 rounded-full transition-all duration-300"
+                                                class={`rounded-full transition-all duration-300 ${isCompactViewport ? "h-2.5 w-2.5 sm:h-3 sm:w-3" : "h-3 w-3"}`}
                                                 style={`background-color: ${entry.color}`}
                                             ></span>
                                             <p
-                                                class={`text-[0.7rem] transition-all duration-300 ${$dark ? "text-slate-100" : "text-[var(--secondary-text)]"}`}
+                                                class={`transition-all duration-300 ${isCompactViewport ? "text-[0.62rem] sm:text-[0.7rem]" : "text-[0.7rem]"} ${$dark ? "text-slate-100" : "text-[var(--secondary-text)]"}`}
                                             >
                                                 {entry.fuelLabel}:
                                             </p>
@@ -761,12 +814,12 @@
                                             class="flex items-baseline gap-3 text-right transition-all duration-300"
                                         >
                                             <p
-                                                class={`text-xs font-semibold transition-all duration-300 ${$dark ? "text-white" : "text-[var(--primary-text)]"}`}
+                                                class={`font-semibold transition-all duration-300 ${isCompactViewport ? "text-[0.72rem] sm:text-xs" : "text-xs"} ${$dark ? "text-white" : "text-[var(--primary-text)]"}`}
                                             >
                                                 {entry.priceText}
                                             </p>
                                             <p
-                                                class={`text-[0.65rem] transition-all duration-300 ${$dark ? "" : "text-slate-500"}`}
+                                                class={`transition-all duration-300 ${isCompactViewport ? "text-[0.58rem] sm:text-[0.65rem]" : "text-[0.65rem]"} ${$dark ? "" : "text-slate-500"}`}
                                             >
                                                 ({entry.changeLabel})
                                             </p>
@@ -804,325 +857,373 @@
                                 data-sr
                                 data-sr-delay="250"
                                 data-sr-duration="1400"
-                                class={`text-sm font-semibold tracking-[0.28em] transition-all duration-300 ${$dark ? "text-slate-300/90" : "text-[#35516F]"}`}
+                                class={`font-semibold tracking-[0.28em] transition-all duration-300 ${isCompactViewport ? "text-[0.72rem] sm:text-sm" : "text-sm"} ${$dark ? "text-slate-300/90" : "text-[#35516F]"}`}
                             >
                                 YEAR {graphYearTitle}
                             </p>
                         </div>
                     {/if}
 
-                    <div class="flex-1 pt-2 transition-all duration-300">
-                        <svg
-                            data-sr
-                            data-sr-delay="280"
-                            viewBox="0 0 1000 420"
-                            class="h-[28rem] w-full overflow-visible transition-all duration-300"
-                            preserveAspectRatio="none"
+                    <div
+                        class="flex-1 pt-2 transition-all duration-300 overflow-x-auto lg:overflow-visible"
+                    >
+                        <div
+                            class={`${isCompactViewport ? "min-w-[920px] sm:min-w-[980px]" : "min-w-[1000px] lg:min-w-0"}`}
                         >
-                            <defs>
-                                <linearGradient
-                                    class="transition-all duration-300"
-                                    id="gridFade"
-                                    x1="0"
-                                    x2="0"
-                                    y1="0"
-                                    y2="1"
-                                >
-                                    <stop
+                            <svg
+                                data-sr
+                                data-sr-delay="280"
+                                viewBox="0 0 1000 420"
+                                class={`w-full overflow-visible transition-all duration-300 ${isCompactViewport ? "h-[22rem] sm:h-[24rem]" : "h-[28rem]"}`}
+                                preserveAspectRatio="none"
+                            >
+                                <defs>
+                                    <linearGradient
                                         class="transition-all duration-300"
-                                        offset="0%"
-                                        stop-color="rgba(255,255,255,1)"
-                                    />
-                                    <stop
-                                        class="transition-all duration-300"
-                                        offset="100%"
-                                        stop-color="rgba(255,255,255,1)"
-                                    />
-                                </linearGradient>
-                            </defs>
-
-                            {#each dashboard.chart.yTicks as tick}
-                                <g data-sr data-sr-delay="320">
-                                    <line
-                                        class="transition-all duration-300 dark:text-white/40 text-black/40"
-                                        x1="74"
-                                        x2={predictionAxisX !== null
-                                            ? 955
-                                            : 926}
-                                        y1={tick.y}
-                                        y2={tick.y}
-                                        stroke="currentColor"
-                                        stroke-dasharray="4 4"
-                                    ></line>
-                                    <text
-                                        class="transition-all duration-300 dark:text-white text-black"
-                                        x="50"
-                                        y={tick.y + 4}
-                                        fill="currentColor"
-                                        font-size="12"
-                                        text-anchor="end">{tick.value}</text
+                                        id="gridFade"
+                                        x1="0"
+                                        x2="0"
+                                        y1="0"
+                                        y2="1"
                                     >
-                                </g>
-                            {/each}
+                                        <stop
+                                            class="transition-all duration-300"
+                                            offset="0%"
+                                            stop-color="rgba(255,255,255,1)"
+                                        />
+                                        <stop
+                                            class="transition-all duration-300"
+                                            offset="100%"
+                                            stop-color="rgba(255,255,255,1)"
+                                        />
+                                    </linearGradient>
+                                </defs>
 
-                            {#each dashboard.chart.dateAxisRows as axisRow, index}
-                                <line
-                                    data-sr
-                                    data-sr-delay={340 + index * 40}
-                                    class="transition-all duration-300 dark:text-white/40 text-black/40"
-                                    x1={dashboard.chart.dateAxisRows.length ===
-                                    1
-                                        ? 500
-                                        : 74 +
-                                          (index * 852) /
-                                              (dashboard.chart.dateAxisRows
-                                                  .length -
-                                                  1)}
-                                    x2={dashboard.chart.dateAxisRows.length ===
-                                    1
-                                        ? 500
-                                        : 74 +
-                                          (index * 852) /
-                                              (dashboard.chart.dateAxisRows
-                                                  .length -
-                                                  1)}
-                                    y1="42"
-                                    y2="378"
-                                    stroke="currentColor"
-                                    stroke-dasharray="3 6"
-                                ></line>
-                                <text
-                                    class="transition-all duration-300 dark:text-white text-black"
-                                    x={dashboard.chart.dateAxisRows.length === 1
-                                        ? 500
-                                        : 74 +
-                                          (index * 852) /
-                                              (dashboard.chart.dateAxisRows
-                                                  .length -
-                                                  1)}
-                                    y="405"
-                                    fill="currentColor"
-                                    font-size="10"
-                                    text-anchor="middle"
-                                    transform={`rotate(-45 ${
-                                        dashboard.chart.dateAxisRows.length ===
-                                        1
+                                {#each dashboard.chart.yTicks as tick}
+                                    <g data-sr data-sr-delay="320">
+                                        <line
+                                            class="transition-all duration-300 dark:text-white/40 text-black/40"
+                                            x1="74"
+                                            x2={predictionAxisX !== null
+                                                ? 955
+                                                : 926}
+                                            y1={tick.y}
+                                            y2={tick.y}
+                                            stroke="currentColor"
+                                            stroke-dasharray="4 4"
+                                        ></line>
+                                        <text
+                                            class="transition-all duration-300 dark:text-white text-black"
+                                            x="50"
+                                            y={tick.y + 4}
+                                            fill="currentColor"
+                                            font-size="12"
+                                            text-anchor="end">{tick.value}</text
+                                        >
+                                    </g>
+                                {/each}
+
+                                {#each dashboard.chart.dateAxisRows as axisRow, index}
+                                    <line
+                                        data-sr
+                                        data-sr-delay={340 + index * 40}
+                                        class="transition-all duration-300 dark:text-white/40 text-black/40"
+                                        x1={dashboard.chart.dateAxisRows
+                                            .length === 1
                                             ? 500
                                             : 74 +
                                               (index * 852) /
                                                   (dashboard.chart.dateAxisRows
                                                       .length -
-                                                      1)
-                                    } 405)`}
-                                >
-                                    {axisRow.dateLabel}
-                                </text>
-                            {/each}
+                                                      1)}
+                                        x2={dashboard.chart.dateAxisRows
+                                            .length === 1
+                                            ? 500
+                                            : 74 +
+                                              (index * 852) /
+                                                  (dashboard.chart.dateAxisRows
+                                                      .length -
+                                                      1)}
+                                        y1="42"
+                                        y2="378"
+                                        stroke="currentColor"
+                                        stroke-dasharray="3 6"
+                                    ></line>
+                                    <text
+                                        class="transition-all duration-300 dark:text-white text-black"
+                                        x={dashboard.chart.dateAxisRows
+                                            .length === 1
+                                            ? 500
+                                            : 74 +
+                                              (index * 852) /
+                                                  (dashboard.chart.dateAxisRows
+                                                      .length -
+                                                      1)}
+                                        y="405"
+                                        fill="currentColor"
+                                        font-size="10"
+                                        text-anchor="middle"
+                                        transform={`rotate(-45 ${
+                                            dashboard.chart.dateAxisRows
+                                                .length === 1
+                                                ? 500
+                                                : 74 +
+                                                  (index * 852) /
+                                                      (dashboard.chart
+                                                          .dateAxisRows.length -
+                                                          1)
+                                        } 405)`}
+                                    >
+                                        {axisRow.dateLabel}
+                                    </text>
+                                {/each}
 
-                            {#if predictionAxisX !== null}
-                                <line
-                                    data-sr
-                                    data-sr-delay="380"
-                                    class="transition-all duration-300 dark:text-white/40 text-black/40"
-                                    x1={predictionAxisX}
-                                    x2={predictionAxisX}
-                                    y1="42"
-                                    y2="378"
-                                    stroke="currentColor"
-                                    stroke-dasharray="3 6"
-                                ></line>
-                            {/if}
-
-                            {#each dashboard.chart.series as series, seriesIndex (series.fuelSlug)}
-                                <g
-                                    data-sr
-                                    data-sr-delay={420 + seriesIndex * 90}
-                                    transition:fly={{ y: 20, duration: 300 }}
-                                >
-                                    <path
+                                {#if predictionAxisX !== null}
+                                    <line
                                         data-sr
-                                        data-sr-delay={440 + seriesIndex * 90}
-                                        class="transition-all duration-300"
-                                        d={series.areaPath}
-                                        fill={series.fill}
-                                        pointer-events="none"
-                                        opacity={dashboard.selectedFuel ===
-                                            "all" ||
-                                        dashboard.selectedFuel ===
-                                            series.fuelSlug
-                                            ? 1
-                                            : 0.55}
-                                    ></path>
-                                    <path
-                                        data-sr
-                                        data-sr-delay={460 + seriesIndex * 90}
-                                        class="transition-all duration-300"
-                                        d={series.linePath}
-                                        fill="none"
-                                        stroke={series.stroke}
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        style={`filter: drop-shadow(0 0 6px ${series.stroke})`}
-                                        pointer-events="none"
-                                        opacity={dashboard.selectedFuel ===
-                                            "all" ||
-                                        dashboard.selectedFuel ===
-                                            series.fuelSlug
-                                            ? 1
-                                            : 0.55}
-                                    />
+                                        data-sr-delay="380"
+                                        class="transition-all duration-300 dark:text-white/40 text-black/40"
+                                        x1={predictionAxisX}
+                                        x2={predictionAxisX}
+                                        y1="42"
+                                        y2="378"
+                                        stroke="currentColor"
+                                        stroke-dasharray="3 6"
+                                    ></line>
+                                {/if}
 
-                                    {#each series.points as point}
-                                        <g
+                                {#each dashboard.chart.series as series, seriesIndex (series.fuelSlug)}
+                                    <g
+                                        data-sr
+                                        data-sr-delay={420 + seriesIndex * 90}
+                                        transition:fly={{
+                                            y: 20,
+                                            duration: 300,
+                                        }}
+                                    >
+                                        <path
                                             data-sr
-                                            data-sr-delay={480 +
+                                            data-sr-delay={440 +
                                                 seriesIndex * 90}
-                                            tabindex="0"
-                                            role="button"
-                                            aria-label={`${point.fuelLabel} ${point.fullDateLabel} ${point.priceText}`}
-                                            class="cursor-pointer transition-all duration-300"
-                                        >
-                                            <circle
-                                                class="outline-none transition-all duration-300"
-                                                cx={point.x}
-                                                cy={point.y}
-                                                r="12"
-                                                fill="transparent"
-                                                stroke="transparent"
-                                                pointer-events="all"
-                                                role="button"
+                                            class="transition-all duration-300"
+                                            d={series.areaPath}
+                                            fill={series.fill}
+                                            pointer-events="none"
+                                            opacity={dashboard.selectedFuel ===
+                                                "all" ||
+                                            dashboard.selectedFuel ===
+                                                series.fuelSlug
+                                                ? 1
+                                                : 0.55}
+                                        ></path>
+                                        <path
+                                            data-sr
+                                            data-sr-delay={460 +
+                                                seriesIndex * 90}
+                                            class="transition-all duration-300"
+                                            d={series.linePath}
+                                            fill="none"
+                                            stroke={series.stroke}
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            style={`filter: drop-shadow(0 0 6px ${series.stroke})`}
+                                            pointer-events="none"
+                                            opacity={dashboard.selectedFuel ===
+                                                "all" ||
+                                            dashboard.selectedFuel ===
+                                                series.fuelSlug
+                                                ? 1
+                                                : 0.55}
+                                        />
+
+                                        {#each series.points as point}
+                                            <g
+                                                data-sr
+                                                data-sr-delay={480 +
+                                                    seriesIndex * 90}
                                                 tabindex="0"
-                                                on:mouseenter={(event) => {
-                                                    setHoveredPoint(
-                                                        {
+                                                role="button"
+                                                aria-label={`${point.fuelLabel} ${point.fullDateLabel} ${point.priceText}`}
+                                                class="cursor-pointer transition-all duration-300"
+                                            >
+                                                <circle
+                                                    class="outline-none transition-all duration-300"
+                                                    cx={point.x}
+                                                    cy={point.y}
+                                                    r={isCompactViewport
+                                                        ? 14
+                                                        : 12}
+                                                    fill="transparent"
+                                                    stroke="transparent"
+                                                    pointer-events="all"
+                                                    role="button"
+                                                    tabindex="0"
+                                                    on:mouseenter={(event) => {
+                                                        setHoveredPoint(
+                                                            {
+                                                                ...point,
+                                                                color: series.stroke,
+                                                                priceText:
+                                                                    point.priceText,
+                                                            },
+                                                            event,
+                                                        );
+                                                    }}
+                                                    on:mousemove={moveHoveredPoint}
+                                                    on:mouseleave={() =>
+                                                        clearHoveredPoint({
                                                             ...point,
                                                             color: series.stroke,
                                                             priceText:
                                                                 point.priceText,
-                                                        },
-                                                        event,
-                                                    );
-                                                }}
-                                                on:mousemove={moveHoveredPoint}
-                                                on:mouseleave={clearHoveredPoint}
-                                                on:focus={() =>
-                                                    setHoveredPoint({
-                                                        ...point,
-                                                        color: series.stroke,
-                                                        priceText:
-                                                            point.priceText,
-                                                    })}
-                                                on:blur={clearHoveredPoint}
-                                            ></circle>
-                                            <circle
-                                                class="transition-all duration-300"
-                                                cx={point.x}
-                                                cy={point.y}
-                                                r="4"
-                                                pointer-events="none"
-                                                fill={hoveredPoint &&
-                                                hoveredPoint.dateIso ===
-                                                    point.dateIso &&
-                                                hoveredPoint.fuelSlug ===
-                                                    point.fuelSlug
-                                                    ? series.stroke
-                                                    : $dark
-                                                      ? ""
-                                                      : "white"}
-                                                stroke={series.stroke}
-                                                stroke-width="2"
-                                                opacity={hoveredPoint
-                                                    ? hoveredPoint.dateIso ===
-                                                          point.dateIso &&
-                                                      hoveredPoint.fuelSlug ===
-                                                          point.fuelSlug
-                                                        ? 1
-                                                        : 0.3
-                                                    : 1}
-                                            ></circle>
-                                        </g>
-                                    {/each}
+                                                        })}
+                                                    on:focus={() =>
+                                                        setHoveredPoint(
+                                                            {
+                                                                ...point,
+                                                                color: series.stroke,
+                                                                priceText:
+                                                                    point.priceText,
+                                                            },
+                                                            null,
+                                                            true,
+                                                        )}
+                                                    on:blur={() =>
+                                                        clearHoveredPoint(
+                                                            {
+                                                                ...point,
+                                                                color: series.stroke,
+                                                                priceText:
+                                                                    point.priceText,
+                                                            },
+                                                            true,
+                                                        )}
+                                                ></circle>
+                                                <circle
+                                                    class="transition-all duration-300"
+                                                    cx={point.x}
+                                                    cy={point.y}
+                                                    r={isCompactViewport
+                                                        ? 3.25
+                                                        : 4}
+                                                    pointer-events="none"
+                                                    fill={hoveredPoint &&
+                                                    hoveredPoint.dateIso ===
+                                                        point.dateIso &&
+                                                    hoveredPoint.fuelSlug ===
+                                                        point.fuelSlug
+                                                        ? series.stroke
+                                                        : $dark
+                                                          ? ""
+                                                          : "white"}
+                                                    stroke={series.stroke}
+                                                    stroke-width="2"
+                                                    opacity={hoveredPoint
+                                                        ? hoveredPoint.dateIso ===
+                                                              point.dateIso &&
+                                                          hoveredPoint.fuelSlug ===
+                                                              point.fuelSlug
+                                                            ? 1
+                                                            : 0.3
+                                                        : 1}
+                                                ></circle>
+                                            </g>
+                                        {/each}
 
-                                    {#if predictionPlotPointsByFuel.has(series.fuelSlug)}
-                                        {@const predictionPoint =
-                                            predictionPlotPointsByFuel.get(
-                                                series.fuelSlug,
-                                            )}
-                                        {@const latestSeriesPoint =
-                                            series.points.at(-1)}
-                                        {@const latestPointRightEdgeX =
-                                            latestSeriesPoint.x + 4}
-                                        <line
-                                            data-sr
-                                            data-sr-delay={480 +
-                                                seriesIndex * 90}
-                                            class="transition-all duration-300 dark:text-white text-black"
-                                            x1={latestPointRightEdgeX}
-                                            y1={latestSeriesPoint.y}
-                                            x2={predictionPoint.x}
-                                            y2={predictionPoint.y}
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            style="filter: drop-shadow(0 0 5px rgba(241,245,249,0.5));"
-                                        >
-                                        </line>
-
-                                        <g
-                                            data-sr
-                                            data-sr-delay={520 +
-                                                seriesIndex * 90}
-                                            tabindex="0"
-                                            role="button"
-                                            aria-label={`${series.fuelLabel} prediction ${predictionPoint.priceText}`}
-                                            class="cursor-pointer transition-all duration-300"
-                                        >
-                                            <circle
-                                                class="outline-none transition-all duration-300"
-                                                cx={predictionPoint.x}
-                                                cy={predictionPoint.y}
-                                                r="12"
-                                                fill="transparent"
-                                                stroke="transparent"
-                                                pointer-events="all"
-                                                role="button"
-                                                tabindex="0"
-                                                on:mouseenter={(event) => {
-                                                    setHoveredPoint(
-                                                        predictionPoint,
-                                                        event,
-                                                    );
-                                                }}
-                                                on:mousemove={moveHoveredPoint}
-                                                on:mouseleave={clearHoveredPoint}
-                                                on:focus={() =>
-                                                    setHoveredPoint(
-                                                        predictionPoint,
-                                                    )}
-                                                on:blur={clearHoveredPoint}
-                                            >
-                                            </circle>
-
-                                            <circle
+                                        {#if predictionPlotPointsByFuel.has(series.fuelSlug)}
+                                            {@const predictionPoint =
+                                                predictionPlotPointsByFuel.get(
+                                                    series.fuelSlug,
+                                                )}
+                                            {@const latestSeriesPoint =
+                                                series.points.at(-1)}
+                                            {@const latestPointRightEdgeX =
+                                                latestSeriesPoint.x + 4}
+                                            <line
+                                                data-sr
+                                                data-sr-delay={480 +
+                                                    seriesIndex * 90}
                                                 class="transition-all duration-300 dark:text-white text-black"
-                                                cx={predictionPoint.x}
-                                                cy={predictionPoint.y}
-                                                r="4.6"
-                                                pointer-events="none"
-                                                fill="currentColor"
+                                                x1={latestPointRightEdgeX}
+                                                y1={latestSeriesPoint.y}
+                                                x2={predictionPoint.x}
+                                                y2={predictionPoint.y}
                                                 stroke="currentColor"
                                                 stroke-width="2"
-                                                style={$dark
-                                                    ? "filter: drop-shadow(0 0 8px rgba(0,0,2,0.85));"
-                                                    : "filter: drop-shadow(0 0 8px rgba(248,250,252,0.85));"}
+                                                stroke-linecap="round"
+                                                style="filter: drop-shadow(0 0 5px rgba(241,245,249,0.5));"
                                             >
-                                            </circle>
-                                        </g>
-                                    {/if}
-                                </g>
-                            {/each}
-                        </svg>
+                                            </line>
+
+                                            <g
+                                                data-sr
+                                                data-sr-delay={520 +
+                                                    seriesIndex * 90}
+                                                tabindex="0"
+                                                role="button"
+                                                aria-label={`${series.fuelLabel} prediction ${predictionPoint.priceText}`}
+                                                class="cursor-pointer transition-all duration-300"
+                                            >
+                                                <circle
+                                                    class="outline-none transition-all duration-300"
+                                                    cx={predictionPoint.x}
+                                                    cy={predictionPoint.y}
+                                                    r={isCompactViewport
+                                                        ? 14
+                                                        : 12}
+                                                    fill="transparent"
+                                                    stroke="transparent"
+                                                    pointer-events="all"
+                                                    role="button"
+                                                    tabindex="0"
+                                                    on:mouseenter={(event) => {
+                                                        setHoveredPoint(
+                                                            predictionPoint,
+                                                            event,
+                                                        );
+                                                    }}
+                                                    on:mousemove={moveHoveredPoint}
+                                                    on:mouseleave={() =>
+                                                        clearHoveredPoint(
+                                                            predictionPoint,
+                                                        )}
+                                                    on:focus={() =>
+                                                        setHoveredPoint(
+                                                            predictionPoint,
+                                                            null,
+                                                            true,
+                                                        )}
+                                                    on:blur={() =>
+                                                        clearHoveredPoint(
+                                                            predictionPoint,
+                                                            true,
+                                                        )}
+                                                >
+                                                </circle>
+
+                                                <circle
+                                                    class="transition-all duration-300 dark:text-white text-black"
+                                                    cx={predictionPoint.x}
+                                                    cy={predictionPoint.y}
+                                                    r={isCompactViewport
+                                                        ? 3.8
+                                                        : 4.6}
+                                                    pointer-events="none"
+                                                    fill="currentColor"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    style={$dark
+                                                        ? "filter: drop-shadow(0 0 8px rgba(0,0,2,0.85));"
+                                                        : "filter: drop-shadow(0 0 8px rgba(248,250,252,0.85));"}
+                                                >
+                                                </circle>
+                                            </g>
+                                        {/if}
+                                    </g>
+                                {/each}
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </section>

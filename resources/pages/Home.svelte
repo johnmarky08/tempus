@@ -211,7 +211,7 @@
                                 class="relative flex w-full
                    items-end justify-end overflow-hidden
                    rounded-2xl border px-4 backdrop-blur-sm
-                   min-h-[18rem]
+                   min-h-[12rem]
                    floating floating-border
 
                    {$dark
@@ -241,7 +241,7 @@
                                     alt="Fuel Price Graph"
                                     class="absolute
                        w-[12rem]
-                       bottom-[5rem] left-[1rem]
+                       bottom-[1rem] left-[1rem]
                        rounded-[8px]
                        border border-[var(--border-color)]"
                                 />
@@ -252,7 +252,7 @@
                                 ></div>
 
                                 <div
-                                    class="absolute bottom-[0rem] right-[-1rem]"
+                                    class="absolute bottom-[-1rem] right-[-5px]"
                                 >
                                     <img
                                         data-sr
