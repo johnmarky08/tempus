@@ -33,8 +33,6 @@
             <div
                 class="text-white space-y-8 sm:space-y-12 lg:space-y-16 lg:snap-start"
             >
-                <!-- Day / Date / Location bar -->
-                <!-- base: centered | md: left-aligned | lg: centered (original) -->
                 <div
                     data-sr
                     class="transition-all duration-300 ease-out
@@ -54,7 +52,6 @@
                     <p>Laguna</p>
                 </div>
 
-                <!-- Main hero row -->
                 <div
                     class="transition-all duration-300 ease-out
                            flex flex-col gap-8
@@ -62,15 +59,11 @@
                            lg:flex-row lg:justify-between lg:gap-10 lg:items-start
                            text-white"
                 >
-                    <!-- ── Left column: text content ── -->
-                    <!-- base: centered | md: left-aligned | lg: left-aligned (original) -->
                     <div
                         class="flex w-full lg:max-w-2xl flex-col gap-5 sm:gap-6 lg:gap-8 pt-4 sm:pt-6 lg:pt-10
                                 items-center text-center
                                 md:items-start md:text-left"
                     >
-                        <!-- Live monitoring badge -->
-                        <!-- self-auto so it centres/starts with the parent text-align flow -->
                         <div
                             data-sr
                             class="transition-all duration-300 ease-out
@@ -90,11 +83,9 @@
                             <span>Updated now</span>
                         </div>
 
-                        <!-- Headline + body + CTAs -->
                         <div
                             class="flex flex-col gap-4 sm:gap-5 lg:gap-6 items-center md:items-start"
                         >
-                            <!-- Heading -->
                             <h1
                                 data-sr
                                 data-sr-delay="100"
@@ -141,7 +132,6 @@
                                 crucial changes and health risks.
                             </p>
 
-                            <!-- CTA buttons — centered on mobile, left on md+ -->
                             <div
                                 class="flex flex-row justify-center md:justify-start
                                 items-center gap-3 scale-[.85] sm:scale-100lg:gap-4 font-jetbrainsMono font-bold text-nowrap"
@@ -211,104 +201,78 @@
                         </div>
                     </div>
 
-                    <!-- ── Right column: image card (scaled, not resized) ── -->
-                    <!--
-                        Strategy: keep the card at its lg natural size (max-w-2xl, min-h-[28rem], p-10)
-                        and use transform-origin + scale to shrink it uniformly below lg.
-                        A wrapper div provides the correctly-sized footprint so surrounding
-                        layout still flows properly at each breakpoint.
-
-                        Scale values (approximate card width at each breakpoint):
-                          lg  (1024px+): scale-100  — natural size, ~672px wide
-                          md  ( 768px ): scale-[0.72] — ~484px wide
-                          sm  ( 640px ): scale-[0.60] — ~403px wide
-                          base(~360px ): scale-[0.48] — ~322px wide
-
-                        The wrapper height mirrors the card's natural height * scale
-                        so there is no phantom white space.
-                    -->
-                    
-                    <div class="sm:hidden relative flex w-full justify-center px-4">
-    
-    <!-- 360px MOBILE CANVAS -->
-    <div class="relative  overflow-visible w-full max-w-[360px]">
-
-        <!-- CARD -->
-        <div
-            class="relative flex w-full
+                    <div
+                        class="sm:hidden relative flex w-full justify-center px-4"
+                    >
+                        <div
+                            class="relative overflow-visible w-full max-w-[360px]"
+                        >
+                            <div
+                                class="relative flex w-full
                    items-end justify-end overflow-hidden
                    rounded-2xl border px-4 backdrop-blur-sm
                    min-h-[18rem]
                    floating floating-border
 
                    {$dark
-                        ? 'border-white bg-slate-800/75'
-                        : 'border-[var(--accent)] border-2 bg-gradient-to-r from-[color-mix(in_srgb,var(--accent)_40%,transparent)] to-[color-mix(in_srgb,var(--bg-secondary)_40%,transparent)]'}"
-        >
-
-            <!-- Top-right image (scaled for 360px) -->
-            <img
-                data-sr
-                data-sr-delay="150"
-                src="/images/items/{$dark ? 'demo-2' : 'light-demo-2'}.png"
-                alt="Fuel Price Graph"
-                class="absolute
+                                    ? 'border-white bg-slate-800/75'
+                                    : 'border-[var(--accent)] border-2 bg-gradient-to-r from-[color-mix(in_srgb,var(--accent)_40%,transparent)] to-[color-mix(in_srgb,var(--bg-secondary)_40%,transparent)]'}"
+                            >
+                                <img
+                                    data-sr
+                                    data-sr-delay="150"
+                                    src="/images/items/{$dark
+                                        ? 'demo-2'
+                                        : 'light-demo-2'}.png"
+                                    alt="Fuel Price Graph"
+                                    class="absolute
                        w-[11rem]
                        top-[1rem] right-[1rem]
                        rounded-[8px]
                        border border-[var(--border-color)]"
-            />
+                                />
 
-            <!-- Bottom-left image -->
-            <img
-                data-sr
-                data-sr-delay="150"
-                src="/images/items/{$dark ? 'demo' : 'light-demo'}.png"
-                alt="Fuel Price Graph"
-                class="absolute
+                                <img
+                                    data-sr
+                                    data-sr-delay="150"
+                                    src="/images/items/{$dark
+                                        ? 'demo'
+                                        : 'light-demo'}.png"
+                                    alt="Fuel Price Graph"
+                                    class="absolute
                        w-[12rem]
                        bottom-[5rem] left-[1rem]
                        rounded-[8px]
                        border border-[var(--border-color)]"
-            />
+                                />
 
-            <!-- Gradient overlay -->
-            <div
-                class="absolute inset-0 pointer-events-none
+                                <div
+                                    class="absolute inset-0 pointer-events-none
                        bg-[radial-gradient(circle_at_top_right,_rgba(125,211,252,0.18),_transparent_40%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.12),_transparent_35%)]"
-            ></div>
+                                ></div>
 
-            <!-- Mascot (reduced for mobile) -->
-            <div class="absolute bottom-[0rem] right-[-1rem]">
-                <img
-                    data-sr
-                    data-sr-delay="200"
-                    src="/images/items/rimuru_slime.png"
-                    alt="Rimuru Slime"
-                    class="h-40 w-40 rounded-full object-cover"
-                />
-            </div>
-
-        </div>
-    </div>
-</div>
+                                <div
+                                    class="absolute bottom-[0rem] right-[-1rem]"
+                                >
+                                    <img
+                                        data-sr
+                                        data-sr-delay="200"
+                                        src="/images/items/rimuru_slime.png"
+                                        alt="Rimuru Slime"
+                                        class="h-40 w-40 rounded-full object-cover"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div
                         class="relative hidden sm:flex w-full justify-center lg:justify-end lg:px-16"
                     >
-                        <!--
-                            Outer wrapper: clips and provides the correct collapsed footprint.
-                            Heights = card natural min-h-[28rem] (448px) × scale factor.
-                            We also constrain width to avoid the scaled card bleeding sideways.
-                        -->
                         <div
-                            class="relative overflow-visible 
+                            class="relative overflow-visible
                                     
                                     w-full h-auto"
                         >
-                            <!--
-                                Inner card: always at lg size, scaled down via transform.
-                                transform-origin top-center keeps it anchored at the top.
-                            -->
                             <div
                                 class="relative flex w-full max-w-2xl
                                        items-end justify-end overflow-hidden
@@ -320,7 +284,6 @@
                                     ? 'border-white bg-slate-800/75'
                                     : 'border-[var(--accent)] border-2 bg-gradient-to-r from-[color-mix(in_srgb,var(--accent)_40%,transparent)] to-[color-mix(in_srgb,var(--bg-secondary)_40%,transparent)]'}"
                             >
-                                <!-- Top-right demo image — unchanged from lg -->
                                 <img
                                     data-sr
                                     data-sr-delay="150"
@@ -333,7 +296,6 @@
                                            border border-[var(--border-color)]"
                                 />
 
-                                <!-- Bottom-left demo image — unchanged from lg -->
                                 <img
                                     data-sr
                                     data-sr-delay="150"
@@ -346,12 +308,10 @@
                                            border border-[var(--border-color)]"
                                 />
 
-                                <!-- Radial gradient overlay -->
                                 <div
                                     class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(125,211,252,0.18),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.12),_transparent_30%)] pointer-events-none"
                                 ></div>
 
-                                <!-- Slime mascot — unchanged from lg -->
                                 <div
                                     class="absolute flex h-full w-full items-end justify-end bottom-[-3rem] right-[-1rem]"
                                 >
