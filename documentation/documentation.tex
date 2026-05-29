@@ -19,6 +19,7 @@
 \usepackage{silence}
 \usepackage{caption}
 \usepackage{hyperref}
+\usepackage{graphicx}
 
 \definecolor{codeBlue}{HTML}{0B6FA6}   % keywords
 \definecolor{codeGray}{HTML}{6C757D}   % comments / meta
@@ -253,6 +254,7 @@ function binarySearchNearest(arr, target):
 
 \noindent\textbf{Input / Output.} Input is a sorted array of timestamps (or keys) and a target timestamp. Output is an index into the array corresponding to the exact or nearest timestamp.
 
+\newpage
 \noindent\textbf{Implementation Notes.} Binary Search helper functions appear in both client and server helpers. Server-side nearest-timestamp search is commonly implemented in controller utilities or \texttt{app/Utils/HeatIndex.php} when mapping forecasts to observations; frontend versions live under \texttt{resources/js/utils/} and provide instant UI lookups for charts and tooltips.
 
 % ─────────────────────────────────────────────────────────────────────────────
@@ -555,10 +557,109 @@ This phase presents the overall structure and design of the T.E.M.P.U.S. system.
     \item Visual prototypes and layout planning are created in Figma before implementation so that page structure, navigation flow, and chart placement can be validated early.
 \end{itemize}
 
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/home.jpg}
+    \caption{Home Page}
+    \label{fig:home_page}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/about.jpg}
+    \caption{About Page}
+    \label{fig:about_page}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/devs.jpg}
+    \caption{About Page - Developers Info}
+    \label{fig:about_page_devs}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/fuel_price_module.jpg}
+    \caption{Fuel Price Module - Graphs and Predictions}
+    \label{fig:fuel_price_module}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/heat_index_assessment.jpg}
+    \caption{Heat Index Module - Assessment}
+    \label{fig:heat_index_assessment}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/heat_index_forecasts.jpg}
+    \caption{Heat Index Module - 7 Hours Forecasts}
+    \label{fig:heat_index_forecasts}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/heat_index_module.jpg}
+    \caption{Heat Index Module - Current Data}
+    \label{fig:heat_index_module}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/fuel_price_history.jpg}
+    \caption{History Module - Fuel Price Data}
+    \label{fig:fuel_price_history}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/heat_index_history.jpg}
+    \caption{History Module - Heat Index Data}
+    \label{fig:heat_index_history}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/faqs.jpg}
+    \caption{FAQ's Static Chat-bot}
+    \label{fig:faqs}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/footer.jpg}
+    \caption{Footer Component}
+    \label{fig:footer_component}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/loading.jpg}
+    \caption{Loading Component}
+    \label{fig:loading_component}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/light_mode.jpg}
+    \caption{Light Mode}
+    \label{fig:light_mode}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/mobile_view.jpg}
+    \caption{Mobile View (Responsiveness)}
+    \label{fig:mobile_view}
+\end{figure}
+
+\newpage
 \medskip
 \noindent\textbf{System Architecture.} The system follows a three-layer structure. The frontend handles the user interface, the backend manages data and routes, and the Python ML layer generates forecasts and classifications. The flow below summarizes the main repository structure and the interaction between components:
 
-\newpage
+\vspace*{0.2cm}
 \begin{verbatim}
 User Browser
     |
@@ -595,6 +696,7 @@ JSON response / charts / recommendation cards
 
 This phase explains how the system is developed in the repository. The project uses PHP for the Laravel backend, Svelte and JavaScript for the user interface, Python for forecasting and classification scripts, and CSS for styling.
 
+\newpage
 \medskip
 \noindent\textbf{Programming Languages.}
 \begin{itemize}
@@ -627,6 +729,7 @@ This phase explains how the system is developed in the repository. The project u
 
 This phase ensures that the system functions correctly and meets the specified requirements. Testing is carried out across the backend, frontend, and ML layers to confirm that the repository works as a complete web application.
 
+\newpage
 \medskip
 \noindent\textbf{Types of Testing.}
 \begin{itemize}
@@ -793,6 +896,7 @@ The observed results indicate that the system behaves efficiently for the typica
 In summary, the performance of the system is strong enough for the intended scope of T.E.M.P.U.S. The frontend behavior confirms that the algorithmic and machine-learning outputs are being used effectively, while the reactive Svelte implementation helps the interface remain responsive and understandable.
 
 % ─────────────────────────────────────────────────────────────────────────────
+\newpage
 \section{Limitations}
 % ─────────────────────────────────────────────────────────────────────────────
 
@@ -809,6 +913,7 @@ There are also development constraints in the current project structure. The sys
 Overall, the main limitation is that the system works best when it receives complete, well-structured, and current data. When the inputs are sparse, unbalanced, or outdated, the algorithms can still run, but the outputs become less certain and should be interpreted more cautiously.
 
 % ─────────────────────────────────────────────────────────────────────────────
+\newpage
 \section{Conclusion}
 % ─────────────────────────────────────────────────────────────────────────────
 
