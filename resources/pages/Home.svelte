@@ -40,7 +40,7 @@
                            text-sm gap-3
                            sm:text-lg sm:gap-6
                            lg:text-2xl lg:gap-10
-                           justify-center md:justify-start lg:justify-center
+                           justify-center lg:justify-center
                            items-center
                            font-spaceGrotesk font-semibold
                            {$dark
@@ -62,7 +62,7 @@
                     <div
                         class="flex w-full lg:max-w-2xl flex-col gap-5 sm:gap-6 lg:gap-8 pt-4 sm:pt-6 lg:pt-10
                                 items-center text-center
-                                md:items-start md:text-left"
+                                "
                     >
                         <div
                             data-sr
@@ -84,7 +84,7 @@
                         </div>
 
                         <div
-                            class="flex flex-col gap-4 sm:gap-5 lg:gap-6 items-center md:items-start"
+                            class="flex flex-col gap-4 sm:gap-5 lg:gap-6 items-center"
                         >
                             <h1
                                 data-sr
@@ -116,7 +116,7 @@
                             <p
                                 data-sr
                                 data-sr-delay="180"
-                                class="transition-all duration-300 ease-out
+                                class="transition-all lg:text-left duration-300 ease-out
                                        max-w-[270px] sm:max-w-[420px] lg:max-w-[500px]
                                        text-xs leading-5
                                        sm:text-sm sm:leading-6
@@ -133,7 +133,7 @@
                             </p>
 
                             <div
-                                class="flex flex-row justify-center md:justify-start
+                                class="flex flex-row justify-center lg:place-self-start
                                 items-center gap-3 scale-[.85] sm:scale-100lg:gap-4 font-jetbrainsMono font-bold text-nowrap"
                             >
                                 {#if showFuelPrices}
@@ -202,17 +202,17 @@
                     </div>
 
                     <div
-                        class="sm:hidden relative flex w-full justify-center px-4"
+                        class="lg:hidden relative flex w-full justify-center px-4 md:scale-150 md:mt-10 lg:mt-auto lg:scale-100"
                     >
                         <div
                             class="relative overflow-visible w-full max-w-[360px]"
                         >
                             <div
                                 class="relative flex w-full
-                   items-end justify-end overflow-hidden
-                   rounded-2xl border px-4 backdrop-blur-sm
-                   min-h-[12rem]
-                   floating floating-border
+                                       items-end justify-end overflow-hidden
+                                       rounded-2xl border px-4 backdrop-blur-sm
+                                       min-h-[12rem]
+                                       floating floating-border
 
                    {$dark
                                     ? 'border-white bg-slate-800/75'
@@ -266,7 +266,7 @@
                         </div>
                     </div>
                     <div
-                        class="relative hidden sm:flex w-full justify-center lg:justify-end lg:px-16"
+                        class="relative hidden lg:flex w-full justify-center lg:justify-end lg:px-16"
                     >
                         <div
                             class="relative overflow-visible

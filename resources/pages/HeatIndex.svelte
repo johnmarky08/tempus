@@ -216,14 +216,14 @@
 
 <Layout isActive="Heat Index">
     <div
-        class="smooth-scroll mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 pb-10 pt-4 font-jetbrainsMono sm:px-6 lg:px-8 lg:pt-6 {$dark
+        class="smooth-scroll flex flex-col space-y-36 -mt-32 sm:-mt-8 font-jetbrainsMono scale-[0.95] {$dark
             ? 'text-slate-100'
             : 'text-[var(--primary-text)]'}"
     >
         {#if syncStatus?.error}
             <div
                 data-sr
-                class={`rounded-[20px] border px-4 py-4 text-sm shadow-[0_0_30px_rgba(251,191,36,0.12)] ${$dark ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-amber-800/80 bg-amber-50/60 text-amber-800"}`}
+                class={`mx-28 rounded-[20px] -mb-24 border px-5 py-4 text-sm shadow-[0_0_30px_rgba(251,191,36,0.12)] ${$dark ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-amber-800/80 bg-amber-50/60 text-amber-800"}`}
             >
                 <span
                     class={`font-semibold uppercase tracking-[0.22em] ${$dark ? "text-amber-200" : "text-amber-700"}`}
@@ -238,16 +238,17 @@
             </div>
         {/if}
 
-        <section class="flex flex-col gap-8">
+        <section class="flex flex-col  space-y-16 -mb-12">
             <div
                 data-sr
-                class="flex w-full flex-col gap-8 rounded-[24px] border p-4 sm:p-6 lg:p-8 {$dark
-                    ? 'bg-[#152A42]/50 border-white shadow-[0_16px_40px_rgba(0,0,0,0.22)]'
-                    : 'bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] border-2 border-[var(--accent)] shadow-[0_16px_40px_rgba(15,23,42,0.10)]'}"
+                class="sm:mx-28 sm:w-auto w-full flex flex-col   space-y-10 sm:border rounded-[24px] p-8 justify-center
+                 items-center {$dark
+                    ? 'sm:bg-[#152A42]/50 sm:border-white shadow-[0_16px_40px_rgba(0,0,0,0.22)]'
+                    : 'sm:bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] sm:border-2 border-[var(--accent)] shadow-[0_16px_40px_rgba(15,23,42,0.10)]'}"
             >
                 <p
                     data-sr
-                    class="text-2xl font-semibold sm:text-4xl {$dark
+                    class="text-2xl font-semibold sm:text-4xl sm:text-left text-center {$dark
                         ? 'text-white'
                         : 'text-[var(--primary-text)]'}"
                 >
@@ -256,7 +257,7 @@
 
                 <form
                     name="assessForm"
-                    class="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
+                    class="flex flex-col gap-5 xl:flex-row"
                     method="POST"
                     action="/heat-index"
                     on:submit={handleAssessSubmit}
@@ -265,9 +266,10 @@
                     <div class="space-y-5">
                         <div
                             data-sr
-                            class="flex flex-col justify-self-center max-w-lg gap-4 rounded-[22px] border p-4 transition-all duration-300 ease-out hover:shadow-[0px_0px_10px_rgba(56,189,248,2)] sm:p-5 {$dark
+                            class="flex flex-wrap flex-col gap-4 rounded-[22px] border p-4 sm:p-5 max-w-lg transition-all duration-300 ease-out
+                            hover:shadow-[0px_0px_10px_rgba(56,189,248,2)] {$dark
                                 ? 'border-white bg-[#152A42]'
-                                : 'border-[var(--accent)] bg-[var(--active-bg)] border-2 shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
+                                : 'border-[var(--accent)] bg-[var(--active-bg)] border-2   shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                         >
                             <div
                                 data-sr
@@ -312,9 +314,9 @@
                         </div>
                         <div
                             data-sr
-                            class="flex flex-col gap-3 rounded-[20px] border p-4 transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] sm:p-5 {$dark
+                            class="transition-all duration-300 ease-out hover:shadow-[0_0_20px_var(--exertion-shadow)] flex flex-col gap-3 rounded-[20px] border p-5 {$dark
                                 ? 'border-white bg-[#152A42]'
-                                : 'border-2 border-[var(--accent)] bg-[var(--active-bg)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
+                                : 'border-2  border-[var(--accent)] bg-[var(--active-bg)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                             style={`--exertion-shadow: ${exertionShadowColor};`}
                         >
                             <div
@@ -386,12 +388,12 @@
                         <input type="hidden" name="assess" value="1" />
 
                         <div
-                            class="mt-1 flex items-center justify-center gap-3"
+                            class="mt-1 flex items-center justify-center gap-3 sm:min-w-max min-w-[18rem]"
                         >
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                class={`rounded-xl w-40 border-2  px-5 py-3 text-sm font-semibold transition duration-300 
+                                class={`rounded-xl w-32 sm:w-40 border-2 px-5 py-3 text-sm font-semibold transition duration-300 
                                 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70 
                                 ${$dark ? "border-sky-300/40 bg-sky-400/15 text-sky-100 hover:bg-sky-400/25" : "border-[var(--accent)] bg-[var(--panel-bg)] text-[var(--primary-text)] hover:bg-[var(--active-bg)] hover:border-sky-300"}`}
                             >
@@ -413,13 +415,19 @@
 
                     <div
                         data-sr
-                        class={`flex w-full flex-col place-items-center gap-3 rounded-[22px] border p-3 transition-all duration-300 ease-out hover:shadow-[0_0_10px_${safetyMeta.accent}] sm:p-5 ${$dark ? "border-white bg-[#152A42]" : "border-[var(--accent)] bg-[var(--active-bg)] border-2"}`}
+                        class={`hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out
+                         flex w-full place-items-center flex-col gap-4 rounded-[22px] border
+                          ${$dark ? "border-white bg-[#152A42]" : "border-[var(--accent)] bg-[var(--active-bg)] border-2"}
+                        p-4 sm:p-5 max-w-sm sm:max-w-max`}
                     >
                         <div data-sr class="flex items-center justify-between">
                             <div class="flex flex-col gap-1">
                                 <p
                                     data-sr
-                                    class="text-xl font-semibold sm:text-2xl {$dark
+                                    class=" text-center sm:text-left
+                                group-hover:scale-105 group-hover:translate-x-2
+                         transition-all duration-300 ease-out
+                                text-2xl font-semibold {$dark
                                         ? 'text-white'
                                         : 'text-[var(--primary-text)]'}"
                                 >
@@ -428,92 +436,96 @@
                             </div>
                         </div>
 
-                        <div data-sr class="flex items-center">
+                        <div
+                            data-sr
+                            class="flex items-center place-items-center"
+                        >
                             <div
-                                class={`flex w-full items-center rounded-[15px] border-none px-4 py-3 
-                                max-sm:px-3 ${safetyMeta.border} ${$dark ? safetyMeta.bg : "bg-white/50"}
-                                 transition-all duration-300 ease-out hover:shadow-[0_0_10px_${safetyMeta.accent}]`}
+                                class={` flex flex-row items-center  rounded-[15px] 
+                                 border border-none px-4 py-3 w-full ${safetyMeta.border} ${$dark ? safetyMeta.bg : "bg-white/50"} 
+                        hover:shadow-[0_0_10px_${safetyMeta.accent}] transition-all duration-300 ease-out`}
                             >
-                                {#if safetyMeta.icon === "check"}
-                                    <svg
-                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px]
-                                         animate-[pulse_8s_ease-in-out_infinite] transition-all duration-300"
-                                        width="65"
-                                        height="65"
-                                        viewBox="0 0 65 65"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M32.5 4.0625L8.125 12.1875V36.5625C8.125 50.0259 19.0366 60.9375 32.5 60.9375C45.9634 60.9375 56.875 50.0259 56.875 36.5625V12.1875L32.5 4.0625ZM52.3047 36.5625C52.3047 47.4995 43.437 56.3672 32.5 56.3672C21.563 56.3672 12.6953 47.4995 12.6953 36.5625V15.6152L32.5 8.63281L52.3047 15.6152V36.5625Z"
-                                            fill="#33FF2F"
-                                        />
-                                        <path
-                                            d="M24.0195 30.1576C23.8077 29.9448 23.556 29.776 23.2787 29.6608C23.0015 29.5456 22.7043 29.4863 22.404 29.4863C22.1038 29.4863 21.8066 29.5456 21.5293 29.6608C21.2521 29.776 21.0004 29.9448 20.7886 30.1576C20.5758 30.3694 20.407 30.6211 20.2918 30.8984C20.1766 31.1756 20.1172 31.4729 20.1172 31.7731C20.1172 32.0733 20.1766 32.3705 20.2918 32.6478C20.407 32.925 20.5758 33.1768 20.7886 33.3886L29.0024 41.6024L29.1357 41.7357C29.3361 41.9364 29.574 42.0957 29.836 42.2043C30.0979 42.313 30.3787 42.3689 30.6623 42.3689C30.9459 42.3689 31.2267 42.313 31.4887 42.2043C31.7506 42.0957 31.9886 41.9364 32.1889 41.7357L46.376 27.5487C46.5767 27.3484 46.7359 27.1104 46.8446 26.8485C46.9532 26.5865 47.0091 26.3057 47.0091 26.0221C47.0091 25.7385 46.9532 25.4577 46.8446 25.1957C46.7359 24.9338 46.5767 24.6958 46.376 24.4955L46.1982 24.3178C45.9979 24.117 45.7599 23.9578 45.498 23.8491C45.236 23.7405 44.9552 23.6846 44.6716 23.6846C44.388 23.6846 44.1072 23.7405 43.8453 23.8491C43.5833 23.9578 43.3453 24.117 43.145 24.3178L30.6592 36.7972L24.0195 30.1576Z"
-                                            fill="#33FF2F"
-                                        />
-                                    </svg>
-                                {:else if safetyMeta.icon === "shield"}
-                                    <svg
-                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px] animate-[pulse_5s_ease-in-out_infinite] transition-all duration-300"
-                                        width="65"
-                                        height="65"
-                                        viewBox="0 0 65 65"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M42.0821 42.0819C44.7218 39.4404 46.0416 36.2464 46.0416 32.4998C46.0416 28.7533 44.7209 25.5602 42.0794 22.9205C39.4378 20.2807 36.2447 18.96 32.5 18.9582C28.7553 18.9564 25.5621 20.2771 22.9206 22.9205C20.2791 25.5638 18.9583 28.7569 18.9583 32.4998C18.9583 36.2428 20.2791 39.4368 22.9206 42.0819C25.5621 44.7271 28.7553 46.0469 32.5 46.0415C36.2447 46.0361 39.4387 44.7153 42.0821 42.0792M33.8541 31.9582L37.9166 36.0207C38.1875 36.2915 38.3229 36.6075 38.3229 36.9686C38.3229 37.3297 38.1875 37.6457 37.9166 37.9165C37.6458 38.1873 37.3298 38.3228 36.9687 38.3228C36.6076 38.3228 36.2916 38.1873 36.0208 37.9165L31.9583 33.854C31.6875 33.5832 31.4844 33.2789 31.3489 32.9413C31.2135 32.6037 31.1458 32.2534 31.1458 31.8905V25.729C31.1458 25.3679 31.2812 25.0519 31.5521 24.7811C31.8229 24.5103 32.1389 24.3748 32.5 24.3748C32.8611 24.3748 33.1771 24.5103 33.4479 24.7811C33.7187 25.0519 33.8541 25.3679 33.8541 25.729V31.9582ZM31.6198 59.2446C31.3489 59.1995 31.0781 59.1318 30.8073 59.0415C24.7135 57.0103 19.8611 53.252 16.25 47.7667C12.6389 42.2814 10.8333 36.38 10.8333 30.0623V17.2655C10.8333 16.137 11.161 15.1214 11.8164 14.2186C12.4719 13.3158 13.3178 12.6613 14.3541 12.255L30.6041 6.1613C31.2361 5.9356 31.868 5.82275 32.5 5.82275C33.1319 5.82275 33.7639 5.9356 34.3958 6.1613L50.6458 12.255C51.684 12.6613 52.5308 13.3158 53.1862 14.2186C53.8417 15.1214 54.1685 16.137 54.1666 17.2655V30.0623C54.1666 36.3818 52.3611 42.2841 48.75 47.7694C45.1389 53.2547 40.2864 57.0121 34.1927 59.0415C33.9219 59.1318 33.651 59.1995 33.3802 59.2446C33.1094 59.2898 32.816 59.3123 32.5 59.3123C32.184 59.3123 31.8906 59.2898 31.6198 59.2446Z"
-                                            fill="#009BFF"
-                                        />
-                                    </svg>
-                                {:else if safetyMeta.icon === "warning"}
-                                    <svg
-                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px] animate-[pulse_3s_ease-in-out_infinite] transition-all duration-300"
-                                        width="65"
-                                        height="65"
-                                        viewBox="0 0 65 65"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M22.3438 56.875L8.125 42.6562V22.3438L22.3438 8.125H42.6562L56.875 22.3438V42.6562L42.6562 56.875H22.3438ZM24.7812 44.0104L32.5 36.2917L40.2188 44.0104L44.0104 40.2188L36.2917 32.5L44.0104 24.7812L40.2188 20.9896L32.5 28.7083L24.7812 20.9896L20.9896 24.7812L28.7083 32.5L20.9896 40.2188L24.7812 44.0104ZM24.6458 51.4583H40.3542L51.4583 40.3542V24.6458L40.3542 13.5417H24.6458L13.5417 24.6458V40.3542L24.6458 51.4583Z"
-                                            fill="#FF7B00"
-                                        />
-                                    </svg>
-                                {:else}
-                                    <svg
-                                        class="h-[65px] w-[65px] max-sm:h-[52px] max-sm:w-[52px] animate-[pulse_1s_ease-in-out_infinite] transition-all duration-300"
-                                        width="65"
-                                        height="65"
-                                        viewBox="0 0 65 65"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M14.3867 29.1471C22.2896 15.1315 26.241 8.125 32.5 8.125C38.759 8.125 42.7104 15.1315 50.6133 29.1471L51.5992 30.8912C58.1669 42.5371 61.4521 48.36 58.4837 52.6175C55.5154 56.875 48.1704 56.875 33.4858 56.875H31.5142C16.8296 56.875 9.48458 56.875 6.51625 52.6175C3.54792 48.36 6.83313 42.5371 13.4008 30.8912L14.3867 29.1471Z"
-                                            stroke="#FF0000"
-                                            stroke-width="1.5"
-                                        />
-                                        <path
-                                            d="M32.5 21.6665V35.2082"
-                                            stroke="#FF0000"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                        />
-                                        <path
-                                            d="M32.4997 41.125C33.7192 41.125 34.7085 42.1135 34.7087 43.333C34.7087 44.5526 33.7193 45.542 32.4997 45.542C31.2802 45.5418 30.2917 44.5525 30.2917 43.333C30.2919 42.1136 31.2803 41.1252 32.4997 41.125Z"
-                                            fill="#FF0000"
-                                            stroke="#FF0000"
-                                        />
-                                    </svg>
-                                {/if}
+                                <div class="">
+                                    {#if safetyMeta.icon === "check"}
+                                        <svg
+                                            class="animate-[pulse_8s_ease-in-out_infinite] transition-all duration-300"
+                                            width="65"
+                                            height="65"
+                                            viewBox="0 0 65 65"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M32.5 4.0625L8.125 12.1875V36.5625C8.125 50.0259 19.0366 60.9375 32.5 60.9375C45.9634 60.9375 56.875 50.0259 56.875 36.5625V12.1875L32.5 4.0625ZM52.3047 36.5625C52.3047 47.4995 43.437 56.3672 32.5 56.3672C21.563 56.3672 12.6953 47.4995 12.6953 36.5625V15.6152L32.5 8.63281L52.3047 15.6152V36.5625Z"
+                                                fill="#33FF2F"
+                                            />
+                                            <path
+                                                d="M24.0195 30.1576C23.8077 29.9448 23.556 29.776 23.2787 29.6608C23.0015 29.5456 22.7043 29.4863 22.404 29.4863C22.1038 29.4863 21.8066 29.5456 21.5293 29.6608C21.2521 29.776 21.0004 29.9448 20.7886 30.1576C20.5758 30.3694 20.407 30.6211 20.2918 30.8984C20.1766 31.1756 20.1172 31.4729 20.1172 31.7731C20.1172 32.0733 20.1766 32.3705 20.2918 32.6478C20.407 32.925 20.5758 33.1768 20.7886 33.3886L29.0024 41.6024L29.1357 41.7357C29.3361 41.9364 29.574 42.0957 29.836 42.2043C30.0979 42.313 30.3787 42.3689 30.6623 42.3689C30.9459 42.3689 31.2267 42.313 31.4887 42.2043C31.7506 42.0957 31.9886 41.9364 32.1889 41.7357L46.376 27.5487C46.5767 27.3484 46.7359 27.1104 46.8446 26.8485C46.9532 26.5865 47.0091 26.3057 47.0091 26.0221C47.0091 25.7385 46.9532 25.4577 46.8446 25.1957C46.7359 24.9338 46.5767 24.6958 46.376 24.4955L46.1982 24.3178C45.9979 24.117 45.7599 23.9578 45.498 23.8491C45.236 23.7405 44.9552 23.6846 44.6716 23.6846C44.388 23.6846 44.1072 23.7405 43.8453 23.8491C43.5833 23.9578 43.3453 24.117 43.145 24.3178L30.6592 36.7972L24.0195 30.1576Z"
+                                                fill="#33FF2F"
+                                            />
+                                        </svg>
+                                    {:else if safetyMeta.icon === "shield"}
+                                        <svg
+                                            class="animate-[pulse_5s_ease-in-out_infinite] transition-all duration-300"
+                                            width="65"
+                                            height="65"
+                                            viewBox="0 0 65 65"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M42.0821 42.0819C44.7218 39.4404 46.0416 36.2464 46.0416 32.4998C46.0416 28.7533 44.7209 25.5602 42.0794 22.9205C39.4378 20.2807 36.2447 18.96 32.5 18.9582C28.7553 18.9564 25.5621 20.2771 22.9206 22.9205C20.2791 25.5638 18.9583 28.7569 18.9583 32.4998C18.9583 36.2428 20.2791 39.4368 22.9206 42.0819C25.5621 44.7271 28.7553 46.0469 32.5 46.0415C36.2447 46.0361 39.4387 44.7153 42.0821 42.0792M33.8541 31.9582L37.9166 36.0207C38.1875 36.2915 38.3229 36.6075 38.3229 36.9686C38.3229 37.3297 38.1875 37.6457 37.9166 37.9165C37.6458 38.1873 37.3298 38.3228 36.9687 38.3228C36.6076 38.3228 36.2916 38.1873 36.0208 37.9165L31.9583 33.854C31.6875 33.5832 31.4844 33.2789 31.3489 32.9413C31.2135 32.6037 31.1458 32.2534 31.1458 31.8905V25.729C31.1458 25.3679 31.2812 25.0519 31.5521 24.7811C31.8229 24.5103 32.1389 24.3748 32.5 24.3748C32.8611 24.3748 33.1771 24.5103 33.4479 24.7811C33.7187 25.0519 33.8541 25.3679 33.8541 25.729V31.9582ZM31.6198 59.2446C31.3489 59.1995 31.0781 59.1318 30.8073 59.0415C24.7135 57.0103 19.8611 53.252 16.25 47.7667C12.6389 42.2814 10.8333 36.38 10.8333 30.0623V17.2655C10.8333 16.137 11.161 15.1214 11.8164 14.2186C12.4719 13.3158 13.3178 12.6613 14.3541 12.255L30.6041 6.1613C31.2361 5.9356 31.868 5.82275 32.5 5.82275C33.1319 5.82275 33.7639 5.9356 34.3958 6.1613L50.6458 12.255C51.684 12.6613 52.5308 13.3158 53.1862 14.2186C53.8417 15.1214 54.1685 16.137 54.1666 17.2655V30.0623C54.1666 36.3818 52.3611 42.2841 48.75 47.7694C45.1389 53.2547 40.2864 57.0121 34.1927 59.0415C33.9219 59.1318 33.651 59.1995 33.3802 59.2446C33.1094 59.2898 32.816 59.3123 32.5 59.3123C32.184 59.3123 31.8906 59.2898 31.6198 59.2446Z"
+                                                fill="#009BFF"
+                                            />
+                                        </svg>
+                                    {:else if safetyMeta.icon === "warning"}
+                                        <svg
+                                            class="animate-[pulse_3s_ease-in-out_infinite] transition-all duration-300"
+                                            width="65"
+                                            height="65"
+                                            viewBox="0 0 65 65"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M22.3438 56.875L8.125 42.6562V22.3438L22.3438 8.125H42.6562L56.875 22.3438V42.6562L42.6562 56.875H22.3438ZM24.7812 44.0104L32.5 36.2917L40.2188 44.0104L44.0104 40.2188L36.2917 32.5L44.0104 24.7812L40.2188 20.9896L32.5 28.7083L24.7812 20.9896L20.9896 24.7812L28.7083 32.5L20.9896 40.2188L24.7812 44.0104ZM24.6458 51.4583H40.3542L51.4583 40.3542V24.6458L40.3542 13.5417H24.6458L13.5417 24.6458V40.3542L24.6458 51.4583Z"
+                                                fill="#FF7B00"
+                                            />
+                                        </svg>
+                                    {:else}
+                                        <svg
+                                            class="transition-all duration-300 animate-[pulse_1s_ease-in-out_infinite]"
+                                            width="65"
+                                            height="65"
+                                            viewBox="0 0 65 65"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M14.3867 29.1471C22.2896 15.1315 26.241 8.125 32.5 8.125C38.759 8.125 42.7104 15.1315 50.6133 29.1471L51.5992 30.8912C58.1669 42.5371 61.4521 48.36 58.4837 52.6175C55.5154 56.875 48.1704 56.875 33.4858 56.875H31.5142C16.8296 56.875 9.48458 56.875 6.51625 52.6175C3.54792 48.36 6.83313 42.5371 13.4008 30.8912L14.3867 29.1471Z"
+                                                stroke="#FF0000"
+                                                stroke-width="1.5"
+                                            />
+                                            <path
+                                                d="M32.5 21.6665V35.2082"
+                                                stroke="#FF0000"
+                                                stroke-width="1.5"
+                                                stroke-linecap="round"
+                                            />
+                                            <path
+                                                d="M32.4997 41.125C33.7192 41.125 34.7085 42.1135 34.7087 43.333C34.7087 44.5526 33.7193 45.542 32.4997 45.542C31.2802 45.5418 30.2917 44.5525 30.2917 43.333C30.2919 42.1136 31.2803 41.1252 32.4997 41.125Z"
+                                                fill="#FF0000"
+                                                stroke="#FF0000"
+                                            />
+                                        </svg>
+                                    {/if}
+                                </div>
 
                                 <div
                                     class="flex flex-col text-center place-self-center"
                                 >
                                     <p
-                                        class={`text-lg max-sm:text-base dark:text-white text-black`}
+                                        class={`text-lg dark:text-white text-black `}
                                     >
                                         {isAssessing && !heatIndexData?.assess
                                             ? "No Assessment Yet"
@@ -524,70 +536,60 @@
                         </div>
 
                         <div
-                            class="flex flex-col gap-2 text-sm leading-5 sm:gap-3"
+                            data-sr
+                            class="flex flex-col text-sm leading-6 px-5
+                        transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-y-3 group-hover:translate-x-3"
                         >
-                            <div
-                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12 sm:pb-0"
-                            >
+                            <div class="flex gap-20 justify-between">
                                 <p
-                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    class={`min-w-[4.75rem] 
+                                    ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
-                                    Alert:
-                                </p>
-                                <p
-                                    class="break-words text-slate-500 dark:text-slate-200"
-                                >
-                                    {isAssessing && !heatIndexData?.assess
-                                        ? "Waiting for your inputs."
-                                        : selectedHighlights.alert}
+                                    Alert: <span
+                                        class="dark:text-slate-200 text-slate-500"
+                                    >
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Waiting for your inputs."
+                                            : selectedHighlights.alert}
+                                    </span>
                                 </p>
                             </div>
-                            <div
-                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12 sm:pb-0"
-                            >
+                            <div class="flex gap-2 justify-between">
                                 <p
-                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
-                                    Recommendation:
-                                </p>
-                                <p
-                                    class="break-words text-slate-500 dark:text-slate-200"
-                                >
-                                    {isAssessing && !heatIndexData?.assess
-                                        ? "Choose an age group and exertion level, then press Assess."
-                                        : selectedHighlights.recommendation}
+                                    Recommendation: <span
+                                        class="dark:text-slate-200 text-slate-500"
+                                    >
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Choose an age group and exertion level, then press Assess."
+                                            : selectedHighlights.recommendation}
+                                    </span>
                                 </p>
                             </div>
-                            <div
-                                class="grid gap-1 rounded-[14px] pb-2 sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12 sm:pb-0"
-                            >
-                                <p
-                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                            <div class="flex gap-2 justify-between">
+                                <span
+                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    >Travel: <span
+                                        class="dark:text-slate-200 text-slate-500"
+                                    >
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Assessment will appear after you submit the inputs."
+                                            : selectedHighlights.travel}
+                                    </span></span
                                 >
-                                    Travel:
-                                </p>
-                                <p
-                                    class="break-words text-slate-500 dark:text-slate-200"
-                                >
-                                    {isAssessing && !heatIndexData?.assess
-                                        ? "Assessment will appear after you submit the inputs."
-                                        : selectedHighlights.travel}
-                                </p>
                             </div>
-                            <div
-                                class="grid gap-1 rounded-[14px] sm:grid-cols-[7.25rem,minmax(0,1fr)] sm:gap-12"
-                            >
+                            <div class="flex gap-2 justify-between">
                                 <p
-                                    class={`text-sm font-semibold uppercase tracking-[0.14em] max-sm:text-xs ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
+                                    class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
-                                    Health Tip:
-                                </p>
-                                <p
-                                    class="break-words text-slate-500 dark:text-slate-200"
-                                >
-                                    {isAssessing && !heatIndexData?.assess
-                                        ? "Use the inputs above to calculate the current safety label."
-                                        : selectedHighlights.tip}
+                                    Health Tip: <span
+                                        class="dark:text-slate-200 text-slate-500"
+                                    >
+                                        {isAssessing && !heatIndexData?.assess
+                                            ? "Use the inputs above to calculate the current safety label."
+                                            : selectedHighlights.tip}
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -595,46 +597,46 @@
                 </form>
             </div>
 
-            <div class="space-y-10 mt-10">
+            <div class="sm:space-y-10 -px-10">
                 <h1
                     data-sr
-                    class="px-0 text-xl font-semibold text-start sm:px-4 md:px-8 lg:px-0 sm:text-4xl {$dark
+                    class="  sm:px-28 px-5 text-center sm:max-w-max text-2xl sm:text-start font-semibold sm:text-4xl {$dark
                         ? 'text-white'
                         : 'text-slate-900'}"
                 >
                     7-Hour Advanced Heat Index Forecast
                 </h1>
-                <div class="flex flex-col gap-6">
+                <div class="flex flex-col space-y-10 scale-[0.93] ">
                     <div
-                        class="grid grid-cols-2 gap-3 pb-2 sm:grid-cols-3 lg:flex lg:justify-center lg:gap-3"
+                        class="flex flex-wrap gap-5 sm:gap-3 overflow-visible pb-1 justify-center"
                     >
                         {#each selectedPreset.forecast as forecastTemp, index (index)}
                             <div
                                 data-sr
                                 data-sr-delay={index * 120}
-                                class={`group flex min-w-0 flex-col items-center gap-4 rounded-[18px] border px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-500 ease-out max-sm:px-4 max-sm:py-5 sm:gap-5 lg:min-w-[9.75rem] 
-                                hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00] ${
-                                    $dark
-                                        ? "border-white/80 bg-[#152A42]"
-                                        : "border-[var(--accent)] hover:border-none bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]"
-                                }`}
+                                class="group
+                                hover:scale-110 hover:shadow-[0_0px_10px_#FF7B00]
+                                 transition-all duration-500 ease-out size-[9rem] h-1/2 sm:h-auto sm:size-auto
+                                flex place-items-center flex-col space-y-5 rounded-[18px] border
+                                px-9 py-9 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] {$dark
+                                    ? 'border-white/80 bg-[#152A42]'
+                                    : 'border-[var(--accent)] hover:border-none bg-[color-mix(in_srgb,var(--bg-secondary)_60%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                                 transition:fade
                             >
-                                <div class="flex flex-col gap-1">
+                                <div class=" flex flex-col gap-1">
                                     <p
                                         data-sr
-                                        class={`text-xl transition-all duration-500 ease-out group-hover:scale-[1.08] max-sm:text-lg ${
-                                            $dark
-                                                ? "text-slate-200"
-                                                : "text-[var(--primary-text)]"
-                                        }`}
+                                        class="group-hover:scale-[1.18] transition-all
+                                         duration-500 ease-out text-xl {$dark
+                                            ? 'text-slate-200'
+                                            : 'text-[var(--primary-text)]'}"
                                     >
                                         {selectedPreset.forecastLabels[index] ??
                                             selectedPreset.graphLabels[index] ??
                                             `Hour ${index + 1}`}
                                     </p>
                                     <svg
-                                        class="h-[60px] w-[60px] max-sm:h-[52px] max-sm:w-[52px] animate-[spin_10s_linear_infinite] transition-all duration-300 group-hover:drop-shadow-[0_0_8px_#FFA629] group-hover:animate-[spin_3s_linear_infinite]"
+                                        class="group-hover:drop-shadow-[0_0_8px_#FFA629] animate-[spin_10s_linear_infinite] group-hover:animate-[spin_3s_linear_infinite] transition-all duration-300"
                                         width="60"
                                         height="60"
                                         viewBox="0 0 70 70"
@@ -649,7 +651,7 @@
                                 </div>
                                 <p
                                     data-sr
-                                    class="text-xl text-[#FF7B00] transition-all duration-300 group-hover:[text-shadow:0_0_10px_#FF7B00] max-sm:text-lg"
+                                    class="text-xl text-[#FF7B00] group-hover:[text-shadow:0_0_10px_#FF7B00] transition-all duration-300"
                                 >
                                     {Number(forecastTemp).toFixed(2)}°C
                                 </p>
@@ -661,24 +663,22 @@
         </section>
 
         <section
-            class="flex flex-col gap-6 xl:flex-row justify-center scale-[1.10] mt-10"
+            class="sm:-mt-0 -mt-24 flex flex-col gap-6 xl:flex-row justify-center scale-[.90] sm:scale-[1.10]"
         >
-            <div class="flex flex-col">
+            <div class="flex flex-col gap-6 ">
                 <div
                     data-sr
-                    class={`group flex flex-col gap-6 rounded-[20px] 
-                    border backdrop-blur-sm p-4 transition-all duration-300 ease-out
-                     sm:p-6 lg:p-7 lg:hover:scale-105 lg:hover:-translate-x-5 
-                     lg:hover:-translate-y-2 lg:hover:shadow-[0_0px_10px_#94a3b8] 
-                     ${
-                         $dark
-                             ? "border-white bg-[#152A42]/50 lg:hover:shadow-[0_0px_10px_#ffffff]"
-                             : "border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_40%,transparent)]"
-                     }`}
+                    class={`group hover:scale-105 sm:hover:-translate-y-2 
+                     hover:-translate-y-2 hover:translate-x-5 sm:hover:-translate-x-5
+                     transition-all duration-300 ease-out lg:justify-left place-self-center
+                    flex flex-col space-y-8 rounded-[20px] border
+                    backdrop-blur-sm sm:p-7 sm:py-12 sm:max-w-lg lg:max-w-max
+                     ${$dark ? "hover:shadow-[0_0px_10px_#ffffff] border-white bg-[#152A42]/50" : "hover:shadow-[0_0px_10px_#94a3b8] border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_40%,transparent)]"}`}
                 >
                     <div
                         data-sr
-                        class="flex flex-col gap-1 transition-all duration-300 ease-out"
+                        class="p-5 sm:p-0 transition-all duration-300 ease-out text-center lg:text-left
+                    flex flex-col gap-1 " 
                     >
                         <p
                             class="text-2xl font-semibold sm:text-[2rem] {$dark
@@ -696,15 +696,13 @@
                         </p>
                     </div>
 
-                    <div
-                        class="gap-4 lg:flex-row space-y-10 justify-items-center"
-                    >
-                        <div
-                            class="flex flex-col gap-4 sm:flex-row sm:items-center"
-                        >
+                    <div class=" gap-4 lg:flex-row space-y-10">
+                        <div class="flex sm:flex-row flex-col items-center gap-4 lg:justify-start justify-center">
                             <p
                                 data-sr
-                                class="text-[2.5rem] font-semibold leading-none transition-all duration-300 ease-out sm:text-[3.25rem] {heatTone.text}"
+                                class=" 
+                                 transition-all duration-300 ease-out 
+                                text-[3rem] font-semibold leading-none sm:text-[3rem] {heatTone.text}"
                             >
                                 {formatTemperature(
                                     selectedPreset.heatIndexValue,
@@ -713,10 +711,12 @@
 
                             <div
                                 data-sr
-                                class={`flex flex-col justify-end gap-3 rounded-[15px] border px-4 py-5 shadow-[0_0_30px_rgba(245,158,11,0.16)] transition-all duration-300 ease-out sm:w-auto ${heatCard.border} ${heatCard.bg}`}
+                                class={`transition-all duration-300 ease-out 
+                                flex h-full flex-col justify-end gap-3 rounded-[15px] border
+                                ${heatCard.border}  ${heatCard.bg} px-4 py-5 shadow-[0_0_30px_rgba(245,158,11,0.16)]`}
                             >
                                 <div class="flex items-center gap-3">
-                                    <div class="flex min-w-0 flex-col gap-1">
+                                    <div class="flex flex-col gap-1">
                                         <p
                                             class="text-xl font-bold {$dark
                                                 ? 'text-white'
@@ -726,7 +726,7 @@
                                         </p>
                                         <div class="flex items-center gap-5">
                                             <span
-                                                class="w-full rounded-[8px] border border-white px-5 py-1 text-center text-xs font-semibold text-white sm:px-10 {heatCard.bg}"
+                                                class="rounded-[8px] {heatCard.bg} w-full text-center px-10 py-1 text-xs font-semibold text-white border border-white"
                                             >
                                                 {heatTone.title}
                                             </span>
@@ -815,7 +815,7 @@
                             </div>
                         </div>
                         <div
-                            class="flex flex-col gap-3 transition-all duration-300 ease-out w-60 lg:place-self-center"
+                            class="transition-all duration-300 ease-out flex flex-col gap-3 lg:max-w-[18rem] place-self-center"
                         >
                             <div
                                 class="flex items-center justify-between border-b border-t pb-2 pt-2 text-sm {$dark
@@ -829,7 +829,7 @@
                             </div>
 
                             <div
-                                class="flex items-center justify-between border-b pb-2 text-sm {$dark
+                                class="space-x-40 flex items-center pb-2 border-b justify-between text-sm {$dark
                                     ? 'border-white/50 text-slate-300'
                                     : 'border-[black]/40 text-[var(--primary-text)]'}"
                             >
@@ -850,16 +850,17 @@
                 <div class="flex flex-col transition-all duration-300">
                     <div
                         data-sr
-                        class="relative rounded-[24px] border p-3 transition-all duration-300 ease-in-out
-                         hover:scale-105 sm:hover:translate-y-3 sm:hover:translate-x-3 hover:translate-x-3 hover:shadow-[0_0_10px_#fb923c] {$dark
+                        class="hover:scale-105 sm:hover:-translate-y-3 sm:hover:translate-x-3
+                         hover:shadow-[0_0_10px_#fb923c] transition-all duration-300 ease-in-out
+                          relative rounded-[24px] border p-3 {$dark
                             ? 'border-white bg-[#152A42]/50'
                             : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_50%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                     >
                         <div
-                            class="mb-3 mt-2 flex items-center justify-center px-1"
+                            class="mb-3 mt-2 flex justify-center items-center px-1"
                         >
                             <p
-                                class="text-center text-sm font-semibold uppercase tracking-[0.12em] sm:text-md sm:tracking-[0.22em] {$dark
+                                class="text-md text-center font-semibold tracking-[0.22em] uppercase {$dark
                                     ? 'text-white/90'
                                     : 'text-[var(--primary-text)]'}"
                             >
@@ -1065,8 +1066,8 @@
                 </div>
                 <div
                     data-sr
-                    class="group flex flex-col gap-3 rounded-[20px] border p-4 transition-all duration-300
-                     hover:shadow-[0_0_10px_var(--accent)] hover:scale-105 sm:hover:translate-y-3 sm:hover:translate-x-3 hover:translate-x-3 {$dark
+                    class="group hover:scale-105 hover:translate-y-3 hover:translate-x-3
+                    hover:shadow-[0_0_10px_var(--accent)] transition-all duration-300 flex flex-col gap-3 rounded-[20px] border p-4 {$dark
                         ? 'border-white bg-[#152A42]/50'
                         : 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--panel-bg)_50%,transparent)] shadow-[0_14px_35px_rgba(15,23,42,0.10)]'}"
                 >
@@ -1091,7 +1092,8 @@
                         </svg>
 
                         <div
-                            class="flex flex-col transition-all duration-300 ease-out lg:group-hover:scale-105 lg:group-hover:translate-x-2"
+                            class="transition-all duration-300 ease-out group-hover:scale-105
+                            group-hover:translate-x-2 flex flex-col"
                         >
                             <p
                                 class="text-xl font-semibold {$dark

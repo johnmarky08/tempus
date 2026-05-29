@@ -198,7 +198,9 @@
 </svelte:head>
 
 <div
-    class=" ease-out min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-scroll md:bg-fixed font-spaceGrotesk font-normal flex flex-col transition-all duration-300"
+    class=" ease-out min-h-screen w-full overflow-x-hidden 
+    lg:bg-cover bg-center bg-scroll md:bg-fixed font-spaceGrotesk 
+    font-normal flex flex-col transition-all duration-300"
     class:dark={$dark}
     style={$dark
         ? `background-image: url("/images/backgrounds/dark_bg.png"); background-color: #020617;`
@@ -212,7 +214,7 @@
 
     <Navbar {isActive} {isActiveSub} />
 
-    <main class="flex-1 min-h-screen md:px-20 md:py-14 px-10 py-14 mt-20">
+    <main class="flex-1 min-h-screen md:px-20 md:py-14 px-5 py-14 mt-20">
         <slot />
 
         <div
