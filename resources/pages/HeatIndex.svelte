@@ -537,10 +537,10 @@
 
                         <div
                             data-sr
-                            class="flex flex-col text-sm leading-6 px-5
+                            class=" flex flex-col text-sm leading-6 px-5 gap-y-8 mt-1
                         transition-all duration-300 ease-out group-hover:scale-105 group-hover:translate-y-3 group-hover:translate-x-3"
                         >
-                            <div class="flex gap-20 justify-between">
+                            <div class="flex gap-20 justify-between lg:text-lg">
                                 <p
                                     class={`min-w-[4.75rem] 
                                     ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
@@ -554,7 +554,7 @@
                                     </span>
                                 </p>
                             </div>
-                            <div class="flex gap-2 justify-between">
+                            <div class="flex gap-2 justify-between lg:text-lg">
                                 <p
                                     class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
@@ -567,7 +567,7 @@
                                     </span>
                                 </p>
                             </div>
-                            <div class="flex gap-2 justify-between">
+                            <div class="flex gap-2 justify-between lg:text-lg">
                                 <span
                                     class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                     >Travel: <span
@@ -579,7 +579,7 @@
                                     </span></span
                                 >
                             </div>
-                            <div class="flex gap-2 justify-between">
+                            <div class="flex gap-2 justify-between lg:text-lg">
                                 <p
                                     class={`min-w-[4.75rem] ${$dark ? "text-slate-400" : "text-[var(--primary-text)]"}`}
                                 >
